@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LearningPlan.DataAccess\LearningPlan.DataAccess.csproj" />
+    <ProjectReference Include="..\LearningPlan.Services\LearningPlan.Services.csproj" />
+  </ItemGroup>
+
+</Project>

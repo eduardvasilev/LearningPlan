@@ -14,6 +14,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LearningPlan.DataAccess.Implementation\LearningPlan.DataAccess.Implementation.csproj" />
+    <ProjectReference Include="..\LearningPlan.Services.Implementation\LearningPlan.Services.Implementation.csproj" />
+    <ProjectReference Include="..\LearningPlan.Services\LearningPlan.Services.csproj" />
   </ItemGroup>
 
 
