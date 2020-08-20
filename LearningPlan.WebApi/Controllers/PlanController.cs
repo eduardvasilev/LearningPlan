@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using LearningPlan.Services;
+using LearningPlan.Services.Model;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearningPlan.WebApi.Controllers
@@ -16,10 +17,16 @@ namespace LearningPlan.WebApi.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> Create([FromQuery]string name)
+        public async Task<IActionResult> Create(PlanServiceModel model)
         {
-            await _planService.CreatePlanAsync(name);
-            return Json(name);
+            await _planService.CreatePlanAsync(model);
+            return Ok();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<PlanServiceModel> Get(long id)
+        {
+            return await _planService.GetById(id);
         }
     }
 }

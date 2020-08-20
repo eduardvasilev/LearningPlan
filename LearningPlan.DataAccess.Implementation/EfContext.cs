@@ -25,8 +25,9 @@ namespace LearningPlan.DataAccess.Implementation
             planBuilder.Property(plan => plan.Name).IsRequired();
 
             EntityTypeBuilder<PlanArea> planAreaBuilder = modelBuilder.Entity<PlanArea>();
-            planAreaBuilder.Property(plan => plan.Name).IsRequired();
+            planAreaBuilder.Property(planArea => planArea.Name).IsRequired();
             planAreaBuilder.HasOne(area => area.Plan);
+            planAreaBuilder.HasMany(planArea => planArea.AreaTopics).WithOne(x => x.PlanArea);
         }
 
     }
