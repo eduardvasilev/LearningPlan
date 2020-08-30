@@ -1,9 +1,11 @@
 using LearningPlan.DataAccess;
 using LearningPlan.DataAccess.Implementation;
+using LearningPlan.DomainModel;
 using LearningPlan.Services;
 using LearningPlan.Services.Implementation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,6 +30,9 @@ namespace LearningPlan.WebApi
                 options.UseLazyLoadingProxies().
                     UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<EfContext>();
+
             services.AddScoped(typeof(IWriteRepository<>), typeof(WriteRepository<>));
             services.AddScoped(typeof(IReadRepository<>), typeof(ReadRepository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -47,6 +52,7 @@ namespace LearningPlan.WebApi
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {
