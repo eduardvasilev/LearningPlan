@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using LearningPlan.DomainModel;
 
 namespace LearningPlan.DataAccess.Implementation
@@ -14,6 +15,7 @@ namespace LearningPlan.DataAccess.Implementation
 
         public async Task CreateAsync(T entity)
         {
+            entity.Id = Guid.NewGuid().ToString();
             await _context.Set<T>().AddAsync(entity);
         }
 

@@ -28,7 +28,10 @@ namespace LearningPlan.WebApi
             services.AddControllers();
             services.AddDbContext<EfContext>(options =>
                 options.UseLazyLoadingProxies().
-                    UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                    UseCosmos(
+                        "https://localhost:8081",
+                        "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==",
+                        databaseName: "LearningPlan"));
 
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<EfContext>();

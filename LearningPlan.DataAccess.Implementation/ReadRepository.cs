@@ -19,9 +19,9 @@ namespace LearningPlan.DataAccess.Implementation
             return _context.Set<T>();
         }
 
-        public Task<T> GetByIdAsync(long id)
+        public Task<T> GetByIdAsync(string id)
         {
-            return _context.Set<T>().FirstOrDefaultAsync(entity => entity.Id == id);
+            return _context.Set<T>().FirstOrDefaultAsync(entity => entity.Id.ToString() == id);
         }
     }
 }

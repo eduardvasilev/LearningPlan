@@ -6,7 +6,7 @@ namespace LearningPlan.DomainModel
     {
         public string Name { get; set; }
         
-        public long? PlanId { get; set; }
+        public string PlanId { get; set; }
 
         public virtual Plan Plan { get; set; }
 

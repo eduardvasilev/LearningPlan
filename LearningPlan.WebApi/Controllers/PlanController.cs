@@ -24,7 +24,7 @@ namespace LearningPlan.WebApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<PlanServiceModel> Get(long id)
+        public async Task<PlanServiceModel> Get(string id)
         {
             return await _planService.GetById(id);
         }

@@ -1,7 +1,10 @@
-﻿namespace LearningPlan.DomainModel
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+
+namespace LearningPlan.DomainModel
 {
     public class EntityBase
     {
-        public long Id { get; set; }
+        public string Id { get; set; }
     }
 }

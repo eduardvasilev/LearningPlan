@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using LearningPlan.DomainModel;
 using LearningPlan.WebApi.Model;
@@ -25,11 +26,18 @@ namespace LearningPlan.WebApi.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = new User {Email = model.Email, UserName = model.UserName};
+                User user = new User {Id = Guid.NewGuid().ToString(), Email = model.Email, UserName = model.UserName};
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await _signInManager.SignInAsync(user, false);
+                    try
+                    {
+                        await _signInManager.CreateUserPrincipalAsync(user);
+                    }
+                    catch
+                    {
+
+                    }
                     return Json("Done"); //todo created
                 }
 

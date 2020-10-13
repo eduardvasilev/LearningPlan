@@ -18,17 +18,26 @@ namespace LearningPlan.DataAccess.Implementation
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            EntityTypeBuilder<AreaTopic> areaTopicBuilder = modelBuilder.Entity<AreaTopic>();
+            EntityTypeBuilder<AreaTopic> areaTopicBuilder = modelBuilder.Entity<AreaTopic>().ToContainer("AreaTopics");
             areaTopicBuilder.Property(areaTopic => areaTopic.Name).IsRequired();
             areaTopicBuilder.HasOne(areaTopic => areaTopic.PlanArea);
+            areaTopicBuilder.HasKey(at => at.Id);
+            areaTopicBuilder.HasPartitionKey(at => at.PlanAreaId);
 
-            EntityTypeBuilder<Plan> planBuilder = modelBuilder.Entity<Plan>();
+            EntityTypeBuilder<Plan> planBuilder = modelBuilder.Entity<Plan>().ToContainer("Plans");
             planBuilder.Property(plan => plan.Name).IsRequired();
+            planBuilder.HasKey(x => x.Id);
+            planBuilder.HasPartitionKey(x => x.Id);
 
-            EntityTypeBuilder<PlanArea> planAreaBuilder = modelBuilder.Entity<PlanArea>();
+            EntityTypeBuilder<PlanArea> planAreaBuilder = modelBuilder.Entity<PlanArea>().ToContainer("PlanAreas");
             planAreaBuilder.Property(planArea => planArea.Name).IsRequired();
             planAreaBuilder.HasOne(area => area.Plan);
             planAreaBuilder.HasMany(planArea => planArea.AreaTopics).WithOne(x => x.PlanArea);
+            planAreaBuilder.HasKey(x => x.Id);
+            planAreaBuilder.HasPartitionKey(x => x.PlanId);
+
+            EntityTypeBuilder<User> userBuilder = modelBuilder.Entity<User>().ToContainer("Users");
+            userBuilder.HasPartitionKey(x => x.Id);
 
             base.OnModelCreating(modelBuilder);
         }

@@ -8,6 +8,6 @@ namespace LearningPlan.DataAccess
     {
         IQueryable<T> GetAll();
 
-        Task<T> GetByIdAsync(long id);
+        Task<T> GetByIdAsync(string id);
     }
 }

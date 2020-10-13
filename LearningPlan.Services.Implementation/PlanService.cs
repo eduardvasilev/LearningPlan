@@ -64,7 +64,7 @@ namespace LearningPlan.Services.Implementation
             }
         }
 
-        public async Task<PlanServiceModel> GetById(long id)
+        public async Task<PlanServiceModel> GetById(string id)
         {
             Plan plan = await _planReadRepository.GetByIdAsync(id);
             PlanArea planArea = _planAreaReadRepository.GetAll().FirstOrDefault(x => x.PlanId == id);
