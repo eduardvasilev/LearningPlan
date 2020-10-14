@@ -1,9 +1,7 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using LearningPlan.DomainModel;
+﻿using System.Threading.Tasks;
+using LearningPlan.Services;
+using LearningPlan.Services.Model;
 using LearningPlan.WebApi.Model;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearningPlan.WebApi.Controllers
@@ -12,41 +10,39 @@ namespace LearningPlan.WebApi.Controllers
     [Route("[controller]")]
     public class UserController : Controller
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        private readonly IUserService _userService;
 
-        public UserController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public UserController(IUserService userService)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
+            _userService = userService;
+        }
+
+        [HttpPost("authenticate")]
+        public async Task<IActionResult> Authenticate(AuthenticateModel model)
+        {
+            var response = await _userService.AuthenticateAsync(new AuthenticateRequestModel
+            {
+                Secret = "secretsecretsecret",
+                Username = model.UserName,
+                Password = model.Password
+            });
+
+            if (response == null)
+                return BadRequest(new { message = "Username or password is incorrect" });
+
+            return Ok(response);
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody]RegisterModel model)
+        public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            if (ModelState.IsValid)
+           await _userService.SignInAsync(new SignInServiceModel
             {
-                User user = new User {Id = Guid.NewGuid().ToString(), Email = model.Email, UserName = model.UserName};
-                var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    try
-                    {
-                        await _signInManager.CreateUserPrincipalAsync(user);
-                    }
-                    catch
-                    {
+                Password = model.Password,
+                Username = model.UserName
+            });
 
-                    }
-                    return Json("Done"); //todo created
-                }
-
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
-            }
-            return Json(ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage));
+           return Ok();
         }
     }
 }

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace LearningPlan.DataAccess.Implementation
 {
-    public class EfContext : IdentityDbContext<User>
+    public class EfContext : DbContext
     {
         public EfContext(DbContextOptions<EfContext> options) : base(options)
         {

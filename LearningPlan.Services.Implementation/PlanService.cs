@@ -68,11 +68,15 @@ namespace LearningPlan.Services.Implementation
         {
             Plan plan = await _planReadRepository.GetByIdAsync(id);
             PlanArea planArea = _planAreaReadRepository.GetAll().FirstOrDefault(x => x.PlanId == id);
+            if (plan == null || planArea == null)
+            {
+                throw new Exception("Not found.");
+            }
             return await Task.FromResult(new PlanServiceModel
             {
                 Name = plan.Name,
-                PlanAreaName = planArea?.Name,
-                AreaTopics = planArea?.AreaTopics.Select(x => new AreaTopicServiceModel
+                PlanAreaName = planArea.Name,
+                AreaTopics = planArea.AreaTopics.Select(x => new AreaTopicServiceModel
                 {
                     Name = x.Name,
                     StartDate = x.StartDate.ToString("d"),
