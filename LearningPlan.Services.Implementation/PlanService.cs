@@ -1,15 +1,17 @@
-﻿using System;
+﻿using LearningPlan.DataAccess;
+using LearningPlan.DomainModel;
+using LearningPlan.Services.Model;
+using Microsoft.AspNetCore.Http;
+using System;
 using System.Globalization;
 using System.Linq;
-using LearningPlan.DataAccess;
-using LearningPlan.DomainModel;
 using System.Threading.Tasks;
-using LearningPlan.Services.Model;
 
 namespace LearningPlan.Services.Implementation
 {
     public class PlanService : IPlanService
     {
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IReadRepository<Plan> _planReadRepository;
         private readonly IReadRepository<PlanArea> _planAreaReadRepository;
         private readonly IWriteRepository<AreaTopic> _areaTopicRepository;
@@ -17,13 +19,16 @@ namespace LearningPlan.Services.Implementation
         private readonly IWriteRepository<PlanArea> _planAreaRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public PlanService(IReadRepository<Plan> planReadRepository,
+        public PlanService(
+            IHttpContextAccessor httpContextAccessor,
+            IReadRepository<Plan> planReadRepository,
             IReadRepository<PlanArea> planAreaReadRepository,
             IWriteRepository<AreaTopic> areaTopicRepository,
             IWriteRepository<Plan> planRepository,
             IWriteRepository<PlanArea> planAreaRepository,
             IUnitOfWork unitOfWork)
         {
+            _httpContextAccessor = httpContextAccessor;
             _planReadRepository = planReadRepository;
             _planAreaReadRepository = planAreaReadRepository;
             _areaTopicRepository = areaTopicRepository;
@@ -36,7 +41,10 @@ namespace LearningPlan.Services.Implementation
         {
             using (_unitOfWork)
             {
-                var plan = new Plan(model.Name);
+                var user = (User)_httpContextAccessor.HttpContext.Items["User"];
+
+                var plan = new Plan(model.Name, user.Id);
+
                 await _planRepository.CreateAsync(plan);
 
                 foreach (PlanAreaServiceModel planArea in model.PlanAreas)
