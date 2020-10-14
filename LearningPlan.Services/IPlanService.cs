@@ -7,6 +7,6 @@ namespace LearningPlan.Services
     {
         Task<PlanResponseModel> CreatePlanAsync(PlanServiceModel model);
 
-        Task<PlanServiceModel> GetById(string id);
+        Task<PlanServiceModel> GetByIdAsync(string id);
     }
 }

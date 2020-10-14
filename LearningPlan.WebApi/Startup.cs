@@ -1,10 +1,13 @@
 using LearningPlan.DataAccess;
 using LearningPlan.DataAccess.Implementation;
+using LearningPlan.DomainModel.Exceptions;
 using LearningPlan.Services;
 using LearningPlan.Services.Implementation;
 using LearningPlan.WebApi.Middleware;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -47,6 +50,25 @@ namespace LearningPlan.WebApi
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler(errorApp =>
+                {
+                    errorApp.Run(async context =>
+                    {
+                        context.Response.StatusCode = 500;
+                        context.Response.ContentType = "json";
+
+                        var exceptionHandlerPathFeature =
+                            context.Features.Get<IExceptionHandlerPathFeature>();
+
+                        if (exceptionHandlerPathFeature?.Error is DomainServicesException)
+                        {
+                            await context.Response.WriteAsync(exceptionHandlerPathFeature.Error.Message);
+                        }
+                    });
+                });
             }
 
             app.UseHttpsRedirection();

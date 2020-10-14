@@ -32,7 +32,7 @@ namespace LearningPlan.WebApi.Controllers
         [HttpGet("{id}")]
         public async Task<PlanServiceModel> Get(string id)
         {
-            return await _planService.GetById(id);
+            return await _planService.GetByIdAsync(id);
         }
 
         [Authorize]
