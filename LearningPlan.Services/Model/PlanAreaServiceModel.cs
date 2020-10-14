@@ -2,12 +2,14 @@
 
 namespace LearningPlan.Services.Model
 {
-    public class PlanServiceModel
+    public class PlanAreaServiceModel
     {
+        public string PlanId { get; set; }
+
         [Required]
         [StringLength(255)]
         public string Name { get; set; }
 
-        public PlanAreaServiceModel[] PlanAreas { get; set; }
+        public AreaTopicServiceModel[] AreaTopics { get; set; }
     }
 }

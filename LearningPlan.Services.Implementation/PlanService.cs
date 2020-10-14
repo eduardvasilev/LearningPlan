@@ -32,57 +32,68 @@ namespace LearningPlan.Services.Implementation
             _unitOfWork = unitOfWork;
         }
 
-        public async Task CreatePlanAsync(PlanServiceModel model)
+        public async Task<PlanResponseModel> CreatePlanAsync(PlanServiceModel model)
         {
             using (_unitOfWork)
             {
-                Plan plan = new Plan(model.Name);
+                var plan = new Plan(model.Name);
                 await _planRepository.CreateAsync(plan);
 
-                PlanArea planArea = new PlanArea
+                foreach (PlanAreaServiceModel planArea in model.PlanAreas)
                 {
-                    Name = model.PlanAreaName,
-                    Plan = plan,
-                    PlanId = plan.Id
-                };
-
-                await _planAreaRepository.CreateAsync(planArea);
-                foreach (AreaTopicServiceModel areaTopic in model.AreaTopics)
-                {
-                    await _areaTopicRepository.CreateAsync(new AreaTopic
+                    PlanArea area = new PlanArea
                     {
-                        Name = areaTopic.Name,
-                        StartDate = DateTime.ParseExact(areaTopic.StartDate, "dd/mm/yyyy", CultureInfo.CurrentCulture),
-                        EndDate = DateTime.ParseExact(areaTopic.EndDate, "dd/mm/yyyy", CultureInfo.CurrentCulture),
-                        Source = areaTopic.Source,
-                        PlanArea = planArea,
-                        PlanAreaId = planArea.Id
-                    });
+                        Name = planArea.Name,
+                        Plan = plan,
+                        PlanId = plan.Id
+                    };
+
+                    await _planAreaRepository.CreateAsync(area);
+                    foreach (AreaTopicServiceModel areaTopic in planArea.AreaTopics)
+                    {
+                        await _areaTopicRepository.CreateAsync(new AreaTopic
+                        {
+                            Name = areaTopic.Name,
+                            StartDate = DateTime.ParseExact(areaTopic.StartDate, "dd/mm/yyyy",
+                                CultureInfo.CurrentCulture),
+                            EndDate = DateTime.ParseExact(areaTopic.EndDate, "dd/mm/yyyy", CultureInfo.CurrentCulture),
+                            Source = areaTopic.Source,
+                            PlanArea = area,
+                            PlanAreaId = area.Id
+                        });
+                    }
                 }
 
                 await _unitOfWork.CommitAsync();
+
+                return new PlanResponseModel
+                {
+                    Name = plan.Name,
+                    Id = plan.Id
+                };
             }
         }
 
         public async Task<PlanServiceModel> GetById(string id)
         {
             Plan plan = await _planReadRepository.GetByIdAsync(id);
-            PlanArea planArea = _planAreaReadRepository.GetAll().FirstOrDefault(x => x.PlanId == id);
-            if (plan == null || planArea == null)
-            {
-                throw new Exception("Not found.");
-            }
+            var planAreas = _planAreaReadRepository.GetAll().Where(x => x.PlanId == id).ToList();
+           
             return await Task.FromResult(new PlanServiceModel
             {
                 Name = plan.Name,
-                PlanAreaName = planArea.Name,
-                AreaTopics = planArea.AreaTopics.Select(x => new AreaTopicServiceModel
+                PlanAreas = planAreas.Select(x => new PlanAreaServiceModel
                 {
                     Name = x.Name,
-                    StartDate = x.StartDate.ToString("d"),
-                    EndDate = x.EndDate.ToString("d"),
-                    Source = x.Source
-                }).ToArray()
+                    PlanId = x.PlanId,
+                    AreaTopics = x.AreaTopics.Select(areaTopic => new AreaTopicServiceModel
+                    {
+                        Name = areaTopic.Name,
+                        StartDate = areaTopic.StartDate.ToString("d"),
+                        EndDate = areaTopic.EndDate.ToString("d"),
+                        Source = areaTopic.Source
+                    }).ToArray()
+                }).ToArray(),
             });
         }
     }

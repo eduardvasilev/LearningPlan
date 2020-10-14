@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-
-namespace LearningPlan.DomainModel
+﻿namespace LearningPlan.DomainModel
 {
     public class User : EntityBase
     {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-
-namespace LearningPlan.DomainModel
+﻿namespace LearningPlan.DomainModel
 {
     public class EntityBase
     {

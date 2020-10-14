@@ -11,10 +11,12 @@ namespace LearningPlan.WebApi.Controllers
     public class PlanController : Controller
     {
         private readonly IPlanService _planService;
+        private readonly IPlanAreaService _planAreaService;
 
-        public PlanController(IPlanService planService)
+        public PlanController(IPlanService planService, IPlanAreaService planAreaService)
         {
             _planService = planService;
+            _planAreaService = planAreaService;
         }
 
 
@@ -22,8 +24,8 @@ namespace LearningPlan.WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(PlanServiceModel model)
         {
-            await _planService.CreatePlanAsync(model);
-            return Ok();
+            PlanResponseModel result = await _planService.CreatePlanAsync(model);
+            return Json(result);
         }
 
         [Authorize]
@@ -31,6 +33,23 @@ namespace LearningPlan.WebApi.Controllers
         public async Task<PlanServiceModel> Get(string id)
         {
             return await _planService.GetById(id);
+        }
+
+        [Authorize]
+        [HttpPost("area")]
+        public async Task<IActionResult> AddArea(CreatePlanAreaServiceModel model)
+        {
+            var result = await _planAreaService.CreatePlanAreaAsync(model);
+            return Json(result);
+        }
+
+
+        [Authorize]
+        [HttpPost("topic")]
+        public async Task<IActionResult> AddTopic(CreateAreaTopicServiceModel model)
+        {
+            await _planAreaService.CreateAreaTopicAsync(model);
+            return Ok();
         }
     }
 }
