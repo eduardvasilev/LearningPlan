@@ -1,7 +1,8 @@
-﻿using LearningPlan.DomainModel;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using System;
+using LearningPlan.DomainModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.ValueGeneration;
 
 namespace LearningPlan.DataAccess.Implementation
 {
@@ -38,6 +39,8 @@ namespace LearningPlan.DataAccess.Implementation
 
             EntityTypeBuilder<User> userBuilder = modelBuilder.Entity<User>().ToContainer("Users");
             userBuilder.HasPartitionKey(x => x.Id);
+            userBuilder.Property(x => x.Username).IsRequired();
+            userBuilder.HasIndex(user => user.Username).IsUnique();
 
             base.OnModelCreating(modelBuilder);
         }

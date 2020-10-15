@@ -5,10 +5,6 @@ namespace LearningPlan.WebApi.Model
     public class RegisterModel
     {
         [Required]
-        [DataType(DataType.EmailAddress)]
-        public string Email { get; set; }
-
-        [Required]
         public string UserName { get; set; }
 
         [Required]

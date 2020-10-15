@@ -9,6 +9,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using LearningPlan.DomainModel.Exceptions;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 namespace LearningPlan.Services.Implementation
@@ -37,6 +38,12 @@ namespace LearningPlan.Services.Implementation
 
         public async Task SignInAsync(SignInServiceModel model)
         {
+            //consider to rid of AsEnumerable()
+            if (_userReadRepository.GetAll().Where(x => x.Username == model.Username).AsEnumerable().Any())
+            {
+                throw new DomainServicesException($"User with login '{model.Username}' is already exists.");
+            }
+
             byte[] salt = new byte[128 / 8];
             using (var rng = RandomNumberGenerator.Create())
             {
