@@ -3,6 +3,7 @@ using LearningPlan.Services;
 using LearningPlan.Services.Model;
 using LearningPlan.WebApi.Model;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace LearningPlan.WebApi.Controllers
 {
@@ -10,10 +11,12 @@ namespace LearningPlan.WebApi.Controllers
     [Route("[controller]")]
     public class UserController : Controller
     {
+        private readonly IConfiguration _configuration;
         private readonly IUserService _userService;
 
-        public UserController(IUserService userService)
+        public UserController(IConfiguration configuration, IUserService userService)
         {
+            _configuration = configuration;
             _userService = userService;
         }
 
@@ -22,7 +25,7 @@ namespace LearningPlan.WebApi.Controllers
         {
             var response = await _userService.AuthenticateAsync(new AuthenticateRequestModel
             {
-                Secret = "secretsecretsecret",
+                Secret = _configuration["Security:Secret"],
                 Username = model.UserName,
                 Password = model.Password
             });

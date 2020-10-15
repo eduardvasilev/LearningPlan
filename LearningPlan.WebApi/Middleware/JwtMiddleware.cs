@@ -6,16 +6,19 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace LearningPlan.WebApi.Middleware
 {
     public class JwtMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly IConfiguration _configuration;
 
-        public JwtMiddleware(RequestDelegate next)
+        public JwtMiddleware(RequestDelegate next, IConfiguration configuration)
         {
             _next = next;
+            _configuration = configuration;
         }
 
         public async Task Invoke(HttpContext context, IUserService userService)
@@ -35,7 +38,7 @@ namespace LearningPlan.WebApi.Middleware
             try
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes("secretsecretsecret");
+                var key = Encoding.ASCII.GetBytes(_configuration["Security:Secret"]);
                 tokenHandler.ValidateToken(token, new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,

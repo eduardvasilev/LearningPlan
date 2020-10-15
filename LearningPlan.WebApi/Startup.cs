@@ -31,9 +31,9 @@ namespace LearningPlan.WebApi
             services.AddDbContext<EfContext>(options =>
                 options.UseLazyLoadingProxies().
                     UseCosmos(
-                        "https://localhost:8081",
-                        "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==",
-                        databaseName: "LearningPlan"));
+                        Configuration["Database:AccountEndpoint"],
+                        Configuration["Database:AccountKey"],
+                        databaseName: Configuration["Database:DatabaseName"]));
 
             services.AddHttpContextAccessor();
             services.AddScoped(typeof(IWriteRepository<>), typeof(WriteRepository<>));
