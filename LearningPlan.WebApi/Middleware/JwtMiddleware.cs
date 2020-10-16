@@ -23,7 +23,8 @@ namespace LearningPlan.WebApi.Middleware
 
         public async Task Invoke(HttpContext context, IUserService userService)
         {
-            var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            //TODO consider to move token to http only cookie and add refresh token
+            var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").LastOrDefault();
 
             if (token != null)
             {

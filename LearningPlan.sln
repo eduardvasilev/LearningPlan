@@ -11,9 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LearningPlan.DataAccess.Imp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LearningPlan.WebApi", "LearningPlan.WebApi\LearningPlan.WebApi.csproj", "{6E384F41-EDA2-4B28-AE7D-DD3CF460BB1B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearningPlan.Services", "LearningPlan.Services\LearningPlan.Services.csproj", "{F87D26DB-72CA-482C-BE8A-D8156D319B18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LearningPlan.Services", "LearningPlan.Services\LearningPlan.Services.csproj", "{F87D26DB-72CA-482C-BE8A-D8156D319B18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearningPlan.Services.Implementation", "LearningPlan.Services.Implementation\LearningPlan.Services.Implementation.csproj", "{317B30F5-1EAF-4ED5-844C-471DEA7AF1D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LearningPlan.Services.Implementation", "LearningPlan.Services.Implementation\LearningPlan.Services.Implementation.csproj", "{317B30F5-1EAF-4ED5-844C-471DEA7AF1D8}"
+EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "LearningPlan.Web", "LearningPlan.Web\LearningPlan.Web.njsproj", "{1BDE43A9-46D5-4ECA-9EBE-146FA0AA2609}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{317B30F5-1EAF-4ED5-844C-471DEA7AF1D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{317B30F5-1EAF-4ED5-844C-471DEA7AF1D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{317B30F5-1EAF-4ED5-844C-471DEA7AF1D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BDE43A9-46D5-4ECA-9EBE-146FA0AA2609}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BDE43A9-46D5-4ECA-9EBE-146FA0AA2609}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BDE43A9-46D5-4ECA-9EBE-146FA0AA2609}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BDE43A9-46D5-4ECA-9EBE-146FA0AA2609}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
