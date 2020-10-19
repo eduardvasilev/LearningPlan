@@ -1,16 +1,17 @@
 <template>
     <div>
         <div v-for="plan in plans">
-            <div>{{ plan.name}}</div>
-            
+            <router-link :to="{ name: 'plan', params: { id: plan.id }}">
+                <span>{{plan.name}}</span>
+            </router-link>
         </div>
     </div>
 </template>
 
 <script lang="ts">
     import { Component, Vue } from 'vue-property-decorator';
-    import { Plan } from '@/Model/plan';
-
+    import { Plan } from '@/model/plan';
+    import PlanComponent from '@/components/Plan.vue';
     import axios from "axios";
 
     @Component
@@ -20,10 +21,10 @@
 
         constructor() {
             super();
-            this.retrivePlans()
+            this.retrievePlans()
         }
 
-        private retrivePlans() {
+        private retrievePlans() {
             axios.get('https://localhost:44335/plan', { headers: { 'Authorization': this.$store.state.user.token } })
                 .then((response) => {
                     this.plans = response.data;

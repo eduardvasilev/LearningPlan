@@ -1,7 +1,9 @@
 <template>
     <div id="app">
+      
         <div v-if="this.$store.state.user.isAuthenticated">
             <Home />
+            <router-view></router-view>
         </div>
         <div v-else>
             <Register />
@@ -21,7 +23,7 @@
         components: {
             Home,
             Register,
-            Login,
+            Login
         }
     })
     export default class App extends Vue {

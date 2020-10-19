@@ -36,6 +36,7 @@
     <Content Include="src\App.vue" />
     <Content Include="src\components\Home.vue" />
     <Content Include="src\components\Login.vue" />
+    <Content Include="src\components\Plan.vue" />
     <Content Include="src\components\PlanList.vue" />
     <Content Include="src\components\Register.vue" />
     <Content Include="tsconfig.json" />
@@ -48,7 +49,8 @@
     <Folder Include="src\" />
     <Folder Include="src\assets\" />
     <Folder Include="src\components\" />
-    <Folder Include="src\Model\" />
+    <Folder Include="src\model\" />
+    <Folder Include="src\router\" />
     <Folder Include="src\tools\" />
     <Folder Include="src\store\" />
   </ItemGroup>
@@ -61,7 +63,10 @@
     <Content Include="babel.config.js" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="src\Model\plan.ts">
+    <TypeScriptCompile Include="src\model\plan.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\router\index.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\store\index.ts">

@@ -89,6 +89,7 @@ namespace LearningPlan.Services.Implementation
            
             return await Task.FromResult(new PlanServiceModel
             {
+                Id = plan.Id,
                 Name = plan.Name,
                 PlanAreas = planAreas.Select(x => new PlanAreaServiceModel
                 {
