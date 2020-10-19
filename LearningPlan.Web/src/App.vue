@@ -21,7 +21,7 @@
         components: {
             Home,
             Register,
-            Login
+            Login,
         }
     })
     export default class App extends Vue {

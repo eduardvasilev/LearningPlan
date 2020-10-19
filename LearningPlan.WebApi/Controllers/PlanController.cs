@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using LearningPlan.Services;
 using LearningPlan.Services.Model;
 using LearningPlan.WebApi.DataAnnotations;
@@ -33,6 +35,13 @@ namespace LearningPlan.WebApi.Controllers
         public async Task<PlanServiceModel> Get(string id)
         {
             return await _planService.GetByIdAsync(id);
+        }
+
+        [Authorize]
+        [HttpGet]
+        public List<PlanResponseModel> GetAll()
+        {
+            return _planService.GetAll().ToList();
         }
 
         [Authorize]

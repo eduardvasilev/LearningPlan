@@ -34,7 +34,7 @@
     import axios from "axios";
 
     @Component
-    export default class Register extends Vue {
+    export default class Login extends Vue {
         private error = "";
 
         private user: any = {

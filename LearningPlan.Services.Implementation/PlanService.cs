@@ -15,7 +15,7 @@ namespace LearningPlan.Services.Implementation
         private readonly IReadRepository<Plan> _planReadRepository;
         private readonly IReadRepository<PlanArea> _planAreaReadRepository;
         private readonly IWriteRepository<AreaTopic> _areaTopicRepository;
-        private readonly IWriteRepository<Plan> _planRepository;
+        private readonly IWriteRepository<Plan> _planWriteRepository;
         private readonly IWriteRepository<PlanArea> _planAreaRepository;
         private readonly IUnitOfWork _unitOfWork;
 
@@ -24,7 +24,7 @@ namespace LearningPlan.Services.Implementation
             IReadRepository<Plan> planReadRepository,
             IReadRepository<PlanArea> planAreaReadRepository,
             IWriteRepository<AreaTopic> areaTopicRepository,
-            IWriteRepository<Plan> planRepository,
+            IWriteRepository<Plan> planWriteRepository,
             IWriteRepository<PlanArea> planAreaRepository,
             IUnitOfWork unitOfWork)
         {
@@ -32,7 +32,7 @@ namespace LearningPlan.Services.Implementation
             _planReadRepository = planReadRepository;
             _planAreaReadRepository = planAreaReadRepository;
             _areaTopicRepository = areaTopicRepository;
-            _planRepository = planRepository;
+            _planWriteRepository = planWriteRepository;
             _planAreaRepository = planAreaRepository;
             _unitOfWork = unitOfWork;
         }
@@ -45,7 +45,7 @@ namespace LearningPlan.Services.Implementation
 
                 var plan = new Plan(model.Name, user.Id);
 
-                await _planRepository.CreateAsync(plan);
+                await _planWriteRepository.CreateAsync(plan);
 
                 foreach (PlanAreaServiceModel planArea in model.PlanAreas)
                 {
@@ -103,6 +103,22 @@ namespace LearningPlan.Services.Implementation
                     }).ToArray()
                 }).ToArray(),
             });
+        }
+
+        public IQueryable<PlanResponseModel> GetAll()
+        {
+            User user = (User)_httpContextAccessor.HttpContext.Items["User"];
+            if (user == null)
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            return _planReadRepository.GetAll().Where(x => x.UserId == user.Id)
+                .Select(plan => new PlanResponseModel
+                {
+                    Id = plan.Id,
+                    Name = plan.Name
+                });
         }
     }
 }
