@@ -1,36 +1,39 @@
 <template>
     <div>
-        <h3>Register</h3>
-        <div>{{errorMessage}}</div>
-        <form id="register-form"
-              @submit="formSubmit">
-            <p>
+        <div class="mt-1" v-bind:class="{'alert': hasError , 'alert-danger': hasError }" role="alert">{{errorMessage}}</div>
+        <form id="register-form" @submit="formSubmit">
+            <div class="form-group">
                 <label for="username">Username</label>
                 <input id="reg-username"
                        v-model="user.username"
                        type="text"
-                       name="username">
-            </p>
-            <p>
-                <label for="username">Password</label>
+                       name="username"
+                       class="form-control"
+                       placeholder="Enter username">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
                 <input id="reg-password"
                        v-model="user.password"
                        type="password"
-                       name="password">
-            </p>
-            <p>
-                <label for="username">Confirm Password</label>
+                       name="password" class="form-control"
+                       placeholder="Enter password">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Confirm Password</label>
                 <input id="reg-confirmpassword"
                        v-model="user.confirmpassword"
                        type="password"
-                       name="confirmpassword">
-            </p>
+                       name="confirmpassword" class="form-control"
+                       placeholder="Confirm Password">
+            </div>
 
-            <p>
-                <input type="submit"
+            <div class="form-group">
+                <input class="btn btn-primary" type="submit"
                        value="Register">
-            </p>
-
+            </div>
         </form>
     </div>
 </template>
@@ -54,6 +57,10 @@
 
         get errorMessage() {
             return this.error;
+        }
+
+        get hasError() {
+            return this.error.length > 0;
         }
 
         public formSubmit(e: Event) {

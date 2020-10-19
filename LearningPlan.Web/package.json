@@ -12,6 +12,9 @@
   },
   "dependencies": {
     "axios": "^0.20.0",
+    "bootstrap": "^4.5.3",
+    "jquery": "^3.5.1",
+    "popper.js": "^1.16.1",
     "vue": "2.5.17",
     "vue-class-component": "6.0.0",
     "vue-property-decorator": "7.0.0",
