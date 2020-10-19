@@ -8,9 +8,8 @@
 <script lang="ts">
     import { Component, Vue } from 'vue-property-decorator';
 
-    import axios from "axios";
     import { Plan } from '../Model/plan';
-
+    import PlanDataService from "@/services/plan-data-service.ts";
     @Component
     export default class PlanComponent extends Vue {
         private plan: Plan = {
@@ -25,7 +24,7 @@
 
         private retrievePlan() {
             const planId = this.$route.params.id;
-            axios.get('https://localhost:44335/plan/' + planId, { headers: { 'Authorization': this.$store.state.user.token } })
+            PlanDataService.getPlan(planId)
                 .then((response) => {
                     this.plan = response.data;
                 })

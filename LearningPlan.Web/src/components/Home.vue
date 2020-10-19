@@ -1,5 +1,6 @@
 <template>
     <div class="home">
+        <div v-on:click ="getBack">Back</div>
         <h3>Welcome, {{this.$store.state.user.username}}!</h3>
     </div>
 </template>
@@ -12,6 +13,10 @@
         data: any = {
             username: this.$store.state.user.username
         };
+
+        private getBack() {
+            this.$router.go(-1);
+        }
     }
    
 </script>

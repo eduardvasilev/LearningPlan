@@ -38,17 +38,18 @@
 <script lang="ts">
     import { Component, Vue } from 'vue-property-decorator';
 
-    import axios from "axios";
+    import { User } from '../model/user';
+    import AuthenticationService from "@/services/auth-service.ts";
 
     @Component
     export default class Register extends Vue {
 
         private error = "";
 
-        private user: any = {
+        private user: User = {
             username: "",
             password: "",
-            confirmpassword: ""
+            confirmPassword: ""
         };
 
         get errorMessage() {
@@ -57,7 +58,7 @@
 
         public formSubmit(e: Event) {
             e.preventDefault();
-            axios.post('https://localhost:44335/user/register', this.user)
+            AuthenticationService.register(this.user)
                 .then(function (response) {
                    //;
                 })

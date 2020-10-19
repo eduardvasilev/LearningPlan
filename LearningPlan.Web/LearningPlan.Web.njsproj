@@ -50,6 +50,7 @@
     <Folder Include="src\assets\" />
     <Folder Include="src\components\" />
     <Folder Include="src\model\" />
+    <Folder Include="src\services\" />
     <Folder Include="src\router\" />
     <Folder Include="src\tools\" />
     <Folder Include="src\store\" />
@@ -63,10 +64,18 @@
     <Content Include="babel.config.js" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="src\http-common.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\model\user.ts" />
     <TypeScriptCompile Include="src\model\plan.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\router\index.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\services\auth-service.ts" />
+    <TypeScriptCompile Include="src\services\plan-data-service.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\store\index.ts">

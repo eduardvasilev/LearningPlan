@@ -31,16 +31,17 @@
 <script lang="ts">
     import { Component, Vue } from 'vue-property-decorator';
 
-    import axios from "axios";
+    import AuthenticationService from "@/services/auth-service.ts";
+    import { User } from '../model/user';
 
     @Component
     export default class Login extends Vue {
         private error = "";
 
-        private user: any = {
+        private user: User = {
             username: "",
             password: "",
-            confirmpassword: ""
+            confirmPassword: ""
         };
 
         get errorMessage() {
@@ -49,7 +50,7 @@
 
         public formSubmit(e: Event) {
             e.preventDefault();
-            axios.post('https://localhost:44335/user/authenticate', this.user)
+            AuthenticationService.login(this.user)
                 .then((response) => {
                     this.$store.commit("UserAuthenticated", response.data);
                 })
