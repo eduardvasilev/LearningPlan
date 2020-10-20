@@ -93,10 +93,12 @@ namespace LearningPlan.Services.Implementation
                 Name = plan.Name,
                 PlanAreas = planAreas.Select(x => new PlanAreaServiceModel
                 {
+                    Id = x.Id,
                     Name = x.Name,
                     PlanId = x.PlanId,
                     AreaTopics = x.AreaTopics.Select(areaTopic => new AreaTopicServiceModel
                     {
+                        Id = areaTopic.Id,
                         Name = areaTopic.Name,
                         StartDate = areaTopic.StartDate.ToString("d"),
                         EndDate = areaTopic.EndDate.ToString("d"),

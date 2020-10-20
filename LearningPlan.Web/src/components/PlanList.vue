@@ -1,11 +1,17 @@
 <template>
     <div>
-        <div v-for="plan in plans">
-            <router-link :to="{ name: 'plan', params: { id: plan.id }}">
-                <span>{{plan.name}}</span>
-            </router-link>
+        <p><h3>Your plans</h3></p>
+        <div class="plan-box">
+            <div v-for="plan in plans">
+                <div class="card">
+                    <div class="card-body">
+                        <router-link :to="{ name: 'plan', params: { id: plan.id }}">{{plan.name}}</router-link>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+   
 </template>
 
 <script lang="ts">
@@ -38,4 +44,14 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+    .plan-box {
+        display: flex;
+        align-items: stretch;
+    }
+
+    .plan-box div {
+        width: auto;
+        height: auto;
+        margin: 10px;
+    }
 </style>

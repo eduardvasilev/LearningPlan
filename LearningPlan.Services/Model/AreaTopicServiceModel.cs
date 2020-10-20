@@ -4,6 +4,8 @@ namespace LearningPlan.Services.Model
 {
     public class AreaTopicServiceModel
     {
+        public string Id { get; set; }
+
         public string Name { get; set; }
 
         public string Source { get; set; }

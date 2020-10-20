@@ -67,6 +67,7 @@
     <TypeScriptCompile Include="src\http-common.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\model\plan-area.ts" />
     <TypeScriptCompile Include="src\model\user.ts" />
     <TypeScriptCompile Include="src\model\plan.ts">
       <SubType>Code</SubType>

@@ -1,7 +1,9 @@
 <template>
     <div class="home">
-        <div v-on:click ="getBack">Back</div>
-        <h3>Welcome, {{this.$store.state.user.username}}!</h3>
+        <nav class="navbar">
+            <a class="navbar-brand" href="#" v-on:click="getBack">Go back!</a>
+            <a class="navbar-brand" href="/">{{this.$store.state.user.username}}</a>
+        </nav>
     </div>
 </template>
 

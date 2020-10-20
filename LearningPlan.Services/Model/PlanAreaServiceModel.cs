@@ -4,6 +4,8 @@ namespace LearningPlan.Services.Model
 {
     public class PlanAreaServiceModel
     {
+        public string Id { get; set; }
+
         public string PlanId { get; set; }
 
         [Required]

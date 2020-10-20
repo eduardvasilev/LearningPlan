@@ -80,4 +80,13 @@
         color: #fefefe !important;
         color: whitesmoke !important;
     }
+    .card {
+        background-color: #0a0a0a !important;
+        color: #fefefe !important;
+        border: 2px solid;
+        border-color: #fefefe !important;
+    }
+    .navbar {
+        background-color: #ff9900 !important;
+    }
 </style>
