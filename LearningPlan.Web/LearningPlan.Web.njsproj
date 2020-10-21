@@ -36,6 +36,7 @@
     <Content Include="src\App.vue" />
     <Content Include="src\components\Home.vue" />
     <Content Include="src\components\Login.vue" />
+    <Content Include="src\components\Area.vue" />
     <Content Include="src\components\TopicEditor.vue" />
     <Content Include="src\components\Plan.vue" />
     <Content Include="src\components\PlanList.vue" />
