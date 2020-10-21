@@ -27,14 +27,14 @@
                     </div>
                 </div>
             </div>
-            <div class="card-header" :id="'addtopic' + index">
+            <div class="card-header" :id="'addtopic' + index + area.id">
                 <h5 class="mb-0">
-                    <button class="btn btn-link" v-on:click="addTopic" data-toggle="collapse" :data-target="'#addTopic' + index" aria-expanded="true" :aria-controls="'addTopic' + index">
+                    <button class="btn btn-link" v-on:click="addTopic" data-toggle="collapse" :data-target="'#addTopic' + index + area.id" aria-expanded="true" :aria-controls="'addTopic' + index+ area.id">
                         Add new topic
                     </button>
                 </h5>
             </div>
-            <div :id="'addTopic' + index" class="collapse" :aria-labelledby="'addtopic' + index" data-parent="#accordion">
+            <div :id="'addTopic' + index+ area.id" class="collapse" :aria-labelledby="'addtopic' + index + area.id" data-parent="#accordion">
                 <TopicEditor :planAreaId="area.id" v-on:topic-added="area.areaTopics.push($event)" />
             </div>
         </div>           
