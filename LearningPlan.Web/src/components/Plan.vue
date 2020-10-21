@@ -30,6 +30,15 @@
                         </div>
                     </div>
                 </div>
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" v-on:click="addTopic">
+                            Add new topic
+                        </button>
+                    </h5>
+                </div>
+
+                <TopicEditor :planAreaId="area.id" v-on:topic-added="area.areaTopics.push($event)" v-if="isAddingNew"/>
             </div>           
         </div>
     </div>
@@ -38,9 +47,16 @@
 <script lang="ts">
     import { Component, Vue } from 'vue-property-decorator';
 
-    import { Plan } from '../Model/plan';
+    import { Plan } from '../model/plan';
+    import { Topic } from '../model/topic';
     import PlanDataService from "@/services/plan-data-service.ts";
-    @Component
+    import TopicEditor from './TopicEditor.vue'
+
+    @Component({
+        components: {
+            TopicEditor
+        }
+    })
     export default class PlanComponent extends Vue {
         private plan: Plan = {
             id: "",
@@ -48,9 +64,16 @@
             planAreas: []
         };
 
+        private topic: Topic = new Topic();
+        private isAddingNew: boolean = false;
+
         constructor() {
             super();
             this.retrievePlan();
+        }
+
+        private addTopic() {
+            this.isAddingNew = !this.isAddingNew;
         }
 
         private retrievePlan() {

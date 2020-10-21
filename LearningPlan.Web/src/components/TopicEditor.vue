@@ -1,0 +1,108 @@
+<template>
+    <div class="container">
+        <div class="card-body">
+            <form id="create-topic-form">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="username">Name</label>
+                            <input id="topic-name"
+                                   v-model="topic.name"
+                                   type="text"
+                                   name="name"
+                                   class="form-control"
+                                   placeholder="Enter topic name">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="source">Source</label>
+                            <input id="topic-source"
+                                   v-model="topic.source"
+                                   type="text"
+                                   name="source"
+                                   class="form-control"
+                                   placeholder="Enter topic source">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="from">From</label>
+                            <input id="topic-from"
+                                   v-model="topic.startDate"
+                                   type="text"
+                                   name="from"
+                                   class="form-control"
+                                   placeholder="Enter topic start date">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="endDate">To</label>
+                            <input id="topic-end"
+                                   v-model="topic.endDate"
+                                   type="text"
+                                   name="endDate"
+                                   class="form-control"
+                                   placeholder="Enter topic end date">
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <input class="btn btn-primary" v-on:click="createTopic"
+                           value="Create">
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script lang="ts">
+    import { Component, Vue } from 'vue-property-decorator';
+
+    import TopicDataService from "@/services/topic-data-service.ts";
+    import { Topic } from '../model/topic';
+    @Component
+
+    export default class TopicEditor extends Vue {
+        public planAreaId: string = this.$attrs.planAreaId;
+        private topic: Topic = {
+            name: "",
+            planAreaId: this.planAreaId,
+            endDate: "",
+            source: "",
+            startDate: ""
+        };
+
+        constructor() {
+            super();
+        }
+
+        private createTopic(e: Event) {
+            TopicDataService.addTopic(this.topic)
+                .then((response) => {
+                    this.$emit("topic-added", this.topic);
+                    this.topic = {
+                        name: "",
+                        planAreaId: this.planAreaId,
+                        endDate: "",
+                        source: "",
+                        startDate: ""
+                    };
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }
+    }
+
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+</style>
