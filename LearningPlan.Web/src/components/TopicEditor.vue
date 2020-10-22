@@ -65,7 +65,7 @@
     import { Component, Vue } from 'vue-property-decorator';
 
     import TopicDataService from "../services/topic-data-service";
-    import { Topic } from '../model/topic';
+    import { Topic } from '../models/topic';
     @Component
 
     export default class TopicEditor extends Vue {

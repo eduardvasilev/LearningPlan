@@ -1,6 +1,6 @@
 import http from "../http-common";
 import { store } from "../store/index";
-import { Topic } from "../model/topic";
+import { Topic } from "../models/topic";
 
 export class TopicDataService {
     public addTopic(topic: Topic) {

@@ -32,7 +32,7 @@
     import { Component, Vue } from 'vue-property-decorator';
 
     import AreaDataService from "../services/area-data-service";
-    import { PlanArea } from '../model/plan-area';
+    import { PlanArea } from '../models/plan-area';
 
     @Component
     export default class AreaEditor extends Vue {

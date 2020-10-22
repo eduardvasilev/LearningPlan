@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts">
-    import { Plan } from "../model/plan";
+    import { Plan } from "../models/plan";
     import { Component, Vue } from 'vue-property-decorator';
     import PlanDataService from "../services/plan-data-service";
 

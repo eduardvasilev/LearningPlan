@@ -52,7 +52,7 @@
     <Folder Include="src\" />
     <Folder Include="src\assets\" />
     <Folder Include="src\components\" />
-    <Folder Include="src\model\" />
+    <Folder Include="src\models\" />
     <Folder Include="src\services\" />
     <Folder Include="src\router\" />
     <Folder Include="src\tools\" />
@@ -70,10 +70,10 @@
     <TypeScriptCompile Include="src\http-common.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\model\topic.ts" />
-    <TypeScriptCompile Include="src\model\plan-area.ts" />
-    <TypeScriptCompile Include="src\model\user.ts" />
-    <TypeScriptCompile Include="src\model\plan.ts">
+    <TypeScriptCompile Include="src\models\topic.ts" />
+    <TypeScriptCompile Include="src\models\plan-area.ts" />
+    <TypeScriptCompile Include="src\models\user.ts" />
+    <TypeScriptCompile Include="src\models\plan.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\router\index.ts">

@@ -33,7 +33,7 @@
     import { Component, Vue } from 'vue-property-decorator';
 
     import AuthenticationService from "../services/auth-service";
-    import { User } from '../model/user';
+    import { User } from '../models/user';
 
     @Component
     export default class Login extends Vue {

@@ -44,8 +44,8 @@
 <script lang="ts">
     import { Component, Vue } from 'vue-property-decorator';
 
-    import { PlanArea } from '../model/plan-area';
-    import { Topic } from '../model/topic';
+    import { PlanArea } from '../models/plan-area';
+    import { Topic } from '../models/topic';
     import TopicEditor from './TopicEditor.vue'
 
     @Component({
