@@ -60,6 +60,8 @@
             PlanDataService.addPlan(this.newPlanName)
                 .then((response) => {
                     this.plans.push(new Plan(response.data.id, response.data.name));
+                    this.showPlanCreation();
+                    this.newPlanName = "";
                 })
                 .catch((error) => {
                     console.error(error);
@@ -86,8 +88,10 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
     .plan-box {
-        display: flex;
+        display: inline-flex;
         align-items: stretch;
+        flex-direction: row;
+        flex-wrap: wrap;
     }
 
     .plan-box div {

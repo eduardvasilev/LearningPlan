@@ -1,12 +1,12 @@
 <template>
     <div class="container">
         <div class="card-body">
-            <form id="create-topic-form">
+            <form>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="username">Name</label>
-                            <input id="topic-name"
+                            <input :id="planAreaId + 'topic-name'"
                                    v-model="topic.name"
                                    type="text"
                                    name="name"
@@ -17,7 +17,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="source">Source</label>
-                            <input id="topic-source"
+                            <input :id="planAreaId + 'topic-source'"
                                    v-model="topic.source"
                                    type="text"
                                    name="source"
@@ -30,7 +30,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="from">From</label>
-                            <input id="topic-from"
+                            <input :id="planAreaId + 'topic-from'"
                                    v-model="topic.startDate"
                                    type="text"
                                    name="from"
@@ -41,7 +41,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="endDate">To</label>
-                            <input id="topic-end"
+                            <input :id="planAreaId + 'topic-end'"
                                    v-model="topic.endDate"
                                    type="text"
                                    name="endDate"
@@ -79,11 +79,7 @@
             startDate: ""
         };
 
-        constructor() {
-            super();
-        }
-
-        private createTopic(e: Event) {
+        private createTopic() {
             TopicDataService.addTopic(this.topic)
                 .then((response) => {
                     this.$emit("topic-added", this.topic);

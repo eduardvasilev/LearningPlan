@@ -55,7 +55,8 @@
 </script>
 
 <style>
-    body {
+
+    body, .modal-content {
         background-color: #0a0a0a !important;
         color: #fefefe !important;
     }
@@ -75,10 +76,10 @@
     a:hover {
         color: whitesmoke !important;
     }
+   
     .btn-primary {
         background-color: #ff9900 !important;
         color: #fefefe !important;
-        color: whitesmoke !important;
     }
     .card {
         background-color: #0a0a0a !important;
@@ -89,4 +90,9 @@
     .navbar {
         background-color: #ff9900 !important;
     }
+
+    .close > span {
+        color: #fefefe !important;
+    }
+
 </style>

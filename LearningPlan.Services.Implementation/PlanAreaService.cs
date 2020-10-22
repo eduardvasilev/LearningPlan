@@ -30,7 +30,7 @@ namespace LearningPlan.Services.Implementation
             _planAreaWriteRepository = planAreaWriteRepository;
         }
 
-        public async Task<AreaTopicResponseModel> CreatePlanAreaAsync(CreatePlanAreaServiceModel model)
+        public async Task<PlanAreaServiceModel> CreatePlanAreaAsync(CreatePlanAreaServiceModel model)
         {
             Plan plan = await _planReadRepository.GetByIdAsync(model.PlanId);
 
@@ -45,11 +45,12 @@ namespace LearningPlan.Services.Implementation
 
             await _planAreaWriteRepository.SaveChangesAsync();
 
-            return new AreaTopicResponseModel
+            return new PlanAreaServiceModel
             {
                 Id = planArea.Id,
                 Name = planArea.Name,
-                PlanId = planArea.PlanId
+                PlanId = planArea.PlanId,
+                AreaTopics = Array.Empty<AreaTopicServiceModel>()
             };
         }
 

@@ -1,12 +1,15 @@
 <template>
     <div>
         <h3>{{ plan.name}}</h3>
-
+        <button class="btn btn-primary" data-toggle="modal" data-target="#addAreaModel" type="button">Add area</button>
         <div id="accordion">
             <div v-for="(area, index) in plan.planAreas" v-bind:key="area.id">
                 <PlanArea :area="area" />
-            </div>           
+            </div>
         </div>
+
+        <AreaEditor :planId="plan.id" v-on:area-added="plan.planAreas.push($event)" />
+
     </div>
 </template>
 
@@ -14,13 +17,14 @@
     import { Component, Vue } from 'vue-property-decorator';
 
     import { Plan } from '../model/plan';
-    import { Topic } from '../model/topic';
     import PlanDataService from "@/services/plan-data-service.ts";
-    import Area from './Area.vue'
+    import Area from './Area.vue';
+    import AreaEditor from './AreaEditor.vue';
 
     @Component({
         components: {
-            PlanArea: Area
+            PlanArea: Area,
+            AreaEditor
         }
     })
     export default class PlanComponent extends Vue {

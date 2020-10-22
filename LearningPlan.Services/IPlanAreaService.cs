@@ -5,7 +5,7 @@ namespace LearningPlan.Services
 {
     public interface IPlanAreaService
     {
-        Task<AreaTopicResponseModel> CreatePlanAreaAsync(CreatePlanAreaServiceModel model);
+        Task<PlanAreaServiceModel> CreatePlanAreaAsync(CreatePlanAreaServiceModel model);
         Task CreateAreaTopicAsync(CreateAreaTopicServiceModel model);
     }
 }

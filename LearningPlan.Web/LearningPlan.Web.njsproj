@@ -37,6 +37,7 @@
     <Content Include="src\components\Home.vue" />
     <Content Include="src\components\Login.vue" />
     <Content Include="src\components\Area.vue" />
+    <Content Include="src\components\AreaEditor.vue" />
     <Content Include="src\components\TopicEditor.vue" />
     <Content Include="src\components\Plan.vue" />
     <Content Include="src\components\PlanList.vue" />
@@ -79,6 +80,7 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\services\auth-service.ts" />
+    <TypeScriptCompile Include="src\services\area-data-service.ts" />
     <TypeScriptCompile Include="src\services\topic-data-service.ts" />
     <TypeScriptCompile Include="src\services\plan-data-service.ts">
       <SubType>Code</SubType>

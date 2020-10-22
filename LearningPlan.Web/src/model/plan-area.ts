@@ -1,12 +1,11 @@
 import { Topic } from "@/model/topic";
 
 export class PlanArea {
-    id: string;
+    id: string ="";
     planId: string;
     name: string;
     areaTopics: Topic[] = [];
-    constructor(id: string, planId: string, name: string) {
-        this.id = id;
+    constructor(name: string, planId: string) {
         this.planId = planId;
         this.name = name;
     }

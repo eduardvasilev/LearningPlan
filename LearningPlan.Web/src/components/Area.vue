@@ -54,12 +54,15 @@
         }
     })
     export default class Area extends Vue {
-        private area: PlanArea | unknown = this.$attrs.area as PlanArea | unknown;
+        private area: PlanArea | any = this.$attrs.area as PlanArea | any;
 
         private topic: Topic = new Topic();
 
         constructor() {
             super();
+            if (!this.area.areaTopics) {
+                this.area.areaTopics = [];
+            }
         }
     }
 
