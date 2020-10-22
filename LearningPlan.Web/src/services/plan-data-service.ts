@@ -8,6 +8,9 @@ export class PlanDataService {
     public getPlan(id: string) {
         return http.get('/plan/' + id, { headers: { 'Authorization': store.state.user.token } });
     }
+    public addPlan(name: string) {
+        return http.post('/plan/', { name: name, planAreas: [] }, { headers: { 'Authorization': store.state.user.token }});
+    }
 }
 
 export default new PlanDataService();

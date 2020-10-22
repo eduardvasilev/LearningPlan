@@ -9,9 +9,30 @@
                     </div>
                 </div>
             </div>
+            <div>
+                <div class="card">
+                    <div v-if="isAddingNew" class="">
+                        <div class="input-group mb-3">
+
+                            <input id="plan-name"
+                                   type="text"
+                                   name="plan-name"
+                                   class="form-control"
+                                   v-model="newPlanName"
+                                   placeholder="Plan name">
+                                <button class="input-group-append btn btn-primary btn-outline-secondary" v-on:click="addPlan" type="button">OK</button>
+                        </div>
+                    </div>
+                    <div v-else class="card-body">
+                        <a v-on:click="showPlanCreation" role="button" aria-expanded="false" aria-controls="add-plan">
+                            Add new plan
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-   
+
 </template>
 
 <script lang="ts">
@@ -22,11 +43,27 @@
     @Component
     export default class PlanList extends Vue {
 
+        private isAddingNew: boolean = false;
+        private newPlanName: string = "";
         public plans: Plan[] = [];
 
         constructor() {
             super();
             this.retrievePlans()
+        }
+
+        private addPlan() {
+            PlanDataService.addPlan(this.newPlanName)
+                .then((response) => {
+                    this.plans.push(new Plan(response.data.id, response.data.name));
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }
+
+        private showPlanCreation() {
+            this.isAddingNew = !this.isAddingNew;
         }
 
         private retrievePlans() {

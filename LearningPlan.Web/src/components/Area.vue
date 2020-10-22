@@ -27,14 +27,14 @@
                     </div>
                 </div>
             </div>
-            <div class="card-header" :id="'addtopic' + index + area.id">
+            <div class="card-header" :id="'addtopic' + area.id">
                 <h5 class="mb-0">
-                    <button class="btn btn-link" v-on:click="addTopic" data-toggle="collapse" :data-target="'#addTopic' + index + area.id" aria-expanded="true" :aria-controls="'addTopic' + index+ area.id">
+                    <button class="btn btn-link" data-toggle="collapse" :data-target="'#addTopic' + area.id" aria-expanded="true" :aria-controls="'addTopic' + area.id">
                         Add new topic
                     </button>
                 </h5>
             </div>
-            <div :id="'addTopic' + index+ area.id" class="collapse" :aria-labelledby="'addtopic' + index + area.id" data-parent="#accordion">
+            <div :id="'addTopic' +  area.id" class="collapse" :aria-labelledby="'addtopic' + area.id" data-parent="#accordion">
                 <TopicEditor :planAreaId="area.id" v-on:topic-added="area.areaTopics.push($event)" />
             </div>
         </div>           
@@ -57,14 +57,9 @@
         private area: PlanArea | unknown = this.$attrs.area as PlanArea | unknown;
 
         private topic: Topic = new Topic();
-        private isAddingNew: boolean = false;
 
         constructor() {
             super();
-        }
-
-        private addTopic() {
-            this.isAddingNew = !this.isAddingNew;
         }
     }
 
