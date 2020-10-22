@@ -42,7 +42,7 @@
     import { Component, Vue } from 'vue-property-decorator';
 
     import { User } from '../model/user';
-    import AuthenticationService from "@/services/auth-service.ts";
+    import AuthenticationService from "../services/auth-service";
 
     @Component
     export default class Register extends Vue {

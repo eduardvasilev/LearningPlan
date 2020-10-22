@@ -36,9 +36,9 @@
 </template>
 
 <script lang="ts">
+    import { Plan } from "../model/plan";
     import { Component, Vue } from 'vue-property-decorator';
-    import { Plan } from '@/model/plan';
-    import PlanDataService from "@/services/plan-data-service.ts";
+    import PlanDataService from "../services/plan-data-service";
 
     @Component
     export default class PlanList extends Vue {

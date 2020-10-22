@@ -1,5 +1,5 @@
 import http from "../http-common";
-import { User } from "@/model/user";
+import { User } from "../model/user";
 
 class AuthenticationService {
     public login(user: User) {

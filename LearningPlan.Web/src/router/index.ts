@@ -1,8 +1,8 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 
-import PlanComponent from "@/components/Plan.vue"
-import PlanList from "@/components/PlanList.vue"
+import PlanComponent from "../components/Plan.vue"
+import PlanList from "../components/PlanList.vue"
 
 Vue.use(VueRouter);
 

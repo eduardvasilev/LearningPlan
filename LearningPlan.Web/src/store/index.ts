@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { CookieManager } from "@/tools/cookie-manager"
+import { CookieManager } from "../tools/cookie-manager"
 Vue.use(Vuex);
 
 export const store = new Vuex.Store({

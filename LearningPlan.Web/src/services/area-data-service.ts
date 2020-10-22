@@ -1,5 +1,5 @@
 import http from "../http-common";
-import {store} from "@/store/index";
+import {store} from "../store/index";
 import { PlanArea } from "../model/plan-area";
 
 export class AreaDataService {

@@ -1,4 +1,4 @@
-import { Topic } from "@/model/topic";
+import { Topic } from "./topic";
 
 export class PlanArea {
     id: string ="";

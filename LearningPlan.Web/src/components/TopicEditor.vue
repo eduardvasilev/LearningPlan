@@ -59,13 +59,12 @@
             </form>
             </div>
         </div>
-    </div>
 </template>
 
 <script lang="ts">
     import { Component, Vue } from 'vue-property-decorator';
 
-    import TopicDataService from "@/services/topic-data-service.ts";
+    import TopicDataService from "../services/topic-data-service";
     import { Topic } from '../model/topic';
     @Component
 

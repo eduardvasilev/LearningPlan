@@ -31,7 +31,7 @@
 <script lang="ts">
     import { Component, Vue } from 'vue-property-decorator';
 
-    import AreaDataService from "@/services/area-data-service.ts";
+    import AreaDataService from "../services/area-data-service";
     import { PlanArea } from '../model/plan-area';
 
     @Component

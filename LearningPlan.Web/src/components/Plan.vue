@@ -17,7 +17,7 @@
     import { Component, Vue } from 'vue-property-decorator';
 
     import { Plan } from '../model/plan';
-    import PlanDataService from "@/services/plan-data-service.ts";
+    import PlanDataService from "../services/plan-data-service";
     import Area from './Area.vue';
     import AreaEditor from './AreaEditor.vue';
 

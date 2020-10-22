@@ -1,5 +1,5 @@
 import http from "../http-common";
-import {store} from "@/store/index";
+import {store} from "../store/index";
 
 export class PlanDataService {
     public getPlans() {
