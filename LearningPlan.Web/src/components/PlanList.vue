@@ -53,6 +53,10 @@
         }
 
         private addPlan() {
+            const regex = /\s/;
+            if (!this.newPlanName || regex.test(this.newPlanName)) {
+                return;
+            }
             PlanDataService.addPlan(this.newPlanName)
                 .then((response) => {
                     this.plans.push(new Plan(response.data.id, response.data.name));
