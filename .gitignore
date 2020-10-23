@@ -339,3 +339,4 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 /LearningPlan.Web/dist
+/LearningPlan.TelegramBot/appsettings.Development.json

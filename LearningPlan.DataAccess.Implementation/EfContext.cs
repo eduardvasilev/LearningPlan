@@ -1,8 +1,6 @@
-﻿using System;
-using LearningPlan.DomainModel;
+﻿using LearningPlan.DomainModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore.ValueGeneration;
 
 namespace LearningPlan.DataAccess.Implementation
 {
@@ -16,6 +14,7 @@ namespace LearningPlan.DataAccess.Implementation
         public DbSet<AreaTopic> AreaTopics { get; set; }
         public DbSet<Plan> Plans { get; set; }
         public DbSet<PlanArea> PlanAreas { get; set; }
+        public DbSet<BotSubscription> BotSubscriptions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -41,9 +40,15 @@ namespace LearningPlan.DataAccess.Implementation
             userBuilder.HasPartitionKey(x => x.Id);
             userBuilder.Property(x => x.Username).IsRequired();
             userBuilder.HasIndex(user => user.Username).IsUnique();
+            
+            EntityTypeBuilder<BotSubscription> botSubscriptionBuilder = modelBuilder.Entity<BotSubscription>().ToContainer("BotSubscriptions");
+            botSubscriptionBuilder.HasPartitionKey(x => x.Id);
+            botSubscriptionBuilder.Property(x => x.ChatId).IsRequired();
+            botSubscriptionBuilder.Property(x => x.PlanId).IsRequired();
+            botSubscriptionBuilder.HasOne(x => x.Plan);
+            botSubscriptionBuilder.HasPartitionKey(x => x.ChatId);
 
             base.OnModelCreating(modelBuilder);
         }
-
     }
 }
