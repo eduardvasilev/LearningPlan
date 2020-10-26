@@ -50,7 +50,7 @@ namespace LearningPlan.TelegramBot
 
             if (message?.Type == MessageType.Text)
             {
-                if (message.Text.StartsWith("/start "))
+                if (message.Text.StartsWith("/start"))
                 {
                     Regex regex = new Regex(@"(?<=\/start\s)(.*)");
                     string planId = regex.Match(message.Text).Value;
