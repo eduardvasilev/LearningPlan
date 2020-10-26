@@ -32,7 +32,7 @@ namespace LearningPlan.Services.Implementation
             }
 
             if (_botSubscriptionReadRepository
-                .GetAll().Count(x => x.PlanId == model.PlanId && x.ChatId == model.ChatId) > 1)
+                .GetAll().Count(x => x.PlanId == model.PlanId && x.ChatId == model.ChatId) > 0)
             {
                 throw new DomainServicesException("You've already subscribed for this plan.");
             }
