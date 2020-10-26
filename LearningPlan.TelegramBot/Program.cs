@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using LearningPlan.DataAccess;
 using LearningPlan.DataAccess.Implementation;
 using LearningPlan.DomainModel.Exceptions;
@@ -10,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
 using Telegram.Bot.Args;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace LearningPlan.TelegramBot
@@ -47,31 +50,47 @@ namespace LearningPlan.TelegramBot
 
             if (message?.Type == MessageType.Text)
             {
-                if (message.Text == "/start")
+                if (message.Text.StartsWith("/start "))
                 {
-                    await _client.SendTextMessageAsync(message.Chat.Id, "Please enter 'Plan Code' to subscribe it.");
+                    Regex regex = new Regex(@"(?<=\/start\s)(.*)");
+                    string planId = regex.Match(message.Text).Value;
+                    if (string.IsNullOrEmpty(planId))
+                    {
+                        await _client.SendTextMessageAsync(message.Chat.Id, "Please enter 'Plan Code' to subscribe it.");
+                    }
+                    else
+                    {
+                        await Subscribe(message, planId);
+                    }
                 }
                 else
                 {
-                    IServiceScope scope = _serviceProvider.CreateScope();
-                    IBotSubscriptionService botSubscriptionService = (IBotSubscriptionService)scope.ServiceProvider.GetService(typeof(IBotSubscriptionService));
-
-                    try
-                    {
-                        PlanServiceModel result = await botSubscriptionService.CreateBotSubscriptionAsync(new BotSubscriptionServiceModel
-                        {
-                            ChatId = message.Chat.Id.ToString(),
-                            PlanId = message.Text
-                        });
-
-                        await _client.SendTextMessageAsync(message.Chat.Id, $"You have successfully subscribed to '{result.Name}' plan.");
-
-                    }
-                    catch (DomainServicesException exception)
-                    {
-                        await _client.SendTextMessageAsync(message.Chat.Id, exception.Message);
-                    }
+                    await Subscribe(message, message.Text);
                 }
+            }
+        }
+
+        private static async Task Subscribe(Message message, string planId)
+        {
+            IServiceScope scope = _serviceProvider.CreateScope();
+            IBotSubscriptionService botSubscriptionService =
+                (IBotSubscriptionService) scope.ServiceProvider.GetService(typeof(IBotSubscriptionService));
+
+            try
+            {
+                PlanServiceModel result = await botSubscriptionService.CreateBotSubscriptionAsync(
+                    new BotSubscriptionServiceModel
+                    {
+                        ChatId = message.Chat.Id.ToString(),
+                        PlanId = planId
+                    });
+
+                await _client.SendTextMessageAsync(message.Chat.Id,
+                    $"You have successfully subscribed to '{result.Name}' plan.");
+            }
+            catch (DomainServicesException exception)
+            {
+                await _client.SendTextMessageAsync(message.Chat.Id, exception.Message);
             }
         }
 

@@ -31,6 +31,12 @@ namespace LearningPlan.Services.Implementation
                 throw new DomainServicesException("Plan not found.");
             }
 
+            if (_botSubscriptionReadRepository
+                .GetAll().Count(x => x.PlanId == model.PlanId && x.ChatId == model.ChatId) > 1)
+            {
+                throw new DomainServicesException("You've already subscribed for this plan.");
+            }
+
             await _botSubscriptionWriteRepository.CreateAsync(new BotSubscription
             {
                 ChatId = model.ChatId,

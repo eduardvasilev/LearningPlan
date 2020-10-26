@@ -1,7 +1,8 @@
 <template>
     <div>
-        <h3>{{ plan.name}}</h3>
+        <h3>{{plan.name}}</h3>
         <button class="btn btn-primary" data-toggle="modal" data-target="#addAreaModel" type="button">Add area</button>
+        <a class="btn btn-primary" target="_blank" :href="'https://t.me/learningplanbot?start=' + plan.id">Subscribe in telegram</a>
         <div id="accordion">
             <div v-for="(area, index) in plan.planAreas" v-bind:key="area.id">
                 <PlanArea :area="area" />
