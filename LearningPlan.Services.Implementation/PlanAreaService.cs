@@ -63,16 +63,18 @@ namespace LearningPlan.Services.Implementation
             AreaTopic areaTopic = new AreaTopic
             {
                 PlanAreaId = model.PlanAreaId,
+                PlanId =  planArea.PlanId,
                 Name = model.Name,
-                StartDate = DateTime.ParseExact(model.StartDate, "dd/mm/yyyy",
+                StartDate = DateTime.ParseExact(model.StartDate, "dd/MM/yyyy",
                     CultureInfo.CurrentCulture),
-                EndDate = DateTime.ParseExact(model.EndDate, "dd/mm/yyyy", CultureInfo.CurrentCulture),
+                EndDate = DateTime.ParseExact(model.EndDate, "dd/MM/yyyy", CultureInfo.CurrentCulture),
                 Source = model.Source
             };
             await _areaTopicRepository.CreateAsync(areaTopic);
             await _areaTopicRepository.SaveChangesAsync();
         }
 
+        // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
         private void ValidateUser(string userId)
         {
             if (userId != ((User)_httpContextAccessor.HttpContext.Items["User"]).Id)

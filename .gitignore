@@ -340,3 +340,4 @@ ASALocalRun/
 healthchecksdb
 /LearningPlan.Web/dist
 /LearningPlan.TelegramBot/appsettings.Development.json
+/LearningPlan.TelegramBot.BackgroundService/appsettings.Development.json

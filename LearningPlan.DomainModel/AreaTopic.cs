@@ -15,5 +15,7 @@ namespace LearningPlan.DomainModel
         public virtual PlanArea PlanArea { get; set; }
 
         public string PlanAreaId { get; set; }
+
+        public string PlanId { get; set; }
     }
 }

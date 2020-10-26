@@ -19,6 +19,8 @@ Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "LearningPlan.Web", "Learnin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearningPlan.TelegramBot", "LearningPlan.TelegramBot\LearningPlan.TelegramBot.csproj", "{EAC989E3-D240-4241-A9AA-CB04768A3908}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearningPlan.TelegramBot.BackgroundService", "LearningPlan.TelegramBot.BackgroundService\LearningPlan.TelegramBot.BackgroundService.csproj", "{0C78BBDD-A2B4-41C6-8B5E-ACC062110F82}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{EAC989E3-D240-4241-A9AA-CB04768A3908}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EAC989E3-D240-4241-A9AA-CB04768A3908}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EAC989E3-D240-4241-A9AA-CB04768A3908}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C78BBDD-A2B4-41C6-8B5E-ACC062110F82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C78BBDD-A2B4-41C6-8B5E-ACC062110F82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C78BBDD-A2B4-41C6-8B5E-ACC062110F82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C78BBDD-A2B4-41C6-8B5E-ACC062110F82}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
