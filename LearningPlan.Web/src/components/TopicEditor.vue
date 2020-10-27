@@ -71,6 +71,7 @@
     export default class TopicEditor extends Vue {
         public planAreaId: string = this.$attrs.planAreaId;
         private topic: Topic = {
+            id: "",
             name: "",
             planAreaId: this.planAreaId,
             endDate: "",
@@ -81,8 +82,10 @@
         private createTopic() {
             TopicDataService.addTopic(this.topic)
                 .then((response) => {
+                    this.topic.id = response.data.id;
                     this.$emit("topic-added", this.topic);
                     this.topic = {
+                        id: response.data.id,
                         name: "",
                         planAreaId: this.planAreaId,
                         endDate: "",

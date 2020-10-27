@@ -28,5 +28,10 @@ namespace LearningPlan.DataAccess.Implementation
         {
             throw new System.NotImplementedException();
         }
+
+        public async Task DeleteAsync(T entity)
+        {
+           await Task.FromResult(_context.Remove(entity)) ;
+        }
     }
 }

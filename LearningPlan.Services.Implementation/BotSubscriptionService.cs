@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using LearningPlan.DataAccess;
 using LearningPlan.DomainModel;
@@ -9,14 +11,18 @@ namespace LearningPlan.Services.Implementation
 {
     public class BotSubscriptionService : IBotSubscriptionService
     {
+        private readonly IReadRepository<AreaTopic> _areaTopicReadRepository;
         private readonly IReadRepository<Plan> _planReadRepository;
         private readonly IReadRepository<BotSubscription> _botSubscriptionReadRepository;
         private readonly IWriteRepository<BotSubscription> _botSubscriptionWriteRepository;
 
-        public BotSubscriptionService(IReadRepository<Plan> planReadRepository,
+        public BotSubscriptionService(
+            IReadRepository<AreaTopic> areaTopicReadRepository,
+            IReadRepository<Plan> planReadRepository,
             IReadRepository<BotSubscription> botSubscriptionReadRepository,
             IWriteRepository<BotSubscription> botSubscriptionWriteRepository)
         {
+            _areaTopicReadRepository = areaTopicReadRepository;
             _planReadRepository = planReadRepository;
             _botSubscriptionReadRepository = botSubscriptionReadRepository;
             _botSubscriptionWriteRepository = botSubscriptionWriteRepository;
@@ -60,5 +66,24 @@ namespace LearningPlan.Services.Implementation
                 ChatId = x.ChatId
             });
         }
+
+        public IEnumerable<AreaTopicServiceModel> GetActualTopics(string planId)
+        {
+            DateTime today = DateTime.Today;
+
+            return _areaTopicReadRepository.GetAll()
+                .Where(x => x.PlanId == planId)
+                .Where(x =>
+                    x.StartDate <= today && x.EndDate >= today)
+                .Select(x => new AreaTopicServiceModel
+                {
+                    Name = x.Name,
+                    StartDate = x.StartDate.ToString("d"),
+                    EndDate = x.EndDate.ToString("d"),
+                    Source = x.Source,
+                })
+                .ToList();
+        }
+
     }
 }

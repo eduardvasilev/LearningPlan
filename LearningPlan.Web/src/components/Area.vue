@@ -25,14 +25,15 @@
                             </div>
                         </div>
                     </div>
+                    <button class="btn btn-link" v-on:click="deleteTopic(areaTopic, area)">
+                        Delete topic
+                    </button>
                 </div>
             </div>
             <div class="card-header" :id="'addtopic' + area.id">
-                <h5 class="mb-0">
-                    <button class="btn btn-link" data-toggle="collapse" :data-target="'#addTopic' + area.id" aria-expanded="true" :aria-controls="'addTopic' + area.id">
-                        Add new topic
-                    </button>
-                </h5>
+                <button class="btn btn-link" data-toggle="collapse" :data-target="'#addTopic' + area.id" aria-expanded="true" :aria-controls="'addTopic' + area.id">
+                    Add new topic
+                </button>
             </div>
             <div :id="'addTopic' +  area.id" class="collapse" :aria-labelledby="'addtopic' + area.id" data-parent="#accordion">
                 <TopicEditor :planAreaId="area.id" v-on:topic-added="area.areaTopics.push($event)" />
@@ -47,7 +48,7 @@
     import { PlanArea } from '../models/plan-area';
     import { Topic } from '../models/topic';
     import TopicEditor from './TopicEditor.vue'
-
+    import TopicDataService from "../services/topic-data-service";
     @Component({
         components: {
             TopicEditor
@@ -63,6 +64,15 @@
             if (!this.area.areaTopics) {
                 this.area.areaTopics = [];
             }
+        }
+
+        private deleteTopic(deletedTopic: Topic, area: PlanArea) {
+            const id = deletedTopic.id;
+            const index: number = area.areaTopics.indexOf(deletedTopic);
+            if (index !== -1) {
+                area.areaTopics.splice(index, 1);
+            }   
+            TopicDataService.deleteTopic(id);
         }
     }
 

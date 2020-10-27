@@ -1,4 +1,5 @@
 export class Topic {
+    id: string = "";
     name: string = "";
     planAreaId: string ="";
     startDate: string = "";

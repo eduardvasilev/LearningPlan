@@ -1,10 +1,11 @@
 ﻿using LearningPlan.Services.Model;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace LearningPlan.Services
 {
     public interface ITopicService
     {
-        IEnumerable<AreaTopicServiceModel> GetActualTopics(string planId);
+        Task DeleteAsync(string topicId);
     }
 }

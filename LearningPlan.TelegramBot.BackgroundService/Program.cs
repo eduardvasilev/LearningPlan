@@ -41,10 +41,9 @@ namespace LearningPlan.TelegramBot.BackgroundService
             IServiceScope scope = _serviceProvider.CreateScope();
             IBotSubscriptionService botSubscriptionService =
                 (IBotSubscriptionService)scope.ServiceProvider.GetService(typeof(IBotSubscriptionService));
-            ITopicService topicService = (ITopicService)scope.ServiceProvider.GetService(typeof(ITopicService));
             foreach (BotSubscriptionServiceModel botSubscription in botSubscriptionService.GetAll())
             {
-                var todayTopics = topicService.GetActualTopics(botSubscription.PlanId).ToList();
+                var todayTopics = botSubscriptionService.GetActualTopics(botSubscription.PlanId).ToList();
 
                 if (todayTopics.Any())
                 {

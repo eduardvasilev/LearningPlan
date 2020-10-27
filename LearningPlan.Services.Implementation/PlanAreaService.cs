@@ -54,7 +54,7 @@ namespace LearningPlan.Services.Implementation
             };
         }
 
-        public async Task CreateAreaTopicAsync(CreateAreaTopicServiceModel model)
+        public async Task<AreaTopicResponseModel> CreateAreaTopicAsync(CreateAreaTopicServiceModel model)
         {
             var planArea = await _planAreaReadRepository.GetByIdAsync(model.PlanAreaId);
             
@@ -72,6 +72,13 @@ namespace LearningPlan.Services.Implementation
             };
             await _areaTopicRepository.CreateAsync(areaTopic);
             await _areaTopicRepository.SaveChangesAsync();
+
+            return new AreaTopicResponseModel
+            {
+                Id = areaTopic.Id,
+                Name = areaTopic.Name,
+                PlanId = areaTopic.PlanId
+            };
         }
 
         // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local

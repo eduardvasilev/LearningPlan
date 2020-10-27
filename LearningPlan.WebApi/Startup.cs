@@ -41,6 +41,7 @@ namespace LearningPlan.WebApi
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IPlanService, PlanService>();
             services.AddScoped<IPlanAreaService, PlanAreaService>();
+            services.AddScoped<ITopicService, TopicService>();
             services.AddScoped<IUserService, UserService>();
         }
 
