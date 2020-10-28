@@ -6,12 +6,14 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using LearningPlan.DomainModel.Exceptions;
 
 namespace LearningPlan.Services.Implementation
 {
     public class PlanService : IPlanService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IPlanAreaService _planAreaService;
         private readonly IReadRepository<Plan> _planReadRepository;
         private readonly IReadRepository<PlanArea> _planAreaReadRepository;
         private readonly IWriteRepository<AreaTopic> _areaTopicRepository;
@@ -21,6 +23,7 @@ namespace LearningPlan.Services.Implementation
 
         public PlanService(
             IHttpContextAccessor httpContextAccessor,
+            IPlanAreaService planAreaService,
             IReadRepository<Plan> planReadRepository,
             IReadRepository<PlanArea> planAreaReadRepository,
             IWriteRepository<AreaTopic> areaTopicRepository,
@@ -29,6 +32,7 @@ namespace LearningPlan.Services.Implementation
             IUnitOfWork unitOfWork)
         {
             _httpContextAccessor = httpContextAccessor;
+            _planAreaService = planAreaService;
             _planReadRepository = planReadRepository;
             _planAreaReadRepository = planAreaReadRepository;
             _areaTopicRepository = areaTopicRepository;
@@ -80,6 +84,35 @@ namespace LearningPlan.Services.Implementation
                     Id = plan.Id
                 };
             }
+        }
+
+        public async Task DeleteAsync(string planId)
+        {
+            Plan plan = await _planReadRepository.GetByIdAsync(planId);
+
+            if (plan == null)
+            {
+                throw new DomainServicesException("Plan not found.");
+            }
+
+            User user = (User) _httpContextAccessor.HttpContext.Items["User"];
+            if (user == null)
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            if (plan.UserId != user.Id)
+            {
+                throw new DomainServicesException("You have no access to delete this plan.");
+            }
+
+            foreach (PlanArea planArea in _planAreaService.GetBy(plan))
+            {
+                await _planAreaService.DeleteAsync(planArea.Id);
+            }
+
+            await _planWriteRepository.DeleteAsync(plan);
+            await _planWriteRepository.SaveChangesAsync();
         }
 
         public async Task<PlanServiceModel> GetByIdAsync(string id)

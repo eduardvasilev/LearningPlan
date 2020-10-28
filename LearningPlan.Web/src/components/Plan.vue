@@ -3,6 +3,8 @@
         <h3>{{plan.name}}</h3>
         <button class="btn btn-primary" data-toggle="modal" data-target="#addAreaModel" type="button">Add area</button>
         <a class="btn btn-primary" target="_blank" :href="'https://t.me/learningplanbot?start=' + plan.id">Subscribe in telegram</a>
+        <button class="btn btn-danger" type="button" v-on:click="deletePlan">Delete plan</button>
+
         <div id="accordion">
             <div v-for="(area, index) in plan.planAreas" v-bind:key="area.id">
                 <PlanArea :area="area" />
@@ -38,6 +40,16 @@
         constructor() {
             super();
             this.retrievePlan();
+        }
+
+        private deletePlan() {
+            PlanDataService.deletePlan(this.plan.id)
+                .then(() => {
+                    this.$router.go(-1);
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
         }
 
         private retrievePlan() {

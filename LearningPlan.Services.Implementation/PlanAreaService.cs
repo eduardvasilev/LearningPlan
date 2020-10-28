@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using LearningPlan.DataAccess;
 using LearningPlan.DomainModel;
@@ -14,6 +15,7 @@ namespace LearningPlan.Services.Implementation
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IReadRepository<Plan> _planReadRepository;
         private readonly IReadRepository<PlanArea> _planAreaReadRepository;
+        private readonly ITopicService _topicService;
         private readonly IWriteRepository<AreaTopic> _areaTopicRepository;
         private readonly IWriteRepository<PlanArea> _planAreaWriteRepository;
 
@@ -21,11 +23,13 @@ namespace LearningPlan.Services.Implementation
             IHttpContextAccessor httpContextAccessor,
             IReadRepository<Plan> planReadRepository,
             IReadRepository<PlanArea> planAreaReadRepository,
+            ITopicService topicService,
             IWriteRepository<AreaTopic> areaTopicRepository, IWriteRepository<PlanArea> planAreaWriteRepository)
         {
             _httpContextAccessor = httpContextAccessor;
             _planReadRepository = planReadRepository;
             _planAreaReadRepository = planAreaReadRepository;
+            _topicService = topicService;
             _areaTopicRepository = areaTopicRepository;
             _planAreaWriteRepository = planAreaWriteRepository;
         }
@@ -81,12 +85,37 @@ namespace LearningPlan.Services.Implementation
             };
         }
 
+        public async Task DeleteAsync(string id)
+        {
+            PlanArea planArea = await _planAreaReadRepository.GetByIdAsync(id);
+
+            if (planArea == null)
+            {
+                throw new DomainServicesException("Plan Area not found.");
+            }
+
+            ValidateUser(planArea.Plan.UserId);
+
+            foreach (AreaTopic areaTopic in _topicService.GetBy(planArea))
+            {
+                await _topicService.DeleteAsync(areaTopic.Id);
+            }
+
+            await _planAreaWriteRepository.DeleteAsync(planArea);
+            await _planAreaWriteRepository.SaveChangesAsync();
+        }
+
+        public IQueryable<PlanArea> GetBy(Plan plan)
+        {
+            return _planAreaReadRepository.GetAll().Where(area => area.PlanId == plan.Id);
+        }
+
         // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
         private void ValidateUser(string userId)
         {
             if (userId != ((User)_httpContextAccessor.HttpContext.Items["User"]).Id)
             {
-                throw new DomainServicesException("Plan not found.");
+                throw new DomainServicesException("Current user has no permissions to do this action.");
             }
         }
 

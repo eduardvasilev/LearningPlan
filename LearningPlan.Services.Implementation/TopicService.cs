@@ -1,4 +1,5 @@
-﻿using LearningPlan.DataAccess;
+﻿using System.Linq;
+using LearningPlan.DataAccess;
 using LearningPlan.DomainModel;
 using LearningPlan.DomainModel.Exceptions;
 using Microsoft.AspNetCore.Http;
@@ -25,6 +26,12 @@ namespace LearningPlan.Services.Implementation
         public async Task DeleteAsync(string topicId)
         {
             AreaTopic topic = await _areaTopicReadRepository.GetByIdAsync(topicId);
+
+            if (topic == null)
+            {
+                throw new DomainServicesException("Topic not found.");
+            }
+
             var user = (User)_httpContextAccessor.HttpContext.Items["User"];
             if (topic.PlanArea.Plan.UserId != user.Id)
             {
@@ -33,6 +40,11 @@ namespace LearningPlan.Services.Implementation
 
             await _areaTopicWriteRepository.DeleteAsync(topic);
             await _areaTopicWriteRepository.SaveChangesAsync();
+        }
+
+        public IQueryable<AreaTopic> GetBy(PlanArea planArea)
+        {
+            return _areaTopicReadRepository.GetAll().Where(topic => topic.PlanAreaId == planArea.Id);
         }
     }
 }

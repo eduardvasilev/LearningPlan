@@ -7,6 +7,7 @@ namespace LearningPlan.Services
     public interface IPlanService
     {
         Task<PlanResponseModel> CreatePlanAsync(PlanServiceModel model);
+        Task DeleteAsync(string planId);
 
         Task<PlanServiceModel> GetByIdAsync(string id);
 

@@ -13,12 +13,10 @@ namespace LearningPlan.WebApi.Controllers
     public class PlanController : Controller
     {
         private readonly IPlanService _planService;
-        private readonly IPlanAreaService _planAreaService;
 
-        public PlanController(IPlanService planService, IPlanAreaService planAreaService)
+        public PlanController(IPlanService planService)
         {
             _planService = planService;
-            _planAreaService = planAreaService;
         }
         
         [Authorize]
@@ -41,6 +39,13 @@ namespace LearningPlan.WebApi.Controllers
         public List<PlanResponseModel> GetAll()
         {
             return _planService.GetAll().ToList();
+        }
+
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task Delete(string id)
+        {
+            await _planService.DeleteAsync(id);
         }
     }
 }
