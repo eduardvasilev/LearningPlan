@@ -12,5 +12,7 @@ namespace LearningPlan.Services
         Task<PlanServiceModel> GetByIdAsync(string id);
 
         IQueryable<PlanResponseModel> GetAll();
+
+        Task UpdateAsync(PlanServiceModel model);
     }
 }

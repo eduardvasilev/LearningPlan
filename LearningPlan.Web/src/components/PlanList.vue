@@ -11,7 +11,7 @@
             </div>
             <div>
                 <div class="card">
-                    <div v-if="isAddingNew" class="">
+                    <div v-if="isAddingNew">
                         <div class="input-group mb-3">
 
                             <input id="plan-name"
@@ -53,8 +53,7 @@
         }
 
         private addPlan() {
-            const regex = /\s/;
-            if (!this.newPlanName || regex.test(this.newPlanName)) {
+            if (!this.newPlanName) {
                 return;
             }
             PlanDataService.addPlan(this.newPlanName)

@@ -47,5 +47,13 @@ namespace LearningPlan.WebApi.Controllers
         {
             await _planService.DeleteAsync(id);
         }
+
+
+        [Authorize]
+        [HttpPut]
+        public async Task Update([FromBody]PlanServiceModel model)
+        {
+            await _planService.UpdateAsync(model);
+        }
     }
 }

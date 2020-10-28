@@ -1,6 +1,23 @@
 <template>
     <div>
-        <h3>{{plan.name}}</h3>
+        <div>
+            <div v-if="isNameEdit">
+                <div class="input-group mb-3">
+                    <input id="plan-name"
+                           type="text"
+                           name="plan-name"
+                           class="form-control"
+                           v-model="plan.name"
+                           placeholder="Plan name">
+                    <button class="input-group-append btn btn-primary btn-outline-secondary" v-on:click="updateName" type="button">OK</button>
+                </div>
+            </div>
+            <div v-else class="card-body">
+                <h3>{{plan.name}}</h3>
+                <button class="btn btn-link" type="button" v-on:click="showNameUpdate">edit</button>
+
+            </div>
+        </div>
         <button class="btn btn-primary" data-toggle="modal" data-target="#addAreaModel" type="button">Add area</button>
         <a class="btn btn-primary" target="_blank" :href="'https://t.me/learningplanbot?start=' + plan.id">Subscribe in telegram</a>
         <button class="btn btn-danger" type="button" v-on:click="deletePlan">Delete plan</button>
@@ -10,7 +27,6 @@
                 <PlanArea :area="area" v-on:area-deleted="onareadeleted($event)"  />
             </div>
         </div>
-
         <AreaEditor :planId="plan.id" v-on:area-added="plan.planAreas.push($event)" />
     </div>
 </template>
@@ -36,6 +52,8 @@
             name: "",
             planAreas: []
         };
+
+        private isNameEdit: boolean = false;
 
         constructor() {
             super();
@@ -64,6 +82,23 @@
             PlanDataService.getPlan(planId)
                 .then((response) => {
                     this.plan = response.data;
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }
+
+        private showNameUpdate() {
+            this.isNameEdit = !this.isNameEdit;
+        }
+
+        public updateName() {
+            if (!this.plan.name) {
+                return;
+            }
+            PlanDataService.updatePlan(this.plan)
+                .then((response) => {
+                    this.showNameUpdate();
                 })
                 .catch((error) => {
                     console.error(error);

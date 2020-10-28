@@ -24,9 +24,9 @@ namespace LearningPlan.DataAccess.Implementation
             return _context.SaveChangesAsync();
         }
 
-        public Task UpdateAsync(T entity)
+        public async Task UpdateAsync(T entity)
         {
-            throw new System.NotImplementedException();
+            await Task.FromResult(_context.Update(entity));
         }
 
         public async Task DeleteAsync(T entity)

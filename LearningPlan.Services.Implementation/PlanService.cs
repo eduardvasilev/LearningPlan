@@ -156,5 +156,29 @@ namespace LearningPlan.Services.Implementation
                     Name = plan.Name
                 });
         }
+
+        public async Task UpdateAsync(PlanServiceModel model)
+        {
+            using (_unitOfWork)
+            {
+
+                Plan plan = await _planReadRepository.GetByIdAsync(model.Id);
+
+                if (plan == null)
+                {
+                    throw new DomainServicesException("Plan not found.");
+                }
+
+                User user = (User) _httpContextAccessor.HttpContext.Items["User"];
+                if (user == null)
+                {
+                    throw new UnauthorizedAccessException();
+                }
+
+                plan.Name = model.Name;
+
+                await _unitOfWork.CommitAsync();
+            }
+        }
     }
 }

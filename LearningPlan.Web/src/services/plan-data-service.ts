@@ -1,5 +1,6 @@
 import http from "../http-common";
 import {store} from "../store/index";
+import { Plan } from "../models/plan";
 
 export class PlanDataService {
     public addPlan(name: string) {
@@ -13,6 +14,9 @@ export class PlanDataService {
     }
     public deletePlan(id: string) {
         return http.delete(`/plan/${id}`, { headers: { 'Authorization': store.state.user.token }});
+    }
+    public updatePlan(plan: Plan) {
+        return http.put("/plan", plan, { headers: { 'Authorization': store.state.user.token } });
     }
 }
 
