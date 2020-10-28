@@ -7,18 +7,18 @@
 
         <div id="accordion">
             <div v-for="(area, index) in plan.planAreas" v-bind:key="area.id">
-                <PlanArea :area="area" />
+                <PlanArea :area="area" v-on:area-deleted="onareadeleted($event)"  />
             </div>
         </div>
 
         <AreaEditor :planId="plan.id" v-on:area-added="plan.planAreas.push($event)" />
-
     </div>
 </template>
 
 <script lang="ts">
     import { Component, Vue } from 'vue-property-decorator';
 
+    import { PlanArea } from '../models/plan-area';
     import { Plan } from '../models/plan';
     import PlanDataService from "../services/plan-data-service";
     import Area from './Area.vue';
@@ -50,6 +50,13 @@
                 .catch((error) => {
                     console.error(error);
                 });
+        }
+
+        public onareadeleted(area: PlanArea) {
+            const index: number = this.plan.planAreas.indexOf(area);
+            if (index !== -1) {
+                this.plan.planAreas.splice(index, 1);
+            }
         }
 
         private retrievePlan() {

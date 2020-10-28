@@ -7,6 +7,10 @@ export class AreaDataService {
     public addArea(area: PlanArea) {
         return http.post("/area/", area, { headers: { 'Authorization': store.state.user.token }});
     }
+
+    public deleteArea(area: PlanArea) {
+        return http.delete(`/area/${area.id}`, { headers: { 'Authorization': store.state.user.token } });
+    }
 }
 
 export default new AreaDataService();

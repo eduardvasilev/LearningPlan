@@ -24,5 +24,13 @@ namespace LearningPlan.WebApi.Controllers
             var result = await _planAreaService.CreatePlanAreaAsync(model);
             return Json(result);
         }
+
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            await _planAreaService.DeleteAsync(id);
+            return Ok();
+        }
     }
 }

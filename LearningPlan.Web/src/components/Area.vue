@@ -1,7 +1,13 @@
 <template>
     <div>
         <div class="card">
-            <h5>{{area.name}}</h5>
+           <div> 
+               {{area.name}}
+
+               <button type="button"  v-on:click="deleteArea(area)" class="close" aria-label="Close">
+                   <span aria-hidden="true">&times;</span>
+               </button>
+            </div>
             <div v-for="(areaTopic, index) in area.areaTopics" v-bind:key="areaTopic.id" class="card">
                 <div class="card-header" :id="'headingOne' + index">
                     <h5 class="mb-0">
@@ -49,6 +55,7 @@
     import { Topic } from '../models/topic';
     import TopicEditor from './TopicEditor.vue'
     import TopicDataService from "../services/topic-data-service";
+    import AreaDataService from "../services/area-data-service";
     @Component({
         components: {
             TopicEditor
@@ -66,12 +73,22 @@
             }
         }
 
+        private deleteArea(area: PlanArea) {
+            AreaDataService.deleteArea(area)
+                .then(() => {
+                    this.$emit("area-deleted", area);
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }
+
         private deleteTopic(deletedTopic: Topic, area: PlanArea) {
             const id = deletedTopic.id;
             const index: number = area.areaTopics.indexOf(deletedTopic);
             if (index !== -1) {
                 area.areaTopics.splice(index, 1);
-            }   
+            }
             TopicDataService.deleteTopic(id);
         }
     }
