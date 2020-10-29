@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :class="status">
         <div class="card-header topic-header" :id="'headingOne' + topic.id">
             <h5 class="mb-0">
                 <button class="btn btn-link" data-toggle="collapse" :data-target="'#p' + topic.id" aria-expanded="true" :aria-controls="'p' + topic.id">
@@ -112,7 +112,6 @@
         private isEdit: boolean = false;
 
         private deleteTopic(deletedTopic: Topic) {
-          
             TopicDataService.deleteTopic(deletedTopic.id)
                 .then(() => {
                     this.$emit("topic-deleted", deletedTopic);
@@ -130,6 +129,21 @@
             return (new Date(this.topic.endDate)).toDateString();
         }
 
+        get status() {
+
+            const startDate = new Date(this.topic.startDate);
+            const endDate = new Date(this.topic.endDate);
+            const today = new Date();
+            if (startDate > today) {
+                return "in-future";
+            } else if (startDate <= today && endDate >= today) {
+                return "in-progress";
+            }
+            else {
+                return "passed";
+            }
+        }
+
         private onEdit() {
             this.isEdit = !this.isEdit;
         }
@@ -138,4 +152,17 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+    .in-future{
+        
+    }
+    .in-progress {
+        /*        background-color: #ab777c;*/
+        background-color: #429842;
+        border: 2px solid;
+        border-color: #fefefe;
+        box-shadow: 0px 0px 20px -3px #000000;
+    }
+    .passed {
+        background-color: #429842;
+    }
 </style>

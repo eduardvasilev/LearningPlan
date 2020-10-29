@@ -89,8 +89,8 @@
     .card {
         background-color: #1d1d1d !important;
         color: #fefefe !important;
-        border: 2px solid;
-        border-color: #fefefe !important;
+       /* border: 2px solid;
+        border-color: #fefefe !important;*/
     }
     .navbar {
         background-color: #e48900 !important;

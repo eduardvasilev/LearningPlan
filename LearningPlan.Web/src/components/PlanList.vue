@@ -1,6 +1,12 @@
 <template>
     <div>
-        <p><h3>Your plans</h3></p>
+         <div class="jumbotron">
+            <div class="d-flex flex-row">
+                <div class="p-2">
+                    <h3 class="display-4">Your learning plans</h3>
+                </div>
+            </div>
+        </div>
         <div class="plan-box">
             <div v-for="plan in plans">
                 <div class="card">

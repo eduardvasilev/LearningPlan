@@ -138,7 +138,7 @@ namespace LearningPlan.Services.Implementation
                         EndDate = areaTopic.EndDate.ToString("yyyy-MM-dd"),
                         Source = areaTopic.Source,
                         Description = areaTopic.Description
-                    }).ToArray()
+                    }).OrderBy(x => x.StartDate).ToArray()
                 }).ToArray(),
             });
         }
