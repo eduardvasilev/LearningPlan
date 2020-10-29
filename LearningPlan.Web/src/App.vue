@@ -2,7 +2,9 @@
     <div id="app">
         <div v-if="this.$store.state.user.isAuthenticated">
             <Home />
-            <router-view></router-view>
+            <div class="app-body">
+                <router-view></router-view>
+            </div>
         </div>
         <div v-else>
             <div class="login-form">
@@ -95,4 +97,12 @@
         color: #fefefe !important;
     }
 
+    .app-body{
+        margin-left: 100px;
+        margin-right: 100px;
+    }
+
+    .btn {
+        color: #fefefe !important;
+    }
 </style>
