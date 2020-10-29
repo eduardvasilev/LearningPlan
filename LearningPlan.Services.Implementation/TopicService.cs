@@ -81,6 +81,7 @@ namespace LearningPlan.Services.Implementation
                 topic.EndDate = DateTime.ParseExact(model.EndDate, "yyyy-MM-dd",
                     CultureInfo.CurrentCulture);
                 topic.Source = model.Source;
+                topic.Description = model.Description;
 
                 await _unitOfWork.CommitAsync();
             }

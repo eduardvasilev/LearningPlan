@@ -33,14 +33,39 @@
             <div v-else>
                 <div class="card-body container">
                     <div class="row">
-                        <a :href="topic.source" target="_blank">{{topic.source}}</a>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            {{topic.startDate}}
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="source">Source: </label>
+                                <div class="form-group">
+                                    <a :href="topic.source" target="_blank">{{topic.source}}</a>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col">
-                            {{topic.endDate}}
+                    </div>
+                    <hr />
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="description">Description: </label>
+                                <p>{{topic.description}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="from">From: </label>
+                                {{ locateStartDate }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="endDate">To: </label>
+                                {{locateEndDate}}
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -95,6 +120,14 @@
                 .catch((error) => {
                     console.error(error);
                 });;
+        }
+
+        get locateStartDate() {
+            return (new Date(this.topic.startDate)).toDateString();
+        }
+
+        get locateEndDate() {
+            return (new Date(this.topic.endDate)).toDateString();
         }
 
         private onEdit() {

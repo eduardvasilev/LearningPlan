@@ -76,7 +76,8 @@ namespace LearningPlan.Services.Implementation
                 StartDate = DateTime.ParseExact(model.StartDate, "yyyy-MM-dd",
                     CultureInfo.CurrentCulture),
                 EndDate = DateTime.ParseExact(model.EndDate, "yyyy-MM-dd", CultureInfo.CurrentCulture),
-                Source = model.Source
+                Source = model.Source,
+                Description = model.Description
             };
             await _areaTopicRepository.CreateAsync(areaTopic);
             await _areaTopicRepository.SaveChangesAsync();

@@ -70,6 +70,7 @@ namespace LearningPlan.Services.Implementation
                                 CultureInfo.CurrentCulture),
                             EndDate = DateTime.ParseExact(areaTopic.EndDate, "yyyy-MM-dd", CultureInfo.CurrentCulture),
                             Source = areaTopic.Source,
+                            Description = areaTopic.Description,
                             PlanArea = area,
                             PlanAreaId = area.Id
                         });
@@ -135,7 +136,8 @@ namespace LearningPlan.Services.Implementation
                         Name = areaTopic.Name,
                         StartDate = areaTopic.StartDate.ToString("yyyy-MM-dd"),
                         EndDate = areaTopic.EndDate.ToString("yyyy-MM-dd"),
-                        Source = areaTopic.Source
+                        Source = areaTopic.Source,
+                        Description = areaTopic.Description
                     }).ToArray()
                 }).ToArray(),
             });

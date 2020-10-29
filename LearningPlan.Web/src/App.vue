@@ -62,6 +62,9 @@
         background-color: #1d1d1d !important;
         color: #fefefe !important;
     }
+    hr {
+        background-color: #fefefe !important;
+    }
     .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
         background-color: #e48900 !important;
     }
