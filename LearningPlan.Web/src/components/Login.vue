@@ -56,9 +56,6 @@
         public formSubmit(e: Event) {
             e.preventDefault();
             AuthenticationService.login(this.user)
-                .then((response) => {
-                    this.$store.commit("UserAuthenticated", response.data);
-                })
                 .catch((error) => {
                     this.error = error.message;
                 });

@@ -1,22 +1,21 @@
 import http from "../http-common";
-import {store} from "../store/index";
 import { Plan } from "../models/plan";
 
 export class PlanDataService {
     public addPlan(name: string) {
-        return http.post("/plan/", { name: name, planAreas: [] }, { headers: { 'Authorization': store.state.user.token } });
+        return http.post("/plan/", { name: name, planAreas: [] });
     }
     public getPlans() {
-        return http.get("/plan", { headers: { 'Authorization': store.state.user.token }});
+        return http.get("/plan");
     }
     public getPlan(id: string) {
-        return http.get(`/plan/${id}`, { headers: { 'Authorization': store.state.user.token }});
+        return http.get(`/plan/${id}`);
     }
     public deletePlan(id: string) {
-        return http.delete(`/plan/${id}`, { headers: { 'Authorization': store.state.user.token }});
+        return http.delete(`/plan/${id}`);
     }
     public updatePlan(plan: Plan) {
-        return http.put("/plan", plan, { headers: { 'Authorization': store.state.user.token } });
+        return http.put("/plan", plan);
     }
 }
 
