@@ -9,14 +9,14 @@
         </div>
         <div class="plan-box">
             <div v-for="plan in plans">
-                <div class="card">
+                <div class="card plan-card">
                     <div class="card-body">
                         <router-link :to="{ name: 'plan', params: { id: plan.id }}">{{plan.name}}</router-link>
                     </div>
                 </div>
             </div>
             <div>
-                <div class="card">
+                <div class="card plan-card">
                     <div v-if="isAddingNew">
                         <div class="input-group mb-3">
 

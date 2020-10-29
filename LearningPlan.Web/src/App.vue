@@ -112,4 +112,10 @@
     .jumbotron {
         background-color: #373738 !important;
     }
+
+    .plan-card {
+        border: 2px solid;
+        border-color: #fefefe;
+        box-shadow: 0px 0px 20px -3px #000000;
+    }
 </style>
