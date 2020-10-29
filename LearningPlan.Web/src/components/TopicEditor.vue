@@ -53,8 +53,8 @@
                 </div>
 
                 <div class="form-group">
-                    <input class="btn btn-primary" v-on:click="createTopic"
-                           value="Create">
+                    <input class="btn btn-primary" v-on:click="createOrUpdate"
+                           :value="topic.id ? 'Update' : 'Create'">
                 </div>
             </form>
             </div>
@@ -79,23 +79,42 @@
             startDate: ""
         };
 
-        private createTopic() {
-            TopicDataService.addTopic(this.topic)
-                .then((response) => {
-                    this.topic.id = response.data.id;
-                    this.$emit("topic-added", this.topic);
-                    this.topic = {
-                        id: response.data.id,
-                        name: "",
-                        planAreaId: this.planAreaId,
-                        endDate: "",
-                        source: "",
-                        startDate: ""
-                    };
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
+        constructor() {
+            super();
+
+            if (this.$attrs.topic) {
+                this.topic = this.$attrs.topic as any;
+            }
+        }
+
+        private createOrUpdate() {
+            if (this.topic.id) {
+                TopicDataService.update(this.topic)
+                    .then((response) => {
+                        this.$emit("topic-updated", this.topic);
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+            }
+            else {
+                TopicDataService.addTopic(this.topic)
+                    .then((response) => {
+                        this.topic.id = response.data.id;
+                        this.$emit("topic-added", this.topic);
+                        this.topic = {
+                            id: response.data.id,
+                            name: "",
+                            planAreaId: this.planAreaId,
+                            endDate: "",
+                            source: "",
+                            startDate: ""
+                        };
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+            }
         }
     }
 

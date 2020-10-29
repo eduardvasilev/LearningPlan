@@ -1,6 +1,5 @@
 <template>
     <div>
-
         <div class="area-header">
             <div v-if="isNameEdit" class="card-body d-flex flex-row">
                 <div class="input-group mb-3 p-2">
@@ -38,32 +37,7 @@
         </div>
         <div class="card">
             <div v-for="(areaTopic, index) in area.areaTopics" v-bind:key="areaTopic.id" class="card">
-                <div class="card-header" :id="'headingOne' + index">
-                    <h5 class="mb-0">
-                        <button class="btn btn-link" data-toggle="collapse" :data-target="'#p' + areaTopic.id" aria-expanded="true" :aria-controls="'p' + areaTopic.id">
-                            {{areaTopic.name}}
-                        </button>
-                    </h5>
-                </div>
-
-                <div :id="'p' + areaTopic.id" class="collapse" :aria-labelledby="'headingOne' + areaTopic.id" data-parent="#accordion">
-                    <div class="card-body container">
-                        <div class="row">
-                            <a :href="areaTopic.source" target="_blank">{{areaTopic.source}}</a>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                {{areaTopic.startDate}}
-                            </div>
-                            <div class="col">
-                                {{areaTopic.endDate}}
-                            </div>
-                        </div>
-                    </div>
-                    <button class="btn btn-link" v-on:click="deleteTopic(areaTopic, area)">
-                        Delete topic
-                    </button>
-                </div>
+                <Topic :topic="areaTopic" :planAreaId="area.id" v-on:topic-deleted="deletetopic($event)"  />
             </div>
             <div class="card-header" :id="'addtopic' + area.id">
                 <button class="btn btn-link" data-toggle="collapse" :data-target="'#addTopic' + area.id" aria-expanded="true" :aria-controls="'addTopic' + area.id">
@@ -83,12 +57,14 @@
     import { PlanArea } from '../models/plan-area';
     import { Topic } from '../models/topic';
     import TopicEditor from './TopicEditor.vue'
+    import TopicComponent from './Topic.vue'
     import TopicDataService from "../services/topic-data-service";
     import AreaDataService from "../services/area-data-service";
 
     @Component({
         components: {
-            TopicEditor
+            TopicEditor,
+            Topic: TopicComponent
         }
     })
     export default class Area extends Vue {
@@ -113,13 +89,12 @@
                 });
         }
 
-        private deleteTopic(deletedTopic: Topic, area: PlanArea) {
+        private deletetopic(deletedTopic: Topic) {
             const id = deletedTopic.id;
-            const index: number = area.areaTopics.indexOf(deletedTopic);
+            const index: number = this.area.areaTopics.indexOf(deletedTopic);
             if (index !== -1) {
-                area.areaTopics.splice(index, 1);
+                this.area.areaTopics.splice(index, 1);
             }
-            TopicDataService.deleteTopic(id);
         }
 
         private showNameUpdate() {
@@ -131,7 +106,7 @@
                 return;
             }
             AreaDataService.updateArea(this.area)
-                .then((response) => {
+                .then(() => {
                     this.showNameUpdate();
                 })
                 .catch((error) => {

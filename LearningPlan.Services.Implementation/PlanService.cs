@@ -66,9 +66,9 @@ namespace LearningPlan.Services.Implementation
                         await _areaTopicRepository.CreateAsync(new AreaTopic
                         {
                             Name = areaTopic.Name,
-                            StartDate = DateTime.ParseExact(areaTopic.StartDate, "dd/MM/yyyy",
+                            StartDate = DateTime.ParseExact(areaTopic.StartDate, "yyyy-MM-dd",
                                 CultureInfo.CurrentCulture),
-                            EndDate = DateTime.ParseExact(areaTopic.EndDate, "dd/MM/yyyy", CultureInfo.CurrentCulture),
+                            EndDate = DateTime.ParseExact(areaTopic.EndDate, "yyyy-MM-dd", CultureInfo.CurrentCulture),
                             Source = areaTopic.Source,
                             PlanArea = area,
                             PlanAreaId = area.Id
@@ -133,8 +133,8 @@ namespace LearningPlan.Services.Implementation
                     {
                         Id = areaTopic.Id,
                         Name = areaTopic.Name,
-                        StartDate = areaTopic.StartDate.ToString("d"),
-                        EndDate = areaTopic.EndDate.ToString("d"),
+                        StartDate = areaTopic.StartDate.ToString("yyyy-MM-dd"),
+                        EndDate = areaTopic.EndDate.ToString("yyyy-MM-dd"),
                         Source = areaTopic.Source
                     }).ToArray()
                 }).ToArray(),

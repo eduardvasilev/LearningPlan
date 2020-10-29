@@ -35,5 +35,13 @@ namespace LearningPlan.WebApi.Controllers
             await _topicService.DeleteAsync(id);
             return Ok();
         }
+
+
+        [Authorize]
+        [HttpPut]
+        public async Task Update(AreaTopicServiceModel model)
+        {
+            await _topicService.UpdateAsync(model);
+        }
     }
 }

@@ -38,6 +38,7 @@
     <Content Include="src\components\Login.vue" />
     <Content Include="src\components\Area.vue" />
     <Content Include="src\components\AreaEditor.vue" />
+    <Content Include="src\components\Topic.vue" />
     <Content Include="src\components\TopicEditor.vue" />
     <Content Include="src\components\Plan.vue" />
     <Content Include="src\components\PlanList.vue" />
