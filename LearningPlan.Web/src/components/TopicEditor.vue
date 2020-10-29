@@ -19,7 +19,7 @@
                             <label for="source">Source</label>
                             <input :id="planAreaId + 'topic-source'"
                                    v-model="topic.source"
-                                   type="text"
+                                   type="url"
                                    name="source"
                                    class="form-control"
                                    placeholder="Enter topic source">

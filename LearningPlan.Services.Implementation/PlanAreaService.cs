@@ -18,13 +18,16 @@ namespace LearningPlan.Services.Implementation
         private readonly ITopicService _topicService;
         private readonly IWriteRepository<AreaTopic> _areaTopicRepository;
         private readonly IWriteRepository<PlanArea> _planAreaWriteRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
         public PlanAreaService(
             IHttpContextAccessor httpContextAccessor,
             IReadRepository<Plan> planReadRepository,
             IReadRepository<PlanArea> planAreaReadRepository,
             ITopicService topicService,
-            IWriteRepository<AreaTopic> areaTopicRepository, IWriteRepository<PlanArea> planAreaWriteRepository)
+            IWriteRepository<AreaTopic> areaTopicRepository, 
+            IWriteRepository<PlanArea> planAreaWriteRepository,
+            IUnitOfWork unitOfWork)
         {
             _httpContextAccessor = httpContextAccessor;
             _planReadRepository = planReadRepository;
@@ -32,6 +35,7 @@ namespace LearningPlan.Services.Implementation
             _topicService = topicService;
             _areaTopicRepository = areaTopicRepository;
             _planAreaWriteRepository = planAreaWriteRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<PlanAreaServiceModel> CreatePlanAreaAsync(CreatePlanAreaServiceModel model)
@@ -108,6 +112,25 @@ namespace LearningPlan.Services.Implementation
         public IQueryable<PlanArea> GetBy(Plan plan)
         {
             return _planAreaReadRepository.GetAll().Where(area => area.PlanId == plan.Id);
+        }
+
+        public async Task UpdateAsync(PlanAreaServiceModel model)
+        {
+            using (_unitOfWork)
+            {
+                PlanArea planArea = await _planAreaReadRepository.GetByIdAsync(model.Id);
+
+                if (planArea == null)
+                {
+                    throw new DomainServicesException("Plan Area not found.");
+                }
+
+                ValidateUser(planArea.Plan.UserId);
+
+                planArea.Name = model.Name;
+
+                await _unitOfWork.CommitAsync();
+            }
         }
 
         // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local

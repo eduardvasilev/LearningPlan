@@ -32,5 +32,12 @@ namespace LearningPlan.WebApi.Controllers
             await _planAreaService.DeleteAsync(id);
             return Ok();
         }
+
+        [Authorize]
+        [HttpPut]
+        public async Task Update([FromBody] PlanAreaServiceModel model)
+        {
+            await _planAreaService.UpdateAsync(model);
+        }
     }
 }

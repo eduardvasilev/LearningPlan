@@ -10,6 +10,11 @@ export class AreaDataService {
     public deleteArea(area: PlanArea) {
         return http.delete(`/area/${area.id}`);
     }
+
+    public updateArea(area: PlanArea) {
+        return http.put("/area/", area);
+    }
+
 }
 
 export default new AreaDataService();

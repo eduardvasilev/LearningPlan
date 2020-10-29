@@ -59,11 +59,11 @@
 <style>
 
     body, .modal-content {
-        background-color: #0a0a0a !important;
+        background-color: #1d1d1d !important;
         color: #fefefe !important;
     }
     .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-        background-color: #ff9900 !important;
+        background-color: #e48900 !important;
     }
     .login-form {
         margin: 0;
@@ -80,17 +80,17 @@
     }
    
     .btn-primary {
-        background-color: #ff9900 !important;
+        background-color: #e48900 !important;
         color: #fefefe !important;
     }
     .card {
-        background-color: #0a0a0a !important;
+        background-color: #1d1d1d !important;
         color: #fefefe !important;
         border: 2px solid;
         border-color: #fefefe !important;
     }
     .navbar {
-        background-color: #ff9900 !important;
+        background-color: #e48900 !important;
     }
 
     .close > span {
@@ -104,5 +104,9 @@
 
     .btn {
         color: #fefefe !important;
+    }
+
+    .jumbotron {
+        background-color: #373738 !important;
     }
 </style>

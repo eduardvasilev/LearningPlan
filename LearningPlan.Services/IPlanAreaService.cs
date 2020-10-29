@@ -11,5 +11,6 @@ namespace LearningPlan.Services
         Task<AreaTopicResponseModel> CreateAreaTopicAsync(CreateAreaTopicServiceModel model);
         Task DeleteAsync(string id);
         IQueryable<PlanArea> GetBy(Plan plan);
+        Task UpdateAsync(PlanAreaServiceModel model);
     }
 }
