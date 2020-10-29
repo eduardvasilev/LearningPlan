@@ -32,7 +32,7 @@
                             <label for="from">From</label>
                             <input :id="planAreaId + 'topic-from'"
                                    v-model="topic.startDate"
-                                   type="text"
+                                   type="date"
                                    name="from"
                                    class="form-control"
                                    placeholder="Enter topic start date">
@@ -43,7 +43,7 @@
                             <label for="endDate">To</label>
                             <input :id="planAreaId + 'topic-end'"
                                    v-model="topic.endDate"
-                                   type="text"
+                                   type="date"
                                    name="endDate"
                                    class="form-control"
                                    placeholder="Enter topic end date">

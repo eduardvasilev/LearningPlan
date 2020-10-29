@@ -69,9 +69,9 @@ namespace LearningPlan.Services.Implementation
                 PlanAreaId = model.PlanAreaId,
                 PlanId =  planArea.PlanId,
                 Name = model.Name,
-                StartDate = DateTime.ParseExact(model.StartDate, "dd/MM/yyyy",
+                StartDate = DateTime.ParseExact(model.StartDate, "yyyy-MM-dd",
                     CultureInfo.CurrentCulture),
-                EndDate = DateTime.ParseExact(model.EndDate, "dd/MM/yyyy", CultureInfo.CurrentCulture),
+                EndDate = DateTime.ParseExact(model.EndDate, "yyyy-MM-dd", CultureInfo.CurrentCulture),
                 Source = model.Source
             };
             await _areaTopicRepository.CreateAsync(areaTopic);
