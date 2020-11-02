@@ -4,7 +4,6 @@ using System.Linq;
 using LearningPlan.DataAccess;
 using LearningPlan.DomainModel;
 using LearningPlan.DomainModel.Exceptions;
-using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using LearningPlan.Services.Model;
 
@@ -12,21 +11,23 @@ namespace LearningPlan.Services.Implementation
 {
     public class TopicService : ITopicService
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IReadRepository<AreaTopic> _areaTopicReadRepository;
         private readonly IWriteRepository<AreaTopic> _areaTopicWriteRepository;
         private readonly IUnitOfWork _unitOfWork;
 
         public TopicService(
-            IHttpContextAccessor httpContextAccessor,
             IReadRepository<AreaTopic> areaTopicReadRepository,
             IWriteRepository<AreaTopic> areaTopicWriteRepository,
             IUnitOfWork unitOfWork)
         {
-            _httpContextAccessor = httpContextAccessor;
             _areaTopicReadRepository = areaTopicReadRepository;
             _areaTopicWriteRepository = areaTopicWriteRepository;
             _unitOfWork = unitOfWork;
+        }
+
+        public async Task<AreaTopic> GetByIdAsync(string id)
+        {
+            return await _areaTopicReadRepository.GetByIdAsync(id);
         }
 
         public async Task DeleteAsync(string topicId)
@@ -37,13 +38,7 @@ namespace LearningPlan.Services.Implementation
             {
                 throw new DomainServicesException("Topic not found.");
             }
-
-            var user = (User)_httpContextAccessor.HttpContext.Items["User"];
-            if (topic.PlanArea.Plan.UserId != user.Id)
-            {
-                throw new DomainServicesException("You have no permissions to delete this area topic.");
-            }
-
+            
             await _areaTopicWriteRepository.DeleteAsync(topic);
             await _areaTopicWriteRepository.SaveChangesAsync();
         }
@@ -62,17 +57,6 @@ namespace LearningPlan.Services.Implementation
                 if (topic == null)
                 {
                     throw new DomainServicesException("Topic not found.");
-                }
-
-                User user = (User)_httpContextAccessor.HttpContext.Items["User"];
-                if (user == null)
-                {
-                    throw new UnauthorizedAccessException();
-                }
-
-                if (topic.PlanArea.Plan.UserId != user.Id)
-                {
-                    throw new DomainServicesException("You have no permissions to delete this area topic.");
                 }
 
                 topic.Name = model.Name;

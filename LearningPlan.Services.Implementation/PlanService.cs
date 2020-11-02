@@ -1,18 +1,16 @@
 ﻿using LearningPlan.DataAccess;
 using LearningPlan.DomainModel;
+using LearningPlan.DomainModel.Exceptions;
 using LearningPlan.Services.Model;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using LearningPlan.DomainModel.Exceptions;
 
 namespace LearningPlan.Services.Implementation
 {
     public class PlanService : IPlanService
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IPlanAreaService _planAreaService;
         private readonly IReadRepository<Plan> _planReadRepository;
         private readonly IReadRepository<PlanArea> _planAreaReadRepository;
@@ -22,7 +20,6 @@ namespace LearningPlan.Services.Implementation
         private readonly IUnitOfWork _unitOfWork;
 
         public PlanService(
-            IHttpContextAccessor httpContextAccessor,
             IPlanAreaService planAreaService,
             IReadRepository<Plan> planReadRepository,
             IReadRepository<PlanArea> planAreaReadRepository,
@@ -31,7 +28,6 @@ namespace LearningPlan.Services.Implementation
             IWriteRepository<PlanArea> planAreaRepository,
             IUnitOfWork unitOfWork)
         {
-            _httpContextAccessor = httpContextAccessor;
             _planAreaService = planAreaService;
             _planReadRepository = planReadRepository;
             _planAreaReadRepository = planAreaReadRepository;
@@ -45,9 +41,7 @@ namespace LearningPlan.Services.Implementation
         {
             using (_unitOfWork)
             {
-                var user = (User)_httpContextAccessor.HttpContext.Items["User"];
-
-                var plan = new Plan(model.Name, user.Id);
+                var plan = new Plan(model.Name, model.UserId);
 
                 await _planWriteRepository.CreateAsync(plan);
 
@@ -96,17 +90,6 @@ namespace LearningPlan.Services.Implementation
                 throw new DomainServicesException("Plan not found.");
             }
 
-            User user = (User) _httpContextAccessor.HttpContext.Items["User"];
-            if (user == null)
-            {
-                throw new UnauthorizedAccessException();
-            }
-
-            if (plan.UserId != user.Id)
-            {
-                throw new DomainServicesException("You have no access to delete this plan.");
-            }
-
             foreach (PlanArea planArea in _planAreaService.GetBy(plan))
             {
                 await _planAreaService.DeleteAsync(planArea.Id);
@@ -125,6 +108,7 @@ namespace LearningPlan.Services.Implementation
             {
                 Id = plan.Id,
                 Name = plan.Name,
+                UserId = plan.UserId,
                 PlanAreas = planAreas.Select(x => new PlanAreaServiceModel
                 {
                     Id = x.Id,
@@ -138,14 +122,13 @@ namespace LearningPlan.Services.Implementation
                         EndDate = areaTopic.EndDate.ToString("yyyy-MM-dd"),
                         Source = areaTopic.Source,
                         Description = areaTopic.Description
-                    }).OrderBy(x => x.StartDate).ToArray()
-                }).ToArray(),
+                    }).OrderBy(topic => topic.StartDate).ToArray()
+                }).ToArray()
             });
         }
 
-        public IQueryable<PlanResponseModel> GetAll()
+        public IQueryable<PlanResponseModel> GetAll(User user)
         {
-            User user = (User)_httpContextAccessor.HttpContext.Items["User"];
             if (user == null)
             {
                 throw new UnauthorizedAccessException();
@@ -169,12 +152,6 @@ namespace LearningPlan.Services.Implementation
                 if (plan == null)
                 {
                     throw new DomainServicesException("Plan not found.");
-                }
-
-                User user = (User) _httpContextAccessor.HttpContext.Items["User"];
-                if (user == null)
-                {
-                    throw new UnauthorizedAccessException();
                 }
 
                 plan.Name = model.Name;
