@@ -12,26 +12,31 @@ namespace LearningPlan.Services.Implementation
     public class PlanService : IPlanService
     {
         private readonly IPlanAreaService _planAreaService;
+        private readonly IReadRepository<BotSubscription> _botSubscriptionReadRepository;
         private readonly IReadRepository<Plan> _planReadRepository;
         private readonly IReadRepository<PlanArea> _planAreaReadRepository;
         private readonly IWriteRepository<AreaTopic> _areaTopicRepository;
+        private readonly IWriteRepository<BotSubscription> _botSubscriptionWriteRepository;
         private readonly IWriteRepository<Plan> _planWriteRepository;
         private readonly IWriteRepository<PlanArea> _planAreaRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public PlanService(
-            IPlanAreaService planAreaService,
+        public PlanService(IPlanAreaService planAreaService,
+            IReadRepository<BotSubscription> botSubscriptionReadRepository,
             IReadRepository<Plan> planReadRepository,
             IReadRepository<PlanArea> planAreaReadRepository,
             IWriteRepository<AreaTopic> areaTopicRepository,
+            IWriteRepository<BotSubscription> botSubscriptionWriteRepository,
             IWriteRepository<Plan> planWriteRepository,
             IWriteRepository<PlanArea> planAreaRepository,
             IUnitOfWork unitOfWork)
         {
             _planAreaService = planAreaService;
+            _botSubscriptionReadRepository = botSubscriptionReadRepository;
             _planReadRepository = planReadRepository;
             _planAreaReadRepository = planAreaReadRepository;
             _areaTopicRepository = areaTopicRepository;
+            _botSubscriptionWriteRepository = botSubscriptionWriteRepository;
             _planWriteRepository = planWriteRepository;
             _planAreaRepository = planAreaRepository;
             _unitOfWork = unitOfWork;
@@ -83,20 +88,30 @@ namespace LearningPlan.Services.Implementation
 
         public async Task DeleteAsync(string planId)
         {
-            Plan plan = await _planReadRepository.GetByIdAsync(planId);
-
-            if (plan == null)
+            using (_unitOfWork)
             {
-                throw new DomainServicesException("Plan not found.");
-            }
 
-            foreach (PlanArea planArea in _planAreaService.GetBy(plan))
-            {
-                await _planAreaService.DeleteAsync(planArea.Id);
-            }
+                Plan plan = await _planReadRepository.GetByIdAsync(planId);
 
-            await _planWriteRepository.DeleteAsync(plan);
-            await _planWriteRepository.SaveChangesAsync();
+                if (plan == null)
+                {
+                    throw new DomainServicesException("Plan not found.");
+                }
+
+                foreach (PlanArea planArea in _planAreaService.GetBy(plan))
+                {
+                    await _planAreaService.DeleteAsync(planArea.Id);
+                }
+
+                foreach (BotSubscription botSubscription in _botSubscriptionReadRepository.GetAll().Where(s => s.PlanId == planId))
+                {
+                    await _botSubscriptionWriteRepository.DeleteAsync(botSubscription);
+                }
+
+                await _planWriteRepository.DeleteAsync(plan);
+
+                await _unitOfWork.CommitAsync();
+            }
         }
 
         public async Task<PlanServiceModel> GetByIdAsync(string id)
