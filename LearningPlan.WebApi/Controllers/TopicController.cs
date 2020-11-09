@@ -22,6 +22,11 @@ namespace LearningPlan.WebApi.Controllers
             _topicService = topicService;
         }
 
+        /// <summary>
+        /// Add new plan area topic
+        /// </summary>
+        /// <param name="model">Description of topic</param>
+        /// <returns></returns>
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddTopic(CreateAreaTopicServiceModel model)
@@ -33,6 +38,11 @@ namespace LearningPlan.WebApi.Controllers
             return Json(response);
         }
 
+        /// <summary>
+        /// Delete topic by id
+        /// </summary>
+        /// <param name="id">topic id</param>
+        /// <returns></returns>
         [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTopic([Required]string id)
@@ -44,7 +54,11 @@ namespace LearningPlan.WebApi.Controllers
             return Ok();
         }
 
-
+        /// <summary>
+        /// Edit topic
+        /// </summary>
+        /// <param name="model">New values of topic</param>
+        /// <returns></returns>
         [Authorize]
         [HttpPut]
         public async Task Update(AreaTopicServiceModel model)

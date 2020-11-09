@@ -23,6 +23,11 @@ namespace LearningPlan.WebApi.Controllers
             _planService = planService;
         }
 
+        /// <summary>
+        /// Add new plan area
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddArea(CreatePlanAreaServiceModel model)
@@ -34,6 +39,11 @@ namespace LearningPlan.WebApi.Controllers
             return Json(result);
         }
 
+        /// <summary>
+        /// Delete plan area by id
+        /// </summary>
+        /// <param name="id">area id</param>
+        /// <returns></returns>
         [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
@@ -45,6 +55,11 @@ namespace LearningPlan.WebApi.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Edit plan area
+        /// </summary>
+        /// <param name="model">New plan area values</param>
+        /// <returns></returns>
         [Authorize]
         [HttpPut]
         public async Task Update([FromBody] PlanAreaServiceModel model)

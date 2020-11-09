@@ -1,3 +1,6 @@
+using System;
+using System.IO;
+using System.Reflection;
 using LearningPlan.DataAccess;
 using LearningPlan.DataAccess.Implementation;
 using LearningPlan.DomainModel.Exceptions;
@@ -28,6 +31,14 @@ namespace LearningPlan.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddSwaggerGen(c =>
+            {
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+            });
+
             services.AddDbContext<EfContext>(options =>
                 options.UseLazyLoadingProxies().
                     UseCosmos(
@@ -71,6 +82,13 @@ namespace LearningPlan.WebApi
                     });
                 });
             }
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Learning Plan Web API");
+            });
 
             app.UseCors(x => x
                 .AllowAnyOrigin()

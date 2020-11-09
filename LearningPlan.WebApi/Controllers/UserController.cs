@@ -20,6 +20,11 @@ namespace LearningPlan.WebApi.Controllers
             _userService = userService;
         }
 
+        /// <summary>
+        /// Authenticate user
+        /// </summary>
+        /// <param name="model">User model</param>
+        /// <returns></returns>
         [HttpPost("authenticate")]
         public async Task<IActionResult> Authenticate(AuthenticateModel model)
         {
@@ -36,6 +41,12 @@ namespace LearningPlan.WebApi.Controllers
             return Ok(response);
         }
 
+
+        /// <summary>
+        /// Sign up new user
+        /// </summary>
+        /// <param name="model">Register user model</param>
+        /// <returns></returns>
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
