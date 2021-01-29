@@ -3,6 +3,7 @@ using LearningPlan.DomainModel;
 using LearningPlan.DomainModel.Exceptions;
 using LearningPlan.Services.Model;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -39,8 +40,6 @@ namespace LearningPlan.Services.Implementation
             };
             await _planAreaWriteRepository.CreateAsync(planArea);
 
-            await _planAreaWriteRepository.SaveChangesAsync();
-
             return new PlanAreaServiceModel
             {
                 Id = planArea.Id,
@@ -66,7 +65,6 @@ namespace LearningPlan.Services.Implementation
                 Description = model.Description
             };
             await _areaTopicRepository.CreateAsync(areaTopic);
-            await _areaTopicRepository.SaveChangesAsync();
 
             return new AreaTopicResponseModel
             {
@@ -91,7 +89,6 @@ namespace LearningPlan.Services.Implementation
             }
 
             await _planAreaWriteRepository.DeleteAsync(planArea);
-            await _planAreaWriteRepository.SaveChangesAsync();
         }
 
         public async Task<PlanArea> GetByIdAsync(string id)
@@ -99,9 +96,9 @@ namespace LearningPlan.Services.Implementation
             return await _planAreaReadRepository.GetByIdAsync(id);
         }
 
-        public IQueryable<PlanArea> GetBy(Plan plan)
+        public IEnumerable<PlanArea> GetBy(Plan plan)
         {
-            return _planAreaReadRepository.GetAll().Where(area => area.PlanId == plan.Id);
+            return _planAreaReadRepository.GetAll(area => area.PlanId == plan.Id);
         }
 
         public async Task UpdateAsync(PlanAreaServiceModel model)

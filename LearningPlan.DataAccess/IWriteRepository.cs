@@ -7,8 +7,6 @@ namespace LearningPlan.DataAccess
     {
         Task CreateAsync(T entity);
 
-        Task SaveChangesAsync();
-
         Task UpdateAsync(T entity);
 
         Task DeleteAsync(T entity);

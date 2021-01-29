@@ -27,7 +27,7 @@ namespace LearningPlan.Services.Implementation
 
         public async Task<AuthenticateResponseModel> AuthenticateAsync(AuthenticateRequestModel model)
         {
-            var user = _userReadRepository.GetAll().SingleOrDefault(x => x.Username == model.Username);
+            var user = _userReadRepository.GetAll(x => x.Username == model.Username).SingleOrDefault();
 
             if (user == null || user.Password != HashPassword(model.Password, user.Salt)) return null;
             
@@ -39,7 +39,7 @@ namespace LearningPlan.Services.Implementation
         public async Task SignInAsync(SignInServiceModel model)
         {
             //consider to rid of AsEnumerable()
-            if (_userReadRepository.GetAll().Where(x => x.Username == model.Username).AsEnumerable().Any())
+            if (_userReadRepository.GetAll(x => x.Username == model.Username).Any())
             {
                 throw new DomainServicesException($"User with login '{model.Username}' is already exists.");
             }
@@ -57,13 +57,11 @@ namespace LearningPlan.Services.Implementation
                 Salt = salt
             };
             await _userWriteRepository.CreateAsync(user);
-
-            await _userWriteRepository.SaveChangesAsync();
         }
 
         public async Task<User> GetByIdAsync(string id)
         {
-           return await Task.FromResult(_userReadRepository.GetAll().SingleOrDefault(user => user.Id == id));
+           return await _userReadRepository.GetByIdAsync(id);
         }
 
         private string GenerateToken(User user, string secret)

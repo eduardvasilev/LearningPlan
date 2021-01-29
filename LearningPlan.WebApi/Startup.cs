@@ -39,17 +39,10 @@ namespace LearningPlan.WebApi
                 c.IncludeXmlComments(xmlPath);
             });
 
-            services.AddDbContext<EfContext>(options =>
-                options.UseLazyLoadingProxies().
-                    UseCosmos(
-                        Configuration["Database:AccountEndpoint"],
-                        Configuration["Database:AccountKey"],
-                        databaseName: Configuration["Database:DatabaseName"]));
-
+        
             services.AddHttpContextAccessor();
             services.AddScoped(typeof(IWriteRepository<>), typeof(WriteRepository<>));
             services.AddScoped(typeof(IReadRepository<>), typeof(ReadRepository<>));
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IPlanService, PlanService>();
             services.AddScoped<IPlanAreaService, PlanAreaService>();
             services.AddScoped<ITopicService, TopicService>();

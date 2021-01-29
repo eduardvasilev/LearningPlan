@@ -1,37 +1,36 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Amazon.DynamoDBv2;
+using Amazon.DynamoDBv2.DataModel;
 using LearningPlan.DomainModel;
 
 namespace LearningPlan.DataAccess.Implementation
 {
     public class WriteRepository<T> : IWriteRepository<T> where T : EntityBase
     {
-        private readonly EfContext _context;
+        private readonly AmazonDynamoDBClient _client;
+        private readonly DynamoDBContext _context;
 
-        public WriteRepository(EfContext context)
+        public WriteRepository()
         {
-            _context = context;
+            _client = new AmazonDynamoDBClient();
+            _context = new DynamoDBContext(_client);
         }
 
         public async Task CreateAsync(T entity)
         {
             entity.Id = Guid.NewGuid().ToString();
-            await _context.Set<T>().AddAsync(entity);
-        }
-
-        public Task SaveChangesAsync()
-        {
-            return _context.SaveChangesAsync();
+            await _context.SaveAsync(entity);
         }
 
         public async Task UpdateAsync(T entity)
         {
-            await Task.FromResult(_context.Update(entity));
+            await _context.SaveAsync(entity);
         }
 
         public async Task DeleteAsync(T entity)
         {
-           await Task.FromResult(_context.Remove(entity)) ;
+            await _context.DeleteAsync(entity);
         }
     }
 }

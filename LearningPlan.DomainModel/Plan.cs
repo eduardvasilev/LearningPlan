@@ -1,15 +1,14 @@
-﻿using System;
+﻿using Amazon.DynamoDBv2.DataModel;
 
 namespace LearningPlan.DomainModel
 {
+    [DynamoDBTable("Plans")]
     public class Plan : EntityBase
     {
-        public Plan(string name, string userId)
-        {
-            Name = name;
-            UserId = userId;
-        }
+        [DynamoDBProperty("Name")]
         public string Name { get; set; }
+
+        [DynamoDBProperty("UserId")]
         public string UserId { get; set; }
     }
 }

@@ -6,6 +6,7 @@ using LearningPlan.DomainModel;
 using LearningPlan.DomainModel.Exceptions;
 using System.Threading.Tasks;
 using LearningPlan.Services.Model;
+using System.Collections.Generic;
 
 namespace LearningPlan.Services.Implementation
 {
@@ -40,12 +41,11 @@ namespace LearningPlan.Services.Implementation
             }
             
             await _areaTopicWriteRepository.DeleteAsync(topic);
-            await _areaTopicWriteRepository.SaveChangesAsync();
         }
 
-        public IQueryable<AreaTopic> GetBy(PlanArea planArea)
+        public IEnumerable<AreaTopic> GetBy(PlanArea planArea)
         {
-            return _areaTopicReadRepository.GetAll().Where(topic => topic.PlanAreaId == planArea.Id);
+            return _areaTopicReadRepository.GetAll(topic => topic.PlanAreaId == planArea.Id);
         }
 
         public async Task UpdateAsync(AreaTopicServiceModel model)

@@ -3,6 +3,7 @@ using LearningPlan.DomainModel;
 using LearningPlan.DomainModel.Exceptions;
 using LearningPlan.Services.Model;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -46,7 +47,11 @@ namespace LearningPlan.Services.Implementation
         {
             using (_unitOfWork)
             {
-                var plan = new Plan(model.Name, model.UserId);
+                var plan = new Plan()
+                {
+                    Name = model.Name,
+                    UserId = model.UserId
+                };
 
                 await _planWriteRepository.CreateAsync(plan);
 
@@ -103,7 +108,7 @@ namespace LearningPlan.Services.Implementation
                     await _planAreaService.DeleteAsync(planArea.Id);
                 }
 
-                foreach (BotSubscription botSubscription in _botSubscriptionReadRepository.GetAll().Where(s => s.PlanId == planId))
+                foreach (BotSubscription botSubscription in _botSubscriptionReadRepository.GetAll(s => s.PlanId == planId))
                 {
                     await _botSubscriptionWriteRepository.DeleteAsync(botSubscription);
                 }
@@ -117,7 +122,7 @@ namespace LearningPlan.Services.Implementation
         public async Task<PlanServiceModel> GetByIdAsync(string id)
         {
             Plan plan = await _planReadRepository.GetByIdAsync(id);
-            var planAreas = _planAreaReadRepository.GetAll().Where(x => x.PlanId == id).ToList();
+            var planAreas = _planAreaReadRepository.GetAll(x => x.PlanId == id).ToList();
            
             return await Task.FromResult(new PlanServiceModel
             {
@@ -142,14 +147,14 @@ namespace LearningPlan.Services.Implementation
             });
         }
 
-        public IQueryable<PlanResponseModel> GetAll(User user)
+        public IEnumerable<PlanResponseModel> GetAll(User user)
         {
             if (user == null)
             {
                 throw new UnauthorizedAccessException();
             }
 
-            return _planReadRepository.GetAll().Where(x => x.UserId == user.Id)
+            return _planReadRepository.GetAll(x => x.UserId == user.Id)
                 .Select(plan => new PlanResponseModel
                 {
                     Id = plan.Id,

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using LearningPlan.Services.Model;
+using System.Collections.Generic;
 
 namespace LearningPlan.Services
 {
@@ -10,7 +11,7 @@ namespace LearningPlan.Services
         Task<AreaTopic> GetByIdAsync(string id);
         Task DeleteAsync(string topicId);
 
-        IQueryable<AreaTopic> GetBy(PlanArea planArea);
+        IEnumerable<AreaTopic> GetBy(PlanArea planArea);
 
         Task UpdateAsync(AreaTopicServiceModel model);
 

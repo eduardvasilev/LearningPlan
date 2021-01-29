@@ -38,7 +38,7 @@ namespace LearningPlan.Services.Implementation
             }
 
             if (_botSubscriptionReadRepository
-                .GetAll().Count(x => x.PlanId == model.PlanId && x.ChatId == model.ChatId) > 0)
+                .GetAll(x => x.PlanId == model.PlanId && x.ChatId == model.ChatId).Count() > 0)
             {
                 throw new DomainServicesException("You've already subscribed for this plan.");
             }
@@ -49,8 +49,6 @@ namespace LearningPlan.Services.Implementation
                 PlanId = model.PlanId
             });
 
-            await _botSubscriptionWriteRepository.SaveChangesAsync();
-
             return new PlanServiceModel
             {
                 Id = plan.Id,
@@ -58,7 +56,7 @@ namespace LearningPlan.Services.Implementation
             };
         }
 
-        public IQueryable<BotSubscriptionServiceModel> GetAll()
+        public IEnumerable<BotSubscriptionServiceModel> GetAll()
         {
             return _botSubscriptionReadRepository.GetAll().Select(x => new BotSubscriptionServiceModel
             {
@@ -71,8 +69,7 @@ namespace LearningPlan.Services.Implementation
         {
             DateTime today = DateTime.Today;
 
-            return _areaTopicReadRepository.GetAll()
-                .Where(x => x.PlanId == planId)
+            return _areaTopicReadRepository.GetAll(x => x.PlanId == planId)
                 .Where(x =>
                     x.StartDate <= today && x.EndDate >= today)
                 .Select(x => new AreaTopicServiceModel
