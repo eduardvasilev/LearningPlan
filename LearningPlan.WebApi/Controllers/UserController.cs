@@ -50,6 +50,7 @@ namespace LearningPlan.WebApi.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
+            return Ok();
            await _userService.SignInAsync(new SignInServiceModel
             {
                 Password = model.Password,

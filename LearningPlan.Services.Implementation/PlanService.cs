@@ -12,6 +12,7 @@ namespace LearningPlan.Services.Implementation
 {
     public class PlanService : IPlanService
     {
+        private readonly IReadRepository<AreaTopic> _areaTopicReadRepository;
         private readonly IPlanAreaService _planAreaService;
         private readonly IReadRepository<BotSubscription> _botSubscriptionReadRepository;
         private readonly IReadRepository<Plan> _planReadRepository;
@@ -20,18 +21,19 @@ namespace LearningPlan.Services.Implementation
         private readonly IWriteRepository<BotSubscription> _botSubscriptionWriteRepository;
         private readonly IWriteRepository<Plan> _planWriteRepository;
         private readonly IWriteRepository<PlanArea> _planAreaRepository;
-        private readonly IUnitOfWork _unitOfWork;
 
-        public PlanService(IPlanAreaService planAreaService,
+        public PlanService(
+            IReadRepository<AreaTopic> areaTopicReadRepository,
+            IPlanAreaService planAreaService,
             IReadRepository<BotSubscription> botSubscriptionReadRepository,
             IReadRepository<Plan> planReadRepository,
             IReadRepository<PlanArea> planAreaReadRepository,
             IWriteRepository<AreaTopic> areaTopicRepository,
             IWriteRepository<BotSubscription> botSubscriptionWriteRepository,
             IWriteRepository<Plan> planWriteRepository,
-            IWriteRepository<PlanArea> planAreaRepository,
-            IUnitOfWork unitOfWork)
+            IWriteRepository<PlanArea> planAreaRepository)
         {
+            _areaTopicReadRepository = areaTopicReadRepository;
             _planAreaService = planAreaService;
             _botSubscriptionReadRepository = botSubscriptionReadRepository;
             _planReadRepository = planReadRepository;
@@ -40,91 +42,84 @@ namespace LearningPlan.Services.Implementation
             _botSubscriptionWriteRepository = botSubscriptionWriteRepository;
             _planWriteRepository = planWriteRepository;
             _planAreaRepository = planAreaRepository;
-            _unitOfWork = unitOfWork;
         }
 
         public async Task<PlanResponseModel> CreatePlanAsync(PlanServiceModel model)
         {
-            using (_unitOfWork)
+
+            var plan = new Plan()
             {
-                var plan = new Plan()
+                Name = model.Name,
+                UserId = model.UserId
+            };
+
+            await _planWriteRepository.CreateAsync(plan);
+
+            foreach (PlanAreaServiceModel planArea in model.PlanAreas)
+            {
+                PlanArea area = new PlanArea
                 {
-                    Name = model.Name,
-                    UserId = model.UserId
+                    Name = planArea.Name,
+                    PlanId = plan.Id,
+                    UserId = plan.UserId
                 };
 
-                await _planWriteRepository.CreateAsync(plan);
-
-                foreach (PlanAreaServiceModel planArea in model.PlanAreas)
+                await _planAreaRepository.CreateAsync(area);
+                foreach (AreaTopicServiceModel areaTopic in planArea.AreaTopics)
                 {
-                    PlanArea area = new PlanArea
+                    await _areaTopicRepository.CreateAsync(new AreaTopic
                     {
-                        Name = planArea.Name,
-                        Plan = plan,
-                        PlanId = plan.Id
-                    };
-
-                    await _planAreaRepository.CreateAsync(area);
-                    foreach (AreaTopicServiceModel areaTopic in planArea.AreaTopics)
-                    {
-                        await _areaTopicRepository.CreateAsync(new AreaTopic
-                        {
-                            Name = areaTopic.Name,
-                            StartDate = DateTime.ParseExact(areaTopic.StartDate, "yyyy-MM-dd",
-                                CultureInfo.CurrentCulture),
-                            EndDate = DateTime.ParseExact(areaTopic.EndDate, "yyyy-MM-dd", CultureInfo.CurrentCulture),
-                            Source = areaTopic.Source,
-                            Description = areaTopic.Description,
-                            PlanArea = area,
-                            PlanAreaId = area.Id
-                        });
-                    }
+                        Name = areaTopic.Name,
+                        StartDate = DateTime.ParseExact(areaTopic.StartDate, "yyyy-MM-dd",
+                            CultureInfo.CurrentCulture),
+                        EndDate = DateTime.ParseExact(areaTopic.EndDate, "yyyy-MM-dd", CultureInfo.CurrentCulture),
+                        Source = areaTopic.Source,
+                        Description = areaTopic.Description,
+                        UserId = plan.UserId,
+                        PlanAreaId = area.Id
+                    });
                 }
-
-                await _unitOfWork.CommitAsync();
-
-                return new PlanResponseModel
-                {
-                    Name = plan.Name,
-                    Id = plan.Id
-                };
             }
+
+            return new PlanResponseModel
+            {
+                Name = plan.Name,
+                Id = plan.Id
+            };
         }
 
         public async Task DeleteAsync(string planId)
         {
-            using (_unitOfWork)
+
+            Plan plan = await _planReadRepository.GetByIdAsync(planId);
+
+            if (plan == null)
             {
-
-                Plan plan = await _planReadRepository.GetByIdAsync(planId);
-
-                if (plan == null)
-                {
-                    throw new DomainServicesException("Plan not found.");
-                }
-
-                foreach (PlanArea planArea in _planAreaService.GetBy(plan))
-                {
-                    await _planAreaService.DeleteAsync(planArea.Id);
-                }
-
-                foreach (BotSubscription botSubscription in _botSubscriptionReadRepository.GetAll(s => s.PlanId == planId))
-                {
-                    await _botSubscriptionWriteRepository.DeleteAsync(botSubscription);
-                }
-
-                await _planWriteRepository.DeleteAsync(plan);
-
-                await _unitOfWork.CommitAsync();
+                throw new DomainServicesException("Plan not found.");
             }
+
+            foreach (PlanArea planArea in _planAreaService.GetBy(plan))
+            {
+                await _planAreaService.DeleteAsync(planArea.Id);
+            }
+
+            foreach (BotSubscription botSubscription in _botSubscriptionReadRepository.GetAll(s => s.PlanId == planId))
+            {
+                await _botSubscriptionWriteRepository.DeleteAsync(botSubscription);
+            }
+
+            await _planWriteRepository.DeleteAsync(plan);
+
         }
 
         public async Task<PlanServiceModel> GetByIdAsync(string id)
         {
             Plan plan = await _planReadRepository.GetByIdAsync(id);
             var planAreas = _planAreaReadRepository.GetAll(x => x.PlanId == id).ToList();
-           
-            return await Task.FromResult(new PlanServiceModel
+
+            IEnumerable<AreaTopic> areaTopics = _areaTopicReadRepository.GetAll(x => x.PlanId == id);
+
+            PlanServiceModel planServiceModel = new PlanServiceModel
             {
                 Id = plan.Id,
                 Name = plan.Name,
@@ -134,7 +129,7 @@ namespace LearningPlan.Services.Implementation
                     Id = x.Id,
                     Name = x.Name,
                     PlanId = x.PlanId,
-                    AreaTopics = x.AreaTopics.Select(areaTopic => new AreaTopicServiceModel
+                    AreaTopics = areaTopics.Select(areaTopic => new AreaTopicServiceModel
                     {
                         Id = areaTopic.Id,
                         Name = areaTopic.Name,
@@ -144,7 +139,8 @@ namespace LearningPlan.Services.Implementation
                         Description = areaTopic.Description
                     }).OrderBy(topic => topic.StartDate).ToArray()
                 }).ToArray()
-            });
+            };
+            return await Task.FromResult(planServiceModel);
         }
 
         public IEnumerable<PlanResponseModel> GetAll(User user)
@@ -164,20 +160,16 @@ namespace LearningPlan.Services.Implementation
 
         public async Task UpdateAsync(PlanServiceModel model)
         {
-            using (_unitOfWork)
+
+            Plan plan = await _planReadRepository.GetByIdAsync(model.Id);
+
+            if (plan == null)
             {
-
-                Plan plan = await _planReadRepository.GetByIdAsync(model.Id);
-
-                if (plan == null)
-                {
-                    throw new DomainServicesException("Plan not found.");
-                }
-
-                plan.Name = model.Name;
-
-                await _unitOfWork.CommitAsync();
+                throw new DomainServicesException("Plan not found.");
             }
+
+            plan.Name = model.Name;
+            await _planWriteRepository.UpdateAsync(plan);
         }
     }
 }

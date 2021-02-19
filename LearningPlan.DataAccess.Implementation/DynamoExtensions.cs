@@ -17,26 +17,26 @@ namespace LearningPlan.DataAccess.Implementation
 
             ExpressionType nodeType = propertyLambda.Body.NodeType;
 
-            QueryOperator? queryOperator = null;
+            ScanOperator? queryOperator = null;
             switch (nodeType)
             {
                 case ExpressionType.Equal:
-                    queryOperator = QueryOperator.Equal;
+                    queryOperator = ScanOperator.Equal;
                     break;
                 case ExpressionType.GreaterThan:
-                    queryOperator = QueryOperator.GreaterThan;
+                    queryOperator = ScanOperator.GreaterThan;
                     break;
                 case ExpressionType.GreaterThanOrEqual:
-                    queryOperator = QueryOperator.GreaterThanOrEqual;
+                    queryOperator = ScanOperator.GreaterThanOrEqual;
                     break;
                 case ExpressionType.LessThan:
-                    queryOperator = QueryOperator.LessThan;
+                    queryOperator = ScanOperator.LessThan;
                     break;
                 case ExpressionType.LessThanOrEqual:
-                    queryOperator = QueryOperator.LessThanOrEqual;
+                    queryOperator = ScanOperator.LessThanOrEqual;
                     break;
                 case ExpressionType.NotEqual:
-                    //todo add
+                    queryOperator = ScanOperator.NotEqual;
                     break;
                 case ExpressionType.And:
                     break;
@@ -49,7 +49,8 @@ namespace LearningPlan.DataAccess.Implementation
             System.Linq.Expressions.Expression rigth = ((BinaryExpression)propertyLambda.Body).Right;
             MemberExpression member = left as MemberExpression;
             var leftValue = member.Member.Name;
-
+            MemberExpression rmember = rigth as MemberExpression;
+            var rigthValue = rmember.Member.Name;
             object val2 = "";
 
             ConstantExpression member2 = rigth as ConstantExpression;
@@ -62,10 +63,14 @@ namespace LearningPlan.DataAccess.Implementation
                 val2 = GetValue(rigth as MemberExpression);
 
             }
-            QueryFilter filter = new QueryFilter(leftValue, queryOperator.Value, val2.GetType().GetProperty(leftValue).GetValue(val2).ToString());
 
-            List<Document> docs = (table.Query(filter).GetNextSetAsync().GetAwaiter().GetResult());
-            return docs;
+            ScanFilter scanFilter = new ScanFilter();
+            scanFilter.AddCondition(leftValue, queryOperator.Value, val2.GetType().GetProperty(rigthValue)?.GetValue(val2).ToString() ?? val2.ToString());
+
+            //QueryFilter filter = new QueryFilter(leftValue, queryOperator.Value, val2.GetType().GetProperty(leftValue)?.GetValue(val2).ToString() ?? val2.ToString());
+
+            var docs = table.Scan(scanFilter).GetNextSetAsync();
+            return docs.GetAwaiter().GetResult();
         }
 
         private static object GetValue(MemberExpression exp)

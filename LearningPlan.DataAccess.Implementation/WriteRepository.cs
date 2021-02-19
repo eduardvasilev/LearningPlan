@@ -2,7 +2,9 @@
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
+using LearningPlan.DataAccess.Options;
 using LearningPlan.DomainModel;
+using Microsoft.Extensions.Options;
 
 namespace LearningPlan.DataAccess.Implementation
 {
@@ -11,9 +13,9 @@ namespace LearningPlan.DataAccess.Implementation
         private readonly AmazonDynamoDBClient _client;
         private readonly DynamoDBContext _context;
 
-        public WriteRepository()
+        public WriteRepository(IOptions<AmazonOptions> amazonOptions)
         {
-            _client = new AmazonDynamoDBClient();
+            _client = new AmazonDynamoDBClient(amazonOptions.Value.ApiKey, amazonOptions.Value.SecretKey, Amazon.RegionEndpoint.USEast2);
             _context = new DynamoDBContext(_client);
         }
 

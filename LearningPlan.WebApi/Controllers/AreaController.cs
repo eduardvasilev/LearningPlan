@@ -49,7 +49,7 @@ namespace LearningPlan.WebApi.Controllers
         public async Task<IActionResult> Delete(string id)
         {
             var planArea = await _planAreaService.GetByIdAsync(id);
-            ValidateUser(planArea.Plan.UserId);
+            ValidateUser(planArea.UserId);
 
             await _planAreaService.DeleteAsync(id);
             return Ok();
@@ -65,7 +65,7 @@ namespace LearningPlan.WebApi.Controllers
         public async Task Update([FromBody] PlanAreaServiceModel model)
         {
             PlanArea planArea = await _planAreaService.GetByIdAsync(model.Id);
-            ValidateUser(planArea.Plan.UserId);
+            ValidateUser(planArea.UserId);
 
             await _planAreaService.UpdateAsync(model);
         }

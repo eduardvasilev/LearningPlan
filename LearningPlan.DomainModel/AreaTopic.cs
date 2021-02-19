@@ -18,9 +18,6 @@ namespace LearningPlan.DomainModel
         [DynamoDBProperty("EndDate")]
         public DateTime EndDate { get; set; }
 
-        [DynamoDBProperty("PlanArea")]
-        public virtual PlanArea PlanArea { get; set; }
-
         [DynamoDBProperty("PlanAreaId")]
         public string PlanAreaId { get; set; }
 
@@ -29,5 +26,8 @@ namespace LearningPlan.DomainModel
 
         [DynamoDBProperty("Description")]
         public string Description { get; set; }
+
+        [DynamoDBProperty("UserId")]
+        public string UserId { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using LearningPlan.DataAccess;
 using LearningPlan.DataAccess.Implementation;
+using LearningPlan.DataAccess.Options;
 using LearningPlan.DomainModel.Exceptions;
 using LearningPlan.Services;
 using LearningPlan.Services.Implementation;
@@ -38,8 +39,8 @@ namespace LearningPlan.WebApi
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
+            services.Configure<AmazonOptions>(Configuration.GetSection("Amazon"));
 
-        
             services.AddHttpContextAccessor();
             services.AddScoped(typeof(IWriteRepository<>), typeof(WriteRepository<>));
             services.AddScoped(typeof(IReadRepository<>), typeof(ReadRepository<>));

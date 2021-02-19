@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using LearningPlan.DataAccess.Options;
+using Microsoft.Extensions.Options;
 
 namespace LearningPlan.DataAccess.Implementation
 {
@@ -15,9 +17,9 @@ namespace LearningPlan.DataAccess.Implementation
         private readonly AmazonDynamoDBClient _client;
         private readonly DynamoDBContext _context;
 
-        public ReadRepository()
+        public ReadRepository(IOptions<AmazonOptions> amazonOptions)
         {
-            _client = new AmazonDynamoDBClient();
+            _client = new AmazonDynamoDBClient(amazonOptions.Value.ApiKey, amazonOptions.Value.SecretKey, Amazon.RegionEndpoint.USEast2);
             _context = new DynamoDBContext(_client);
         }
 
@@ -26,7 +28,7 @@ namespace LearningPlan.DataAccess.Implementation
             var table = _context.GetTargetTable<T>();
             List<Document> data;
             if (filter != null) {
-                data = table.WhereDynamo<T>(x => x.Id == "");
+                data = table.WhereDynamo<T>(filter);
             }
             else
             {

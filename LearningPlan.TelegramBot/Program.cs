@@ -97,14 +97,9 @@ namespace LearningPlan.TelegramBot
         private static void RegisterServices(IConfiguration configuration)
         {
             var services = new ServiceCollection();
-            services.AddDbContext<EfContext>(options =>
-                options.UseCosmos(
-                        configuration["Database:AccountEndpoint"],
-                        configuration["Database:AccountKey"],
-                        databaseName: configuration["Database:DatabaseName"]));
+       
             services.AddScoped(typeof(IWriteRepository<>), typeof(WriteRepository<>));
             services.AddScoped(typeof(IReadRepository<>), typeof(ReadRepository<>));
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IPlanService, PlanService>();
             services.AddScoped<IBotSubscriptionService, BotSubscriptionService>();
             services.AddScoped<IPlanAreaService, PlanAreaService>();
