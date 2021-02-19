@@ -27,7 +27,7 @@ namespace LearningPlan.Services.Implementation
 
         public async Task<AuthenticateResponseModel> AuthenticateAsync(AuthenticateRequestModel model)
         {
-            var user = _userReadRepository.GetAll(x => x.Username == model.Username).SingleOrDefault();
+            var user = await _userReadRepository.GetAll(x => x.Username == model.Username).SingleOrDefaultAsync();
 
             if (user == null || user.Password != HashPassword(model.Password, user.Salt)) return null;
             
@@ -38,8 +38,7 @@ namespace LearningPlan.Services.Implementation
 
         public async Task SignInAsync(SignInServiceModel model)
         {
-            //consider to rid of AsEnumerable()
-            if (_userReadRepository.GetAll(x => x.Username == model.Username).Any())
+            if (await _userReadRepository.GetAll(x => x.Username == model.Username).AnyAsync())
             {
                 throw new DomainServicesException($"User with login '{model.Username}' is already exists.");
             }

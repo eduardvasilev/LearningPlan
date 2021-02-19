@@ -11,7 +11,7 @@ namespace LearningPlan.Services
         Task<AreaTopic> GetByIdAsync(string id);
         Task DeleteAsync(string topicId);
 
-        IEnumerable<AreaTopic> GetBy(PlanArea planArea);
+        IAsyncEnumerable<AreaTopic> GetBy(PlanArea planArea);
 
         Task UpdateAsync(AreaTopicServiceModel model);
 

@@ -12,7 +12,7 @@ namespace LearningPlan.Services
         Task<AreaTopicResponseModel> CreateAreaTopicAsync(CreateAreaTopicServiceModel model);
         Task DeleteAsync(string id);
         Task<PlanArea> GetByIdAsync(string id);
-        IEnumerable<PlanArea> GetBy(Plan plan);
+        IAsyncEnumerable<PlanArea> GetBy(Plan plan);
         Task UpdateAsync(PlanAreaServiceModel model);
     }
 }

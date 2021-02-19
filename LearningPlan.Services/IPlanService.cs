@@ -13,7 +13,7 @@ namespace LearningPlan.Services
 
         Task<PlanServiceModel> GetByIdAsync(string id);
 
-        IEnumerable<PlanResponseModel> GetAll(User user);
+        IAsyncEnumerable<PlanResponseModel> GetAll(User user);
 
         Task UpdateAsync(PlanServiceModel model);
     }

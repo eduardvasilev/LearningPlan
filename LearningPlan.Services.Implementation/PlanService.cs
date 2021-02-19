@@ -98,12 +98,12 @@ namespace LearningPlan.Services.Implementation
                 throw new DomainServicesException("Plan not found.");
             }
 
-            foreach (PlanArea planArea in _planAreaService.GetBy(plan))
+            await foreach (PlanArea planArea in _planAreaService.GetBy(plan))
             {
                 await _planAreaService.DeleteAsync(planArea.Id);
             }
 
-            foreach (BotSubscription botSubscription in _botSubscriptionReadRepository.GetAll(s => s.PlanId == planId))
+            await foreach (BotSubscription botSubscription in _botSubscriptionReadRepository.GetAll(s => s.PlanId == planId))
             {
                 await _botSubscriptionWriteRepository.DeleteAsync(botSubscription);
             }
@@ -115,9 +115,9 @@ namespace LearningPlan.Services.Implementation
         public async Task<PlanServiceModel> GetByIdAsync(string id)
         {
             Plan plan = await _planReadRepository.GetByIdAsync(id);
-            var planAreas = _planAreaReadRepository.GetAll(x => x.PlanId == id).ToList();
+            var planAreas = await _planAreaReadRepository.GetAll(x => id == x.PlanId).ToListAsync();
 
-            IEnumerable<AreaTopic> areaTopics = _areaTopicReadRepository.GetAll(x => x.PlanId == id);
+            IAsyncEnumerable<AreaTopic> areaTopics = _areaTopicReadRepository.GetAll(x => x.PlanId == id);
 
             PlanServiceModel planServiceModel = new PlanServiceModel
             {
@@ -137,25 +137,28 @@ namespace LearningPlan.Services.Implementation
                         EndDate = areaTopic.EndDate.ToString("yyyy-MM-dd"),
                         Source = areaTopic.Source,
                         Description = areaTopic.Description
-                    }).OrderBy(topic => topic.StartDate).ToArray()
+                    }).OrderBy(topic => topic.StartDate).ToArrayAsync().GetAwaiter().GetResult()
                 }).ToArray()
             };
             return await Task.FromResult(planServiceModel);
         }
 
-        public IEnumerable<PlanResponseModel> GetAll(User user)
+        public async IAsyncEnumerable<PlanResponseModel> GetAll(User user)
         {
             if (user == null)
             {
                 throw new UnauthorizedAccessException();
             }
 
-            return _planReadRepository.GetAll(x => x.UserId == user.Id)
+            await foreach(var item in _planReadRepository.GetAll(x => x.UserId == user.Id)
                 .Select(plan => new PlanResponseModel
                 {
                     Id = plan.Id,
                     Name = plan.Name
-                });
+                }))
+            {
+                yield return item;
+            }
         }
 
         public async Task UpdateAsync(PlanServiceModel model)

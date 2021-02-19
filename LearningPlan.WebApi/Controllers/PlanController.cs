@@ -54,7 +54,7 @@ namespace LearningPlan.WebApi.Controllers
         [HttpGet]
         public List<PlanResponseModel> GetAll()
         {
-            return _planService.GetAll(GetCurrentUser()).ToList();
+            return _planService.GetAll(GetCurrentUser()).ToListAsync().GetAwaiter().GetResult();
         }
 
         /// <summary>

@@ -86,7 +86,7 @@ namespace LearningPlan.Services.Implementation
                 throw new DomainServicesException("Plan Area not found.");
             }
 
-            foreach (AreaTopic areaTopic in _topicService.GetBy(planArea))
+            await foreach (AreaTopic areaTopic in _topicService.GetBy(planArea))
             {
                 await _topicService.DeleteAsync(areaTopic.Id);
             }
@@ -99,9 +99,9 @@ namespace LearningPlan.Services.Implementation
             return await _planAreaReadRepository.GetByIdAsync(id);
         }
 
-        public IEnumerable<PlanArea> GetBy(Plan plan)
+        public IAsyncEnumerable<PlanArea> GetBy(Plan plan)
         {
-            return _planAreaReadRepository.GetAll(area => area.PlanId == plan.Id);
+            return _planAreaReadRepository.GetAll(area => area.PlanId == plan.Id).AsAsyncEnumerable();
         }
 
         public async Task UpdateAsync(PlanAreaServiceModel model)

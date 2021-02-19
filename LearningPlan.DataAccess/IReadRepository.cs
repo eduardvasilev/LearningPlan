@@ -8,7 +8,9 @@ namespace LearningPlan.DataAccess
 {
     public interface IReadRepository<T> where T : EntityBase
     {
-        IEnumerable<T> GetAll(Expression<Func<T, bool>> filter = null);
+        IAsyncEnumerable<T> GetAll(Expression<Func<T, bool>> filter = null);
+
+        IAsyncEnumerable<T> GetAll(string partitionKey);
 
         Task<T> GetByIdAsync(string id);
     }

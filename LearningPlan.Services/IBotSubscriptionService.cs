@@ -7,7 +7,7 @@ namespace LearningPlan.Services
     public interface IBotSubscriptionService
     {
         Task<PlanServiceModel> CreateBotSubscriptionAsync(BotSubscriptionServiceModel model);
-        IEnumerable<BotSubscriptionServiceModel> GetAll();
-        IEnumerable<AreaTopicServiceModel> GetActualTopics(string planId);
+        IAsyncEnumerable<BotSubscriptionServiceModel> GetAll();
+        IAsyncEnumerable<AreaTopicServiceModel> GetActualTopics(string planId);
     }
 }

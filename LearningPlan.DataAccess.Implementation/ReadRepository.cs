@@ -23,20 +23,20 @@ namespace LearningPlan.DataAccess.Implementation
             _context = new DynamoDBContext(_client);
         }
 
-        public IEnumerable<T> GetAll(Expression<Func<T, bool>> filter = null)
+        public async IAsyncEnumerable<T> GetAll(Expression<Func<T, bool>> filter = null)
         {
-            var table = _context.GetTargetTable<T>();
-            List<Document> data;
-            if (filter != null) {
-                data = table.WhereDynamo<T>(filter);
-            }
-            else
+            await foreach (var item in _context.GetTargetTable<T>().WhereDynamo(filter))
             {
-                var scanOps = new ScanOperationConfig();
-                data = table.Scan(scanOps).GetNextSetAsync().GetAwaiter().GetResult();
+                yield return _context.FromDocument<T>(item);
             }
-            var result = _context.FromDocuments<T>(data);
-            return result;
+        }
+
+        public async IAsyncEnumerable<T> GetAll(string partitionKey)
+        {
+            await foreach (var item in _context.GetTargetTable<T>().WhereDynamo<T>(partitionKey)) 
+            {
+                yield return _context.FromDocument<T>(item);
+            }
         }
 
         public async Task<T> GetByIdAsync(string id)

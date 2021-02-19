@@ -40,7 +40,7 @@ namespace LearningPlan.Services.Implementation
             await _areaTopicWriteRepository.DeleteAsync(topic);
         }
 
-        public IEnumerable<AreaTopic> GetBy(PlanArea planArea)
+        public IAsyncEnumerable<AreaTopic> GetBy(PlanArea planArea)
         {
             return _areaTopicReadRepository.GetAll(topic => topic.PlanAreaId == planArea.Id);
         }

@@ -37,8 +37,8 @@ namespace LearningPlan.Services.Implementation
                 throw new DomainServicesException("Plan not found.");
             }
 
-            if (_botSubscriptionReadRepository
-                .GetAll(x => x.PlanId == model.PlanId && x.ChatId == model.ChatId).Count() > 0)
+            if (await _botSubscriptionReadRepository
+                .GetAll(x => x.PlanId == model.PlanId && x.ChatId == model.ChatId).CountAsync()> 0)
             {
                 throw new DomainServicesException("You've already subscribed for this plan.");
             }
@@ -56,16 +56,16 @@ namespace LearningPlan.Services.Implementation
             };
         }
 
-        public IEnumerable<BotSubscriptionServiceModel> GetAll()
+        public IAsyncEnumerable<BotSubscriptionServiceModel> GetAll()
         {
             return _botSubscriptionReadRepository.GetAll().Select(x => new BotSubscriptionServiceModel
             {
                 PlanId = x.PlanId,
                 ChatId = x.ChatId
-            });
+            }).AsAsyncEnumerable();
         }
 
-        public IEnumerable<AreaTopicServiceModel> GetActualTopics(string planId)
+        public IAsyncEnumerable<AreaTopicServiceModel> GetActualTopics(string planId)
         {
             DateTime today = DateTime.Today;
 
@@ -78,8 +78,7 @@ namespace LearningPlan.Services.Implementation
                     StartDate = x.StartDate.ToString("d"),
                     EndDate = x.EndDate.ToString("d"),
                     Source = x.Source,
-                })
-                .ToList();
+                }).AsAsyncEnumerable();
         }
 
     }
