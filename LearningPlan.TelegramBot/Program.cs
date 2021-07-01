@@ -98,10 +98,9 @@ namespace LearningPlan.TelegramBot
         {
             var services = new ServiceCollection();
             services.AddDbContext<EfContext>(options =>
-                options.UseCosmos(
-                        configuration["Database:AccountEndpoint"],
-                        configuration["Database:AccountKey"],
-                        databaseName: configuration["Database:DatabaseName"]));
+                options.
+                    UseNpgsql(configuration.GetSection("Database:ConnectionString").Value));
+
             services.AddScoped(typeof(IWriteRepository<>), typeof(WriteRepository<>));
             services.AddScoped(typeof(IReadRepository<>), typeof(ReadRepository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();

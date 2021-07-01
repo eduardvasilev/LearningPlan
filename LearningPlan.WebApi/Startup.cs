@@ -41,10 +41,7 @@ namespace LearningPlan.WebApi
 
             services.AddDbContext<EfContext>(options =>
                 options.UseLazyLoadingProxies().
-                    UseCosmos(
-                        Configuration["Database:AccountEndpoint"],
-                        Configuration["Database:AccountKey"],
-                        databaseName: Configuration["Database:DatabaseName"]));
+                    UseNpgsql(Configuration.GetSection("Database:ConnectionString").Value));
 
             services.AddHttpContextAccessor();
             services.AddScoped(typeof(IWriteRepository<>), typeof(WriteRepository<>));

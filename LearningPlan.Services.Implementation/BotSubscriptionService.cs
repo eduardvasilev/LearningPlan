@@ -81,6 +81,7 @@ namespace LearningPlan.Services.Implementation
                     StartDate = x.StartDate.ToString("d"),
                     EndDate = x.EndDate.ToString("d"),
                     Source = x.Source,
+                    Description = x.Description
                 })
                 .ToList();
         }

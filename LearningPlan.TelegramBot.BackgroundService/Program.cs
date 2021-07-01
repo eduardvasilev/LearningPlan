@@ -9,88 +9,59 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
+using Microsoft.Extensions.Hosting;
+using Quartz;
 using Telegram.Bot;
 
 namespace LearningPlan.TelegramBot.BackgroundService
 {
     class Program
     {
-        private static TelegramBotClient _client;
-        private static IServiceProvider _serviceProvider;
-
-        static void Main(string[] args)
-        {
-            IConfiguration configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
-                .AddEnvironmentVariables()
-                .AddCommandLine(args)
-                .Build();
-
-            RegisterServices(configuration);
-
-            string token = configuration.GetSection("BotConfiguration:BotToken").Value;
-            _client = new TelegramBotClient(token);
-            Process();
-
-            DisposeServices();
-        }
-
-        private static void Process()
-        {
-            IServiceScope scope = _serviceProvider.CreateScope();
-            IBotSubscriptionService botSubscriptionService =
-                (IBotSubscriptionService)scope.ServiceProvider.GetService(typeof(IBotSubscriptionService));
-            foreach (BotSubscriptionServiceModel botSubscription in botSubscriptionService.GetAll())
-            {
-                var todayTopics = botSubscriptionService.GetActualTopics(botSubscription.PlanId).ToList();
-
-                if (todayTopics.Any())
+        static void Main(string[] args) => CreateHostBuilder(args).Build().Run();
+  
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureServices((hostContext, services) =>
                 {
-                    foreach (var topic in todayTopics)
+                    IConfiguration configuration = new ConfigurationBuilder()
+                        .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                        .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
+                        .AddEnvironmentVariables()
+                        .AddCommandLine(args)
+                        .Build();
+
+                    services.AddDbContext<EfContext>(options =>
+                        options.
+                            UseNpgsql(configuration.GetSection("Database:ConnectionString").Value));
+
+                    services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+                    services.AddScoped(typeof(IWriteRepository<>), typeof(WriteRepository<>));
+                    services.AddScoped(typeof(IReadRepository<>), typeof(ReadRepository<>));
+                    services.AddScoped<IUnitOfWork, UnitOfWork>();
+                    services.AddScoped<IPlanService, PlanService>();
+                    services.AddScoped<IBotSubscriptionService, BotSubscriptionService>();
+                    services.AddScoped<IPlanAreaService, PlanAreaService>();
+                    services.AddScoped<IUserService, UserService>();
+                    services.AddScoped<ITopicService, TopicService>();
+
+                    services.AddQuartz(q =>
                     {
-                        _client.SendTextMessageAsync(botSubscription.ChatId, 
-                            $"Your today's topic is {topic.Name}\r\nDue date: {topic.EndDate}.\r\nSource: {topic.Source}\r\nGood luck!").GetAwaiter().GetResult();
-                    }
-                }
-                else
-                {
-                    //TODO add plan.IsFinished
-                }
-            }
-        }
+                        var jobKey = new JobKey(nameof(TelegramNotificationJob));
 
-        private static void RegisterServices(IConfiguration configuration)
-        {
-            var services = new ServiceCollection();
-            services.AddDbContext<EfContext>(options =>
-                options.UseCosmos(
-                    configuration["Database:AccountEndpoint"],
-                    configuration["Database:AccountKey"],
-                    databaseName: configuration["Database:DatabaseName"]));
+                        q.AddJob<TelegramNotificationJob>(opts => opts.WithIdentity(jobKey));
 
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddScoped(typeof(IWriteRepository<>), typeof(WriteRepository<>));
-            services.AddScoped(typeof(IReadRepository<>), typeof(ReadRepository<>));
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IPlanService, PlanService>();
-            services.AddScoped<IBotSubscriptionService, BotSubscriptionService>();
-            services.AddScoped<IPlanAreaService, PlanAreaService>();
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<ITopicService, TopicService>();
-            _serviceProvider = services.BuildServiceProvider(true);
-        }
+                        // Create a trigger for the job
+                        q.AddTrigger(opts => opts
+                            .ForJob(jobKey)
+                            .WithIdentity($"{jobKey.Name}-trigger")
+                            .WithCronSchedule("0 12 * * * ?")); //todo configure for each user
+                        q.UseMicrosoftDependencyInjectionJobFactory();
+                    });
 
-        private static void DisposeServices()
-        {
-            if (_serviceProvider == null)
-            {
-                return;
-            }
-            if (_serviceProvider is IDisposable disposable)
-            {
-                disposable.Dispose();
-            }
-        }
+                    services.AddQuartzHostedService(
+                        q => q.WaitForJobsToComplete = true);
+
+                });
+
     }
 }
