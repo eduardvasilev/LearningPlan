@@ -17,7 +17,7 @@ steps:
 
 - script: |
     npm install
-    npm run build
+    npm run build --prod
   displayName: 'npm install and build'
   workingDirectory: 'LearningPlan.Web'
 
