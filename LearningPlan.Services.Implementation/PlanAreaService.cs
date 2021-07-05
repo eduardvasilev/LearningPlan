@@ -82,7 +82,7 @@ namespace LearningPlan.Services.Implementation
                 throw new DomainServicesException("Plan Area not found.");
             }
 
-            foreach (AreaTopic areaTopic in _topicService.GetBy(planArea))
+            foreach (AreaTopic areaTopic in _topicService.GetBy(planArea).ToList())
             {
                 await _topicService.DeleteAsync(areaTopic.Id);
             }
