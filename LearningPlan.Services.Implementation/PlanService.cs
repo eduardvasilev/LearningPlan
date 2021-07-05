@@ -88,31 +88,28 @@ namespace LearningPlan.Services.Implementation
 
         public async Task DeleteAsync(string planId)
         {
-            using (_unitOfWork)
+
+            Plan plan = await _planReadRepository.GetByIdAsync(planId);
+
+            if (plan == null)
             {
-
-                Plan plan = await _planReadRepository.GetByIdAsync(planId);
-
-                if (plan == null)
-                {
-                    throw new DomainServicesException("Plan not found.");
-                }
-
-                foreach (PlanArea planArea in _planAreaService.GetBy(plan))
-                {
-                    await _planAreaService.DeleteAsync(planArea.Id);
-                }
-
-                foreach (BotSubscription botSubscription in _botSubscriptionReadRepository.GetAll().Where(s => s.PlanId == planId))
-                {
-                    await _botSubscriptionWriteRepository.DeleteAsync(botSubscription);
-                }
-
-                await _planWriteRepository.DeleteAsync(plan);
-
-                await _unitOfWork.CommitAsync();
+                throw new DomainServicesException("Plan not found.");
             }
-        }
+
+            foreach (PlanArea planArea in _planAreaService.GetBy(plan).ToList())
+            {
+                await _planAreaService.DeleteAsync(planArea.Id);
+            }
+
+            foreach (BotSubscription botSubscription in _botSubscriptionReadRepository.GetAll().Where(s => s.PlanId == planId).ToList())
+            {
+                await _botSubscriptionWriteRepository.DeleteAsync(botSubscription);
+            }
+
+            await _planWriteRepository.DeleteAsync(plan);
+
+            await _unitOfWork.CommitAsync();
+    }
 
         public async Task<PlanServiceModel> GetByIdAsync(string id)
         {

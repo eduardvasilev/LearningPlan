@@ -16,7 +16,7 @@
                 <div class="p-2">
                     <h3>{{area.name}}</h3>
                 </div>
-                <div class="p-2">
+                <div class="p-2" v-if="isCurrentUserOwner" >
                     <div class="btn-toolbar" role="toolbar">
                         <div class="btn-group mr-2" role="group">
                             <button class="btn" type="button" v-on:click="showNameUpdate">
@@ -35,11 +35,11 @@
                 </div>
             </div>
         </div>
-        <div class="card">
+        <div  class="card">
             <div v-for="(areaTopic, index) in area.areaTopics" v-bind:key="areaTopic.id" class="card">
                 <Topic :topic="areaTopic" :planAreaId="area.id" v-on:topic-deleted="deletetopic($event)"  />
             </div>
-            <div class="card-header" :id="'addtopic' + area.id">
+            <div v-if="isCurrentUserOwner" class="card-header" :id="'addtopic' + area.id">
                 <button class="btn btn-link" data-toggle="collapse" :data-target="'#addTopic' + area.id" aria-expanded="true" :aria-controls="'addTopic' + area.id">
                     Add new topic
                 </button>
@@ -72,6 +72,8 @@
 
         private topic: Topic = new Topic();
         private isNameEdit: boolean = false;
+        private isCurrentUserOwner: boolean = this.$store.state.plan.hasEditPermission
+
         constructor() {
             super();
             if (!this.area.areaTopics) {
