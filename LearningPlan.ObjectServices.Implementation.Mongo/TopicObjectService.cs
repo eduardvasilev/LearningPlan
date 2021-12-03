@@ -27,10 +27,6 @@ namespace LearningPlan.ObjectServices.Implementation.Mongo
             return _database.GetCollection<AreaTopic>(CollectionName)
                 .Find(Builders<AreaTopic>.Filter.Eq(topic => topic.PlanAreaId, areaId)).ToList();
         }
-
-        public async Task DeleteTopicAsync(AreaTopic topic)
-        {
-            await _database.GetCollection<AreaTopic>(CollectionName).DeleteOneAsync(topic.ToBsonDocument());
-        }
+        
     }
 }

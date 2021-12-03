@@ -3,9 +3,11 @@ using LearningPlan.DomainModel;
 using LearningPlan.DomainModel.Exceptions;
 using LearningPlan.Services.Model;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using LearningPlan.ObjectServices;
 
 namespace LearningPlan.Services.Implementation
 {
@@ -13,33 +15,30 @@ namespace LearningPlan.Services.Implementation
     {
         private readonly IPlanAreaService _planAreaService;
         private readonly IReadRepository<BotSubscription> _botSubscriptionReadRepository;
-        private readonly IReadRepository<Plan> _planReadRepository;
         private readonly IReadRepository<PlanArea> _planAreaReadRepository;
         private readonly IWriteRepository<AreaTopic> _areaTopicRepository;
         private readonly IWriteRepository<BotSubscription> _botSubscriptionWriteRepository;
-        private readonly IWriteRepository<Plan> _planWriteRepository;
         private readonly IWriteRepository<PlanArea> _planAreaRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IPlanObjectService _planObjectService;
 
         public PlanService(IPlanAreaService planAreaService,
             IReadRepository<BotSubscription> botSubscriptionReadRepository,
-            IReadRepository<Plan> planReadRepository,
             IReadRepository<PlanArea> planAreaReadRepository,
             IWriteRepository<AreaTopic> areaTopicRepository,
             IWriteRepository<BotSubscription> botSubscriptionWriteRepository,
-            IWriteRepository<Plan> planWriteRepository,
             IWriteRepository<PlanArea> planAreaRepository,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            IPlanObjectService planObjectService)
         {
             _planAreaService = planAreaService;
             _botSubscriptionReadRepository = botSubscriptionReadRepository;
-            _planReadRepository = planReadRepository;
             _planAreaReadRepository = planAreaReadRepository;
             _areaTopicRepository = areaTopicRepository;
             _botSubscriptionWriteRepository = botSubscriptionWriteRepository;
-            _planWriteRepository = planWriteRepository;
             _planAreaRepository = planAreaRepository;
             _unitOfWork = unitOfWork;
+            _planObjectService = planObjectService;
         }
 
         public async Task<PlanResponseModel> CreatePlanAsync(PlanServiceModel model)
@@ -48,7 +47,7 @@ namespace LearningPlan.Services.Implementation
             {
                 var plan = new Plan(model.Name, model.UserId);
 
-                await _planWriteRepository.CreateAsync(plan);
+                await _planObjectService.CreateAsync(plan);
 
                 foreach (PlanAreaServiceModel planArea in model.PlanAreas)
                 {
@@ -91,7 +90,7 @@ namespace LearningPlan.Services.Implementation
             using (_unitOfWork)
             {
 
-                Plan plan = await _planReadRepository.GetByIdAsync(planId);
+                Plan plan = await _planObjectService.GetByIdAsync<Plan>(planId);
 
                 if (plan == null)
                 {
@@ -108,7 +107,7 @@ namespace LearningPlan.Services.Implementation
                     await _botSubscriptionWriteRepository.DeleteAsync(botSubscription);
                 }
 
-                await _planWriteRepository.DeleteAsync(plan);
+                await _planObjectService.DeleteAsync(plan);
 
                 await _unitOfWork.CommitAsync();
             }
@@ -116,7 +115,7 @@ namespace LearningPlan.Services.Implementation
 
         public async Task<PlanServiceModel> GetByIdAsync(string id)
         {
-            Plan plan = await _planReadRepository.GetByIdAsync(id);
+            Plan plan = await _planObjectService.GetByIdAsync<Plan>(id);
             var planAreas = _planAreaReadRepository.GetAll().Where(x => x.PlanId == id).ToList();
            
             return await Task.FromResult(new PlanServiceModel
@@ -142,14 +141,14 @@ namespace LearningPlan.Services.Implementation
             });
         }
 
-        public IQueryable<PlanResponseModel> GetAll(User user)
+        public IEnumerable<PlanResponseModel> GetAll(User user)
         {
             if (user == null)
             {
                 throw new UnauthorizedAccessException();
             }
 
-            return _planReadRepository.GetAll().Where(x => x.UserId == user.Id)
+            return _planObjectService.GetUserPlans(user.Id)
                 .Select(plan => new PlanResponseModel
                 {
                     Id = plan.Id,
@@ -162,7 +161,7 @@ namespace LearningPlan.Services.Implementation
             using (_unitOfWork)
             {
 
-                Plan plan = await _planReadRepository.GetByIdAsync(model.Id);
+                Plan plan = await _planObjectService.GetByIdAsync<Plan>(model.Id);
 
                 if (plan == null)
                 {

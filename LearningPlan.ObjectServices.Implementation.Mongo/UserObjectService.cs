@@ -22,12 +22,6 @@ namespace LearningPlan.ObjectServices.Implementation.Mongo
                 .Find(Builders<User>.Filter.Eq(user => user.Username, username)).FirstOrDefault());
         }
 
-        public async Task<User> GetUserByIdAsync(string id)
-        {
-            return await GetByIdAsync<User>(id);
-
-        }
-
         public async Task CreateUserAsync(User user)
         {
             await _database.GetCollection<User>(CollectionName).InsertOneAsync(user);

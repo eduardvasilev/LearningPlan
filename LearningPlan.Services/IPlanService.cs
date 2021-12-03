@@ -1,4 +1,5 @@
-﻿using LearningPlan.Services.Model;
+﻿using System.Collections.Generic;
+using LearningPlan.Services.Model;
 using System.Linq;
 using System.Threading.Tasks;
 using LearningPlan.DomainModel;
@@ -12,7 +13,7 @@ namespace LearningPlan.Services
 
         Task<PlanServiceModel> GetByIdAsync(string id);
 
-        IQueryable<PlanResponseModel> GetAll(User user);
+        IEnumerable<PlanResponseModel> GetAll(User user);
 
         Task UpdateAsync(PlanServiceModel model);
     }

@@ -58,7 +58,7 @@ namespace LearningPlan.Services.Implementation
 
         public async Task<User> GetByIdAsync(string id)
         {
-            return await _userObjectService.GetUserByIdAsync(id);
+            return await _userObjectService.GetByIdAsync<User>(id);
         }
 
         private string GenerateToken(User user, string secret)

@@ -25,19 +25,19 @@ namespace LearningPlan.Services.Implementation
 
         public async Task<AreaTopic> GetByIdAsync(string id)
         {
-            return await _topicObjectService.GetTopicByIdAsync(id);
+            return await _topicObjectService.GetByIdAsync<AreaTopic>(id);
         }
 
         public async Task DeleteAsync(string topicId)
         {
-            AreaTopic topic = await _topicObjectService.GetTopicByIdAsync(topicId);
+            AreaTopic topic = await _topicObjectService.GetByIdAsync<AreaTopic>(topicId);
 
             if (topic == null)
             {
                 throw new DomainServicesException("Topic not found.");
             }
             
-            await _topicObjectService.DeleteTopicAsync(topic);
+            await _topicObjectService.DeleteAsync(topic);
         }
 
         public List<AreaTopic> GetBy(PlanArea planArea)
@@ -49,7 +49,7 @@ namespace LearningPlan.Services.Implementation
         {
             using (_unitOfWork)
             {
-                var topic = await _topicObjectService.GetTopicByIdAsync(model.Id);
+                var topic = await _topicObjectService.GetByIdAsync<AreaTopic>(model.Id);
 
                 if (topic == null)
                 {
