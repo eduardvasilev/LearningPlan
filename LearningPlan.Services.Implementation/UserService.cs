@@ -1,33 +1,30 @@
-﻿using LearningPlan.DataAccess;
-using LearningPlan.DomainModel;
+﻿using LearningPlan.DomainModel;
+using LearningPlan.DomainModel.Exceptions;
+using LearningPlan.ObjectServices;
 using LearningPlan.Services.Model;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using LearningPlan.DomainModel.Exceptions;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 namespace LearningPlan.Services.Implementation
 {
     public class UserService : IUserService
     {
-        private readonly IReadRepository<User> _userReadRepository;
-        private readonly IWriteRepository<User> _userWriteRepository;
+        private readonly IUserObjectService _userObjectService;
 
-        public UserService(IReadRepository<User> userReadRepository, IWriteRepository<User> userWriteRepository)
+        public UserService(IUserObjectService userObjectService)
         {
-            _userReadRepository = userReadRepository;
-            _userWriteRepository = userWriteRepository;
+            _userObjectService = userObjectService;
         }
 
         public async Task<AuthenticateResponseModel> AuthenticateAsync(AuthenticateRequestModel model)
         {
-            var user = _userReadRepository.GetAll().SingleOrDefault(x => x.Username == model.Username);
+            var user = await _userObjectService.GetUserByUserNameAsync(model.Username);
 
             if (user == null || user.Password != HashPassword(model.Password, user.Salt)) return null;
             
@@ -39,7 +36,7 @@ namespace LearningPlan.Services.Implementation
         public async Task SignInAsync(SignInServiceModel model)
         {
             //consider to rid of AsEnumerable()
-            if (_userReadRepository.GetAll().Where(x => x.Username == model.Username).AsEnumerable().Any())
+            if (_userObjectService.GetUserByUserNameAsync(model.Username) == null)
             {
                 throw new DomainServicesException($"User with login '{model.Username}' is already exists.");
             }
@@ -56,14 +53,12 @@ namespace LearningPlan.Services.Implementation
                 Username = model.Username,
                 Salt = salt
             };
-            await _userWriteRepository.CreateAsync(user);
-
-            await _userWriteRepository.SaveChangesAsync();
+            await _userObjectService.CreateUserAsync(user);
         }
 
         public async Task<User> GetByIdAsync(string id)
         {
-           return await Task.FromResult(_userReadRepository.GetAll().SingleOrDefault(user => user.Id == id));
+            return await _userObjectService.GetUserByIdAsync(id);
         }
 
         private string GenerateToken(User user, string secret)

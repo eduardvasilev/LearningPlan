@@ -4,6 +4,8 @@ using System.Reflection;
 using LearningPlan.DataAccess;
 using LearningPlan.DataAccess.Implementation;
 using LearningPlan.DomainModel.Exceptions;
+using LearningPlan.ObjectServices;
+using LearningPlan.ObjectServices.Implementation.Mongo;
 using LearningPlan.Services;
 using LearningPlan.Services.Implementation;
 using LearningPlan.WebApi.Middleware;
@@ -15,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MongoDB.Driver;
 
 namespace LearningPlan.WebApi
 {
@@ -47,8 +50,16 @@ namespace LearningPlan.WebApi
                         databaseName: Configuration["Database:DatabaseName"]));
 
             services.AddHttpContextAccessor();
+
+            services.AddScoped<IMongoDatabase>(provider =>
+            {
+                string connectionString = "mongodb://localhost:27017";
+                MongoClient client = new MongoClient(connectionString);
+                return client.GetDatabase("LearningPlan");
+            });
             services.AddScoped(typeof(IWriteRepository<>), typeof(WriteRepository<>));
             services.AddScoped(typeof(IReadRepository<>), typeof(ReadRepository<>));
+            services.AddScoped<IUserObjectService, UserObjectService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IPlanService, PlanService>();
             services.AddScoped<IPlanAreaService, PlanAreaService>();
