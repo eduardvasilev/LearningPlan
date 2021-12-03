@@ -6,31 +6,32 @@ using MongoDB.Driver;
 
 namespace LearningPlan.ObjectServices.Implementation.Mongo
 {
-    public class UserObjectService : IUserObjectService
+    public class UserObjectService : ObjectService, IUserObjectService
     {
         private readonly IMongoDatabase _database;
+        public override string CollectionName { get => "users"; }
 
-        public UserObjectService(IMongoDatabase database)
+        public UserObjectService(IMongoDatabase database) : base(database)
         {
             _database = database;
         }
 
         public async Task<User> GetUserByUserNameAsync(string username)
         {
-            return await Task.FromResult(_database.GetCollection<User>("users")
+            return await Task.FromResult(_database.GetCollection<User>(CollectionName)
                 .Find(Builders<User>.Filter.Eq(user => user.Username, username)).FirstOrDefault());
         }
 
         public async Task<User> GetUserByIdAsync(string id)
         {
+            return await GetByIdAsync<User>(id);
 
-            return await Task.FromResult(_database.GetCollection<User>("users")
-                .Find(Builders<User>.Filter.Eq(user => user.Id, id)).FirstOrDefault());
         }
 
         public async Task CreateUserAsync(User user)
         {
-            await _database.GetCollection<User>("users").InsertOneAsync(user);
+            await _database.GetCollection<User>(CollectionName).InsertOneAsync(user);
         }
+
     }
 }

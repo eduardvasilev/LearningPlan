@@ -1,58 +1,55 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using LearningPlan.DataAccess;
 using LearningPlan.DomainModel;
 using LearningPlan.DomainModel.Exceptions;
 using System.Threading.Tasks;
+using LearningPlan.ObjectServices;
 using LearningPlan.Services.Model;
 
 namespace LearningPlan.Services.Implementation
 {
     public class TopicService : ITopicService
     {
-        private readonly IReadRepository<AreaTopic> _areaTopicReadRepository;
-        private readonly IWriteRepository<AreaTopic> _areaTopicWriteRepository;
+        private readonly ITopicObjectService _topicObjectService;
         private readonly IUnitOfWork _unitOfWork;
 
         public TopicService(
-            IReadRepository<AreaTopic> areaTopicReadRepository,
-            IWriteRepository<AreaTopic> areaTopicWriteRepository,
+            ITopicObjectService topicObjectService,
             IUnitOfWork unitOfWork)
         {
-            _areaTopicReadRepository = areaTopicReadRepository;
-            _areaTopicWriteRepository = areaTopicWriteRepository;
+            _topicObjectService = topicObjectService;
             _unitOfWork = unitOfWork;
         }
 
         public async Task<AreaTopic> GetByIdAsync(string id)
         {
-            return await _areaTopicReadRepository.GetByIdAsync(id);
+            return await _topicObjectService.GetTopicByIdAsync(id);
         }
 
         public async Task DeleteAsync(string topicId)
         {
-            AreaTopic topic = await _areaTopicReadRepository.GetByIdAsync(topicId);
+            AreaTopic topic = await _topicObjectService.GetTopicByIdAsync(topicId);
 
             if (topic == null)
             {
                 throw new DomainServicesException("Topic not found.");
             }
             
-            await _areaTopicWriteRepository.DeleteAsync(topic);
-            await _areaTopicWriteRepository.SaveChangesAsync();
+            await _topicObjectService.DeleteTopicAsync(topic);
         }
 
-        public IQueryable<AreaTopic> GetBy(PlanArea planArea)
+        public List<AreaTopic> GetBy(PlanArea planArea)
         {
-            return _areaTopicReadRepository.GetAll().Where(topic => topic.PlanAreaId == planArea.Id);
+            return _topicObjectService.GetTopicByAreaId(planArea.Id);
         }
 
         public async Task UpdateAsync(AreaTopicServiceModel model)
         {
             using (_unitOfWork)
             {
-                var topic = await _areaTopicReadRepository.GetByIdAsync(model.Id);
+                var topic = await _topicObjectService.GetTopicByIdAsync(model.Id);
 
                 if (topic == null)
                 {

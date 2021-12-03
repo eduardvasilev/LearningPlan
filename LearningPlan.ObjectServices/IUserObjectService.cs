@@ -3,7 +3,7 @@ using LearningPlan.DomainModel;
 
 namespace LearningPlan.ObjectServices
 {
-    public interface IUserObjectService
+    public interface IUserObjectService : IObjectService
     {
         Task<User> GetUserByUserNameAsync(string username);
         Task<User> GetUserByIdAsync(string id);

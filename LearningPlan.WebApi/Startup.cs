@@ -60,6 +60,7 @@ namespace LearningPlan.WebApi
             services.AddScoped(typeof(IWriteRepository<>), typeof(WriteRepository<>));
             services.AddScoped(typeof(IReadRepository<>), typeof(ReadRepository<>));
             services.AddScoped<IUserObjectService, UserObjectService>();
+            services.AddScoped<ITopicObjectService, TopicObjectService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IPlanService, PlanService>();
             services.AddScoped<IPlanAreaService, PlanAreaService>();
