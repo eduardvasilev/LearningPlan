@@ -6,6 +6,7 @@ namespace LearningPlan.Services.Model
     {
         [Required]
         public string PlanId { get; set; }
+        public string UserId { get; set; }
 
         [Required]
         [StringLength(255)]

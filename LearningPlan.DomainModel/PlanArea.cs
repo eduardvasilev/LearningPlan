@@ -8,6 +8,8 @@ namespace LearningPlan.DomainModel
         
         public string PlanId { get; set; }
 
+        public string UserId { get; set; }
+
         public virtual Plan Plan { get; set; }
 
         public virtual ICollection<AreaTopic> AreaTopics { get; set; } = new HashSet<AreaTopic>();

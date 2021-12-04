@@ -3,31 +3,29 @@ using LearningPlan.DomainModel;
 using LearningPlan.DomainModel.Exceptions;
 using LearningPlan.Services.Model;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Threading.Tasks;
+using LearningPlan.ObjectServices;
 
 namespace LearningPlan.Services.Implementation
 {
     public class PlanAreaService : IPlanAreaService
     {
-        private readonly IReadRepository<PlanArea> _planAreaReadRepository;
         private readonly ITopicService _topicService;
-        private readonly IWriteRepository<AreaTopic> _areaTopicRepository;
-        private readonly IWriteRepository<PlanArea> _planAreaWriteRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IPlanAreaObjectService _planAreaObjectService;
+        private readonly ITopicObjectService _topicObjectService;
 
-        public PlanAreaService(IReadRepository<PlanArea> planAreaReadRepository,
+        public PlanAreaService(
             ITopicService topicService,
-            IWriteRepository<AreaTopic> areaTopicRepository, 
-            IWriteRepository<PlanArea> planAreaWriteRepository,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            IPlanAreaObjectService planAreaObjectService, ITopicObjectService topicObjectService)
         {
-            _planAreaReadRepository = planAreaReadRepository;
             _topicService = topicService;
-            _areaTopicRepository = areaTopicRepository;
-            _planAreaWriteRepository = planAreaWriteRepository;
             _unitOfWork = unitOfWork;
+            _planAreaObjectService = planAreaObjectService;
+            _topicObjectService = topicObjectService;
         }
 
         public async Task<PlanAreaServiceModel> CreatePlanAreaAsync(CreatePlanAreaServiceModel model)
@@ -35,11 +33,10 @@ namespace LearningPlan.Services.Implementation
             PlanArea planArea = new PlanArea
             {
                 Name = model.Name,
-                PlanId = model.PlanId
+                PlanId = model.PlanId,
+                UserId = model.UserId
             };
-            await _planAreaWriteRepository.CreateAsync(planArea);
-
-            await _planAreaWriteRepository.SaveChangesAsync();
+            await _planAreaObjectService.CreateAsync(planArea);
 
             return new PlanAreaServiceModel
             {
@@ -52,12 +49,13 @@ namespace LearningPlan.Services.Implementation
 
         public async Task<AreaTopicResponseModel> CreateAreaTopicAsync(CreateAreaTopicServiceModel model)
         {
-            var planArea = await _planAreaReadRepository.GetByIdAsync(model.PlanAreaId);
+            var planArea = await _planAreaObjectService.GetByIdAsync<PlanArea>(model.PlanAreaId);
             
             AreaTopic areaTopic = new AreaTopic
             {
                 PlanAreaId = model.PlanAreaId,
                 PlanId =  planArea.PlanId,
+                UserId =  planArea.UserId,
                 Name = model.Name,
                 StartDate = DateTime.ParseExact(model.StartDate, "yyyy-MM-dd",
                     CultureInfo.CurrentCulture),
@@ -65,8 +63,7 @@ namespace LearningPlan.Services.Implementation
                 Source = model.Source,
                 Description = model.Description
             };
-            await _areaTopicRepository.CreateAsync(areaTopic);
-            await _areaTopicRepository.SaveChangesAsync();
+            await _topicObjectService.CreateAsync(areaTopic);
 
             return new AreaTopicResponseModel
             {
@@ -78,7 +75,7 @@ namespace LearningPlan.Services.Implementation
 
         public async Task DeleteAsync(string id)
         {
-            PlanArea planArea = await _planAreaReadRepository.GetByIdAsync(id);
+            PlanArea planArea = await _planAreaObjectService.GetByIdAsync<PlanArea>(id);
 
             if (planArea == null)
             {
@@ -90,25 +87,24 @@ namespace LearningPlan.Services.Implementation
                 await _topicService.DeleteAsync(areaTopic.Id);
             }
 
-            await _planAreaWriteRepository.DeleteAsync(planArea);
-            await _planAreaWriteRepository.SaveChangesAsync();
+            await _planAreaObjectService.DeleteAsync(planArea);
         }
 
         public async Task<PlanArea> GetByIdAsync(string id)
         {
-            return await _planAreaReadRepository.GetByIdAsync(id);
+            return await _planAreaObjectService.GetByIdAsync<PlanArea>(id);
         }
 
-        public IQueryable<PlanArea> GetBy(Plan plan)
+        public IEnumerable<PlanArea> GetBy(Plan plan)
         {
-            return _planAreaReadRepository.GetAll().Where(area => area.PlanId == plan.Id);
+            return _planAreaObjectService.GetPlanAreas(plan.Id);
         }
 
         public async Task UpdateAsync(PlanAreaServiceModel model)
         {
             using (_unitOfWork)
             {
-                PlanArea planArea = await _planAreaReadRepository.GetByIdAsync(model.Id);
+                PlanArea planArea = await _planAreaObjectService.GetByIdAsync<PlanArea>(model.Id);
 
                 if (planArea == null)
                 {

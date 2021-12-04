@@ -14,31 +14,25 @@ namespace LearningPlan.Services.Implementation
     public class PlanService : IPlanService
     {
         private readonly IPlanAreaService _planAreaService;
-        private readonly IReadRepository<BotSubscription> _botSubscriptionReadRepository;
-        private readonly IReadRepository<PlanArea> _planAreaReadRepository;
-        private readonly IWriteRepository<AreaTopic> _areaTopicRepository;
-        private readonly IWriteRepository<BotSubscription> _botSubscriptionWriteRepository;
-        private readonly IWriteRepository<PlanArea> _planAreaRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPlanObjectService _planObjectService;
+        private readonly IPlanAreaObjectService _planAreaObjectService;
+        private readonly ITopicObjectService _topicObjectService;
+        private readonly IBotSubscriptionObjectService _botSubscriptionObjectService;
 
         public PlanService(IPlanAreaService planAreaService,
-            IReadRepository<BotSubscription> botSubscriptionReadRepository,
-            IReadRepository<PlanArea> planAreaReadRepository,
-            IWriteRepository<AreaTopic> areaTopicRepository,
-            IWriteRepository<BotSubscription> botSubscriptionWriteRepository,
-            IWriteRepository<PlanArea> planAreaRepository,
             IUnitOfWork unitOfWork,
-            IPlanObjectService planObjectService)
+            IPlanObjectService planObjectService,
+            IPlanAreaObjectService planAreaObjectService,
+            ITopicObjectService topicObjectService,
+            IBotSubscriptionObjectService botSubscriptionObjectService)
         {
             _planAreaService = planAreaService;
-            _botSubscriptionReadRepository = botSubscriptionReadRepository;
-            _planAreaReadRepository = planAreaReadRepository;
-            _areaTopicRepository = areaTopicRepository;
-            _botSubscriptionWriteRepository = botSubscriptionWriteRepository;
-            _planAreaRepository = planAreaRepository;
             _unitOfWork = unitOfWork;
             _planObjectService = planObjectService;
+            _planAreaObjectService = planAreaObjectService;
+            _topicObjectService = topicObjectService;
+            _botSubscriptionObjectService = botSubscriptionObjectService;
         }
 
         public async Task<PlanResponseModel> CreatePlanAsync(PlanServiceModel model)
@@ -55,13 +49,14 @@ namespace LearningPlan.Services.Implementation
                     {
                         Name = planArea.Name,
                         Plan = plan,
-                        PlanId = plan.Id
+                        PlanId = plan.Id,
+                        UserId = plan.UserId
                     };
 
-                    await _planAreaRepository.CreateAsync(area);
+                    await _planAreaObjectService.CreateAsync(area);
                     foreach (AreaTopicServiceModel areaTopic in planArea.AreaTopics)
                     {
-                        await _areaTopicRepository.CreateAsync(new AreaTopic
+                        await _topicObjectService.CreateAsync(new AreaTopic
                         {
                             Name = areaTopic.Name,
                             StartDate = DateTime.ParseExact(areaTopic.StartDate, "yyyy-MM-dd",
@@ -102,9 +97,9 @@ namespace LearningPlan.Services.Implementation
                     await _planAreaService.DeleteAsync(planArea.Id);
                 }
 
-                foreach (BotSubscription botSubscription in _botSubscriptionReadRepository.GetAll().Where(s => s.PlanId == planId))
+                foreach (BotSubscription botSubscription in _botSubscriptionObjectService.GetBotSubscriptionsByPlan(planId))
                 {
-                    await _botSubscriptionWriteRepository.DeleteAsync(botSubscription);
+                    await _botSubscriptionObjectService.DeleteAsync(botSubscription);
                 }
 
                 await _planObjectService.DeleteAsync(plan);
@@ -116,7 +111,7 @@ namespace LearningPlan.Services.Implementation
         public async Task<PlanServiceModel> GetByIdAsync(string id)
         {
             Plan plan = await _planObjectService.GetByIdAsync<Plan>(id);
-            var planAreas = _planAreaReadRepository.GetAll().Where(x => x.PlanId == id).ToList();
+            var planAreas = _planAreaObjectService.GetPlanAreas(plan.Id);
            
             return await Task.FromResult(new PlanServiceModel
             {

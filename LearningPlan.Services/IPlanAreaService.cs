@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using LearningPlan.DomainModel;
 using LearningPlan.Services.Model;
@@ -11,7 +12,7 @@ namespace LearningPlan.Services
         Task<AreaTopicResponseModel> CreateAreaTopicAsync(CreateAreaTopicServiceModel model);
         Task DeleteAsync(string id);
         Task<PlanArea> GetByIdAsync(string id);
-        IQueryable<PlanArea> GetBy(Plan plan);
+        IEnumerable<PlanArea> GetBy(Plan plan);
         Task UpdateAsync(PlanAreaServiceModel model);
     }
 }

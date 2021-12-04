@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using LearningPlan.DomainModel;
 using MongoDB.Bson;
@@ -27,6 +28,15 @@ namespace LearningPlan.ObjectServices.Implementation.Mongo
             return _database.GetCollection<AreaTopic>(CollectionName)
                 .Find(Builders<AreaTopic>.Filter.Eq(topic => topic.PlanAreaId, areaId)).ToList();
         }
-        
+
+
+        public IEnumerable<AreaTopic> GetTopicsByPlanForToday(string planId, DateTime today)
+        {
+            return _database.GetCollection<AreaTopic>(CollectionName).Find(Builders<AreaTopic>
+                                                                                     .Filter.Eq(areaTopic => areaTopic.PlanId, planId)
+                                                                                 & Builders<AreaTopic>.Filter.Gte(areaTopic => areaTopic.StartDate, today)
+                                                                                 & Builders<AreaTopic>.Filter.Lte(areaTopic => areaTopic.EndDate, today)).ToList();
+
+        }
     }
 }
