@@ -13,17 +13,14 @@ namespace LearningPlan.Services.Implementation
     public class PlanAreaService : IPlanAreaService
     {
         private readonly ITopicService _topicService;
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IPlanAreaObjectService _planAreaObjectService;
         private readonly ITopicObjectService _topicObjectService;
 
         public PlanAreaService(
             ITopicService topicService,
-            IUnitOfWork unitOfWork,
             IPlanAreaObjectService planAreaObjectService, ITopicObjectService topicObjectService)
         {
             _topicService = topicService;
-            _unitOfWork = unitOfWork;
             _planAreaObjectService = planAreaObjectService;
             _topicObjectService = topicObjectService;
         }
@@ -102,19 +99,15 @@ namespace LearningPlan.Services.Implementation
 
         public async Task UpdateAsync(PlanAreaServiceModel model)
         {
-            using (_unitOfWork)
+            PlanArea planArea = await _planAreaObjectService.GetByIdAsync<PlanArea>(model.Id);
+
+            if (planArea == null)
             {
-                PlanArea planArea = await _planAreaObjectService.GetByIdAsync<PlanArea>(model.Id);
-
-                if (planArea == null)
-                {
-                    throw new DomainServicesException("Plan Area not found.");
-                }
-                
-                planArea.Name = model.Name;
-
-                await _unitOfWork.CommitAsync();
+                throw new DomainServicesException("Plan Area not found.");
             }
+
+            planArea.Name = model.Name;
+
         }
     }
 }

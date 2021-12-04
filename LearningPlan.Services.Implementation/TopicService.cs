@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using LearningPlan.DataAccess;
 using LearningPlan.DomainModel;
 using LearningPlan.DomainModel.Exceptions;
 using System.Threading.Tasks;
@@ -13,14 +12,11 @@ namespace LearningPlan.Services.Implementation
     public class TopicService : ITopicService
     {
         private readonly ITopicObjectService _topicObjectService;
-        private readonly IUnitOfWork _unitOfWork;
 
         public TopicService(
-            ITopicObjectService topicObjectService,
-            IUnitOfWork unitOfWork)
+            ITopicObjectService topicObjectService)
         {
             _topicObjectService = topicObjectService;
-            _unitOfWork = unitOfWork;
         }
 
         public async Task<AreaTopic> GetByIdAsync(string id)
@@ -47,8 +43,6 @@ namespace LearningPlan.Services.Implementation
 
         public async Task UpdateAsync(AreaTopicServiceModel model)
         {
-            using (_unitOfWork)
-            {
                 var topic = await _topicObjectService.GetByIdAsync<AreaTopic>(model.Id);
 
                 if (topic == null)
@@ -64,8 +58,6 @@ namespace LearningPlan.Services.Implementation
                 topic.Source = model.Source;
                 topic.Description = model.Description;
 
-                await _unitOfWork.CommitAsync();
-            }
         }
     }
 }

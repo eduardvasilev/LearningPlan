@@ -42,29 +42,29 @@ namespace LearningPlan.WebApi
                 c.IncludeXmlComments(xmlPath);
             });
 
-            services.AddDbContext<EfContext>(options =>
-                options.UseLazyLoadingProxies().
-                    UseCosmos(
-                        Configuration["Database:AccountEndpoint"],
-                        Configuration["Database:AccountKey"],
-                        databaseName: Configuration["Database:DatabaseName"]));
+            //services.AddDbContext<EfContext>(options =>
+            //    options.UseLazyLoadingProxies().
+            //        UseCosmos(
+            //            Configuration["Database:AccountEndpoint"],
+            //            Configuration["Database:AccountKey"],
+            //            databaseName: Configuration["Database:DatabaseName"]));
 
             services.AddHttpContextAccessor();
 
             services.AddScoped<IMongoDatabase>(provider =>
             {
-                string connectionString = "mongodb://localhost:27017";
+                string connectionString = Configuration["Database:ConnectionString"];
                 MongoClient client = new MongoClient(connectionString);
-                return client.GetDatabase("LearningPlan");
+                return client.GetDatabase(Configuration["Database:DatabaseName"]);
             });
-            services.AddScoped(typeof(IWriteRepository<>), typeof(WriteRepository<>));
-            services.AddScoped(typeof(IReadRepository<>), typeof(ReadRepository<>));
+            //services.AddScoped(typeof(IWriteRepository<>), typeof(WriteRepository<>));
+            //services.AddScoped(typeof(IReadRepository<>), typeof(ReadRepository<>));
             services.AddScoped<IUserObjectService, UserObjectService>();
             services.AddScoped<ITopicObjectService, TopicObjectService>();
             services.AddScoped<IPlanObjectService, PlanObjectService>();
             services.AddScoped<IPlanAreaObjectService, PlanAreaObjectService>();
             services.AddScoped<IBotSubscriptionObjectService, BotSubscriptionObjectService>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            //services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IPlanService, PlanService>();
             services.AddScoped<IPlanAreaService, PlanAreaService>();
             services.AddScoped<ITopicService, TopicService>();
