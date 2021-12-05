@@ -53,7 +53,7 @@
                         </div>
                     </div>
                     <hr />
-                    <div class="row">
+                    <div class="row"  v-if="!isTemplate">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="from">From: </label>
@@ -110,6 +110,7 @@
         private topic: Topic | any = this.$attrs.topic as Topic | any;
         public planAreaId: string = this.$attrs.planAreaId;
         private isEdit: boolean = false;
+        private isTemplate: boolean = this.$attrs.isTemplate as boolean | any;
 
         private deleteTopic(deletedTopic: Topic) {
             TopicDataService.deleteTopic(deletedTopic.id)

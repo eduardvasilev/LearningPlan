@@ -38,6 +38,7 @@
     export default class AreaEditor extends Vue {
 
         public planId: string = this.$attrs.planId;
+        private isTemplate: boolean = this.$attrs.isTemplate as boolean | any;
         private newAreaName: string = "";
 
         private addArea() {

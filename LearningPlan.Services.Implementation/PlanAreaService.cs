@@ -1,5 +1,4 @@
-﻿using LearningPlan.DataAccess;
-using LearningPlan.DomainModel;
+﻿using LearningPlan.DomainModel;
 using LearningPlan.DomainModel.Exceptions;
 using LearningPlan.Services.Model;
 using System;
@@ -54,12 +53,16 @@ namespace LearningPlan.Services.Implementation
                 PlanId =  planArea.PlanId,
                 UserId =  planArea.UserId,
                 Name = model.Name,
-                StartDate = DateTime.ParseExact(model.StartDate, "yyyy-MM-dd",
-                    CultureInfo.CurrentCulture),
-                EndDate = DateTime.ParseExact(model.EndDate, "yyyy-MM-dd", CultureInfo.CurrentCulture),
                 Source = model.Source,
                 Description = model.Description
             };
+
+            if (!model.IsTemplate)
+            {
+                areaTopic.StartDate = DateTime.ParseExact(model.StartDate, "yyyy-MM-dd",
+                    CultureInfo.CurrentCulture);
+                areaTopic.EndDate = DateTime.ParseExact(model.EndDate, "yyyy-MM-dd", CultureInfo.CurrentCulture);
+            }
             await _topicObjectService.CreateAsync(areaTopic);
 
             return new AreaTopicResponseModel
@@ -108,6 +111,7 @@ namespace LearningPlan.Services.Implementation
 
             planArea.Name = model.Name;
 
+            await _planAreaObjectService.UpdateAsync(planArea);
         }
     }
 }

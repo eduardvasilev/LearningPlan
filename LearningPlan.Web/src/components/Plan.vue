@@ -45,7 +45,7 @@
         
         <div id="accordion">
             <div v-for="(area, index) in plan.planAreas" v-bind:key="area.id">
-                <PlanArea :area="area" v-on:area-deleted="onareadeleted($event)" />
+                <PlanArea :area="area" :isTemplate="plan.isTemplate" v-on:area-deleted="onareadeleted($event)" />
             </div>
             <a data-toggle="modal" data-target="#addAreaModel">
                 <div class="card-body d-flex justify-content-center new-area">
@@ -55,7 +55,7 @@
                 </div>
             </a>
         </div>
-        <AreaEditor :planId="plan.id" v-on:area-added="plan.planAreas.push($event)" />
+        <AreaEditor :planId="plan.id" :isTemplate="plan.isTemplate" v-on:area-added="plan.planAreas.push($event)" />
     </div>
 </template>
 
@@ -78,7 +78,8 @@
         private plan: Plan = {
             id: "",
             name: "",
-            planAreas: []
+            planAreas: [],
+            isTemplate: false
         };
 
         private isNameEdit: boolean = false;

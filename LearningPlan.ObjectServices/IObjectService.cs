@@ -12,5 +12,8 @@ namespace LearningPlan.ObjectServices
         Task CreateAsync<T>(T entity) where  T : EntityBase;
 
         Task DeleteAsync<T>(T entity) where  T : EntityBase;
+
+        Task UpdateAsync<T>(T entity) where T : EntityBase;
+
     }
 }

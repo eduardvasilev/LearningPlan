@@ -6,7 +6,7 @@ namespace LearningPlan.ObjectServices
 {
     public interface ITopicObjectService : IObjectService
     {
-        List<AreaTopic> GetTopicByAreaId(string areaId);
+        List<AreaTopic> GetTopicsByAreaId(string areaId);
         IEnumerable<AreaTopic> GetTopicsByPlanForToday(string planId, DateTime today);
     }
 }

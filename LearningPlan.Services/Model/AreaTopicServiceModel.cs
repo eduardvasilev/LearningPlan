@@ -15,5 +15,6 @@ namespace LearningPlan.Services.Model
         public string EndDate { get; set; }
 
         public string Description { get; set; }
+        public bool IsTemplate { get; set; }
     }
 }

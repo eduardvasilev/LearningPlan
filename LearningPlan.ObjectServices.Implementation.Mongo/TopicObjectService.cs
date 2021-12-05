@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using LearningPlan.DomainModel;
-using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace LearningPlan.ObjectServices.Implementation.Mongo
@@ -23,7 +22,7 @@ namespace LearningPlan.ObjectServices.Implementation.Mongo
             return await GetByIdAsync<AreaTopic>(id);
         }
 
-        public List<AreaTopic> GetTopicByAreaId(string areaId)
+        public List<AreaTopic> GetTopicsByAreaId(string areaId)
         {
             return _database.GetCollection<AreaTopic>(CollectionName)
                 .Find(Builders<AreaTopic>.Filter.Eq(topic => topic.PlanAreaId, areaId)).ToList();

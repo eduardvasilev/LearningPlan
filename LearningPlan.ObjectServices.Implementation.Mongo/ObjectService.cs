@@ -30,5 +30,10 @@ namespace LearningPlan.ObjectServices.Implementation.Mongo
         {
             await _database.GetCollection<T>(CollectionName).DeleteOneAsync(entity.ToBsonDocument());
         }
+
+        public async Task UpdateAsync<T>(T entity) where T : EntityBase
+        {
+            await _database.GetCollection<T>(CollectionName).ReplaceOneAsync(Builders<T>.Filter.Eq(e => e.Id, entity.Id), entity);
+        }
     }
 }

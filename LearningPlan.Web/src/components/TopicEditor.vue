@@ -26,7 +26,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" v-if="!isTemplate">
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="from">From</label>
@@ -82,13 +82,17 @@
 
     export default class TopicEditor extends Vue {
         public planAreaId: string = this.$attrs.planAreaId;
+        private isTemplate: boolean = this.$attrs.isTemplate as boolean | any;
+
+        private isTemplatePlan: boolean = false;
         private topic: Topic = {
             id: "",
             name: "",
             planAreaId: this.planAreaId,
             endDate: "",
             source: "",
-            startDate: ""
+            startDate: "",
+            isTemplate: this.isTemplate
         };
 
         constructor() {
@@ -120,7 +124,8 @@
                             planAreaId: this.planAreaId,
                             endDate: "",
                             source: "",
-                            startDate: ""
+                            startDate: "",
+                            isTemplate: this.isTemplate
                         };
                     })
                     .catch((error) => {

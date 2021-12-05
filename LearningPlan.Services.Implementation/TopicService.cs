@@ -38,25 +38,31 @@ namespace LearningPlan.Services.Implementation
 
         public List<AreaTopic> GetBy(PlanArea planArea)
         {
-            return _topicObjectService.GetTopicByAreaId(planArea.Id);
+            return _topicObjectService.GetTopicsByAreaId(planArea.Id);
         }
 
         public async Task UpdateAsync(AreaTopicServiceModel model)
         {
-                var topic = await _topicObjectService.GetByIdAsync<AreaTopic>(model.Id);
+            var topic = await _topicObjectService.GetByIdAsync<AreaTopic>(model.Id);
 
-                if (topic == null)
-                {
-                    throw new DomainServicesException("Topic not found.");
-                }
+            if (topic == null)
+            {
+                throw new DomainServicesException("Topic not found.");
+            }
 
-                topic.Name = model.Name;
+            topic.Name = model.Name;
+            if (!model.IsTemplate)
+            {
                 topic.StartDate = DateTime.ParseExact(model.StartDate, "yyyy-MM-dd",
                     CultureInfo.CurrentCulture);
                 topic.EndDate = DateTime.ParseExact(model.EndDate, "yyyy-MM-dd",
                     CultureInfo.CurrentCulture);
-                topic.Source = model.Source;
-                topic.Description = model.Description;
+            }
+
+            topic.Source = model.Source;
+            topic.Description = model.Description;
+
+            await _topicObjectService.UpdateAsync(topic);
 
         }
     }

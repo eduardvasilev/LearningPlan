@@ -11,5 +11,6 @@ namespace LearningPlan.DomainModel
         }
         public string Name { get; set; }
         public string UserId { get; set; }
+        public bool IsTemplate { get; set; }
     }
 }

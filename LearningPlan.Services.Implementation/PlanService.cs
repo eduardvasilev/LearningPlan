@@ -33,7 +33,10 @@ namespace LearningPlan.Services.Implementation
 
         public async Task<PlanResponseModel> CreatePlanAsync(PlanServiceModel model)
         {
-            var plan = new Plan(model.Name, model.UserId);
+            var plan = new Plan(model.Name, model.UserId)
+            {
+                IsTemplate = model.IsTemplate
+            };
 
             await _planObjectService.CreateAsync(plan);
 
@@ -106,12 +109,13 @@ namespace LearningPlan.Services.Implementation
                 Id = plan.Id,
                 Name = plan.Name,
                 UserId = plan.UserId,
+                IsTemplate = plan.IsTemplate,
                 PlanAreas = planAreas.Select(x => new PlanAreaServiceModel
                 {
                     Id = x.Id,
                     Name = x.Name,
                     PlanId = x.PlanId,
-                    AreaTopics = x.AreaTopics.Select(areaTopic => new AreaTopicServiceModel
+                    AreaTopics = _topicObjectService.GetTopicsByAreaId(x.Id).Select(areaTopic => new AreaTopicServiceModel
                     {
                         Id = areaTopic.Id,
                         Name = areaTopic.Name,
@@ -135,7 +139,8 @@ namespace LearningPlan.Services.Implementation
                 .Select(plan => new PlanResponseModel
                 {
                     Id = plan.Id,
-                    Name = plan.Name
+                    Name = plan.Name,
+                    IsTemplate = plan.IsTemplate
                 });
         }
 
@@ -150,6 +155,8 @@ namespace LearningPlan.Services.Implementation
                 }
 
                 plan.Name = model.Name;
+
+                await _planObjectService.UpdateAsync(plan);
 
         }
     }
