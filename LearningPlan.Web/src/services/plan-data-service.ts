@@ -20,6 +20,9 @@ export class PlanDataService {
     public updatePlan(plan: Plan) {
         return http.put("/plan", plan);
     }
+    public copyTemplatePlan(id: string) {
+        return http.post(`/plan/copy/${id}`);
+    }
 }
 
 export default new PlanDataService();

@@ -16,5 +16,7 @@ namespace LearningPlan.Services.Model
 
         public string Description { get; set; }
         public bool IsTemplate { get; set; }
+        public string UserId { get; set; }
+        public string PlanId { get; set; }
     }
 }

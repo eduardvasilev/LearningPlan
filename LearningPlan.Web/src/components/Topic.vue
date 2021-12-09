@@ -9,7 +9,7 @@
         </div>
         <div :id="'p' + topic.id" class="collapse topic-body" :aria-labelledby="'headingOne' + topic.id" data-parent="#accordion">
             <div v-if="isEdit && isCurrentUserOwner">
-                <TopicEditor :topic="topic" :planAreaId="planAreaId" v-on:topic-updated="onEdit" />
+                <TopicEditor :topic="topic" :planAreaId="planAreaId" :isTemplate="isTemplate" v-on:topic-updated="onEdit" />
                 <div class=" d-flex flex-row">
                     <div class="p-2">
                         <div class="btn-toolbar" role="toolbar">

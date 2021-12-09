@@ -33,6 +33,17 @@ namespace LearningPlan.Services.Implementation
 
         public async Task<PlanResponseModel> CreatePlanAsync(PlanServiceModel model)
         {
+            var plan = await CreatePlanCoreAsync(model);
+
+            return new PlanResponseModel
+            {
+                Name = plan.Name,
+                Id = plan.Id
+            };
+        }
+
+        private async Task<Plan> CreatePlanCoreAsync(PlanServiceModel model)
+        {
             var plan = new Plan(model.Name, model.UserId)
             {
                 IsTemplate = model.IsTemplate
@@ -56,23 +67,22 @@ namespace LearningPlan.Services.Implementation
                     await _topicObjectService.CreateAsync(new AreaTopic
                     {
                         Name = areaTopic.Name,
-                        StartDate = DateTime.ParseExact(areaTopic.StartDate, "yyyy-MM-dd",
-                            CultureInfo.CurrentCulture),
-                        EndDate = DateTime.ParseExact(areaTopic.EndDate, "yyyy-MM-dd", CultureInfo.CurrentCulture),
+                        StartDate = areaTopic.StartDate != null ? DateTime.ParseExact(areaTopic.StartDate, "yyyy-MM-dd",
+                            CultureInfo.CurrentCulture) : (DateTime?) null,
+                        EndDate = areaTopic.EndDate != null 
+                            ? DateTime.ParseExact(areaTopic.EndDate, "yyyy-MM-dd", CultureInfo.CurrentCulture)
+                            : (DateTime?) null,
                         Source = areaTopic.Source,
                         Description = areaTopic.Description,
                         PlanArea = area,
-                        PlanAreaId = area.Id
+                        PlanAreaId = area.Id,
+                        UserId = areaTopic.UserId,
+                        PlanId = areaTopic.PlanId
                     });
                 }
             }
 
-
-            return new PlanResponseModel
-            {
-                Name = plan.Name,
-                Id = plan.Id
-            };
+            return plan;
         }
 
         public async Task DeleteAsync(string planId)
@@ -119,8 +129,8 @@ namespace LearningPlan.Services.Implementation
                     {
                         Id = areaTopic.Id,
                         Name = areaTopic.Name,
-                        StartDate = areaTopic.StartDate.ToString("yyyy-MM-dd"),
-                        EndDate = areaTopic.EndDate.ToString("yyyy-MM-dd"),
+                        StartDate = areaTopic.StartDate?.ToString("yyyy-MM-dd"),
+                        EndDate = areaTopic.EndDate?.ToString("yyyy-MM-dd"),
                         Source = areaTopic.Source,
                         Description = areaTopic.Description
                     }).OrderBy(topic => topic.StartDate).ToArray()
@@ -169,6 +179,36 @@ namespace LearningPlan.Services.Implementation
 
                 await _planObjectService.UpdateAsync(plan);
 
+        }
+
+        public async Task CopyTemplatePlanAsync(string userId, string planId)
+        {
+           Plan plan = await _planObjectService.GetByIdAsync<Plan>(planId);
+           var areas = _planAreaObjectService.GetPlanAreas(planId);
+
+           await CreatePlanAsync(new PlanServiceModel
+           {
+               Name = plan.Name,
+               IsTemplate = false,
+               UserId = userId,
+               PlanAreas = areas.Select(area => new PlanAreaServiceModel
+               {
+                   PlanId = area.PlanId,
+                   Name = area.Name,
+                   AreaTopics = _topicObjectService.GetTopicsByAreaId(area.Id)
+                       .Select(topic => new AreaTopicServiceModel
+                       {
+                           IsTemplate = false,
+                           Name = topic.Name,
+                           StartDate = null,
+                           EndDate = null,
+                           Description = topic.Description,
+                           Source = topic.Source,
+                           UserId = userId,
+                           PlanId = planId
+                       }).ToArray()
+               }).ToArray()
+           });
         }
     }
 }

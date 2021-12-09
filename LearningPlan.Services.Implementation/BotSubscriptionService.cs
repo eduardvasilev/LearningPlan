@@ -68,8 +68,8 @@ namespace LearningPlan.Services.Implementation
                 .Select(x => new AreaTopicServiceModel
                 {
                     Name = x.Name,
-                    StartDate = x.StartDate.ToString("d"),
-                    EndDate = x.EndDate.ToString("d"),
+                    StartDate = x.StartDate?.ToString("d"),
+                    EndDate = x.EndDate?.ToString("d"),
                     Source = x.Source,
                 })
                 .ToList();

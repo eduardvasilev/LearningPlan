@@ -18,5 +18,6 @@ namespace LearningPlan.Services
         IEnumerable<PlanResponseModel> GetAllTemplates();
 
         Task UpdateAsync(PlanServiceModel model);
+        Task CopyTemplatePlanAsync(string userId, string planId);
     }
 }
