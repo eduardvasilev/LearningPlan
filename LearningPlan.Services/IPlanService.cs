@@ -15,6 +15,8 @@ namespace LearningPlan.Services
 
         IEnumerable<PlanResponseModel> GetAll(User user);
 
+        IEnumerable<PlanResponseModel> GetAllTemplates();
+
         Task UpdateAsync(PlanServiceModel model);
     }
 }

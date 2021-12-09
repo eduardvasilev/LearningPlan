@@ -8,6 +8,9 @@ export class PlanDataService {
     public getPlans() {
         return http.get("/plan");
     }
+    public getTemplatePlans() {
+        return http.get("/plan/templates");
+    }
     public getPlan(id: string) {
         return http.get(`/plan/${id}`);
     }

@@ -144,6 +144,17 @@ namespace LearningPlan.Services.Implementation
                 });
         }
 
+        public IEnumerable<PlanResponseModel> GetAllTemplates()
+        {
+            return _planObjectService.GetTemplatePlans()
+                .Select(plan => new PlanResponseModel
+                {
+                    Id = plan.Id,
+                    Name = plan.Name,
+                    IsTemplate = plan.IsTemplate
+                });
+        }
+
         public async Task UpdateAsync(PlanServiceModel model)
         {
 

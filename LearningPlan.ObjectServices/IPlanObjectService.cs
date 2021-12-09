@@ -5,6 +5,7 @@ namespace LearningPlan.ObjectServices
 {
     public interface IPlanObjectService : IObjectService
     {
-        List<Plan> GetUserPlans(string userId);
+        IEnumerable<Plan> GetUserPlans(string userId);
+        IEnumerable<Plan> GetTemplatePlans();
     }
 }

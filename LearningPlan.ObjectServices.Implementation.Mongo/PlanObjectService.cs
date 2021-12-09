@@ -14,9 +14,16 @@ namespace LearningPlan.ObjectServices.Implementation.Mongo
             _database = database;
         }
 
-        public List<Plan> GetUserPlans(string userId)
+        public IEnumerable<Plan> GetUserPlans(string userId)
         {
-           return _database.GetCollection<Plan>(CollectionName).Find(Builders<Plan>.Filter.Eq(plan => plan.UserId, userId)).ToList();
+           return _database.GetCollection<Plan>(CollectionName)
+               .Find(Builders<Plan>.Filter.Eq(plan => plan.UserId, userId) & Builders<Plan>.Filter.Eq(plan => plan.IsTemplate, false)).ToEnumerable();
+        }
+
+        public IEnumerable<Plan> GetTemplatePlans()
+        {
+            return _database.GetCollection<Plan>(CollectionName)
+                .Find(Builders<Plan>.Filter.Eq(plan => plan.IsTemplate, true)).ToEnumerable();
         }
     }
 }

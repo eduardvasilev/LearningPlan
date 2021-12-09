@@ -58,6 +58,17 @@ namespace LearningPlan.WebApi.Controllers
         }
 
         /// <summary>
+        /// Get all template plans
+        /// </summary>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet("templates")]
+        public List<PlanResponseModel> GetAllTemplates()
+        {
+            return _planService.GetAllTemplates().ToList();
+        }
+
+        /// <summary>
         /// Delete plan by id
         /// </summary>
         /// <param name="id"></param>
