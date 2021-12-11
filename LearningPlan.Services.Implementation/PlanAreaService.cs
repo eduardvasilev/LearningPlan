@@ -14,14 +14,18 @@ namespace LearningPlan.Services.Implementation
         private readonly ITopicService _topicService;
         private readonly IPlanAreaObjectService _planAreaObjectService;
         private readonly ITopicObjectService _topicObjectService;
+        private readonly IBotSubscriptionObjectService _botSubscriptionObjectService;
 
         public PlanAreaService(
             ITopicService topicService,
-            IPlanAreaObjectService planAreaObjectService, ITopicObjectService topicObjectService)
+            IPlanAreaObjectService planAreaObjectService, 
+            ITopicObjectService topicObjectService,
+            IBotSubscriptionObjectService botSubscriptionObjectService)
         {
             _topicService = topicService;
             _planAreaObjectService = planAreaObjectService;
             _topicObjectService = topicObjectService;
+            _botSubscriptionObjectService = botSubscriptionObjectService;
         }
 
         public async Task<PlanAreaServiceModel> CreatePlanAreaAsync(CreatePlanAreaServiceModel model)
@@ -86,6 +90,8 @@ namespace LearningPlan.Services.Implementation
             {
                 await _topicService.DeleteAsync(areaTopic.Id);
             }
+
+
 
             await _planAreaObjectService.DeleteAsync(planArea);
         }

@@ -83,9 +83,9 @@ namespace LearningPlan.WebApi.Controllers
                 await _botService.Client.SendTextMessageAsync(message.Chat.Id,
                     $"You have successfully subscribed to '{result.Name}' plan.");
             }
-            catch (DomainServicesException)
+            catch (DomainServicesException exception)
             {
-                await _botService.Client.SendTextMessageAsync(message.Chat, "Oops... I don't feel good");
+                await _botService.Client.SendTextMessageAsync(message.Chat, exception.Message);
             }
         }
     }

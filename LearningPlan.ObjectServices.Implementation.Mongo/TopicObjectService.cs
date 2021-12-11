@@ -33,8 +33,8 @@ namespace LearningPlan.ObjectServices.Implementation.Mongo
         {
             return _database.GetCollection<AreaTopic>(CollectionName).Find(Builders<AreaTopic>
                                                                                      .Filter.Eq(areaTopic => areaTopic.PlanId, planId)
-                                                                                 & Builders<AreaTopic>.Filter.Gte(areaTopic => areaTopic.StartDate, today)
-                                                                                 & Builders<AreaTopic>.Filter.Lte(areaTopic => areaTopic.EndDate, today)).ToList();
+                                                                                 & Builders<AreaTopic>.Filter.Lte(areaTopic => areaTopic.StartDate, today)
+                                                                                 & Builders<AreaTopic>.Filter.Gte(areaTopic => areaTopic.EndDate, today)).ToList();
 
         }
     }

@@ -42,12 +42,17 @@ namespace LearningPlan.Services.Implementation
             };
         }
 
-        private async Task<Plan> CreatePlanCoreAsync(PlanServiceModel model)
+        private async Task<Plan> CreatePlanCoreAsync(PlanServiceModel model, string newPlanId = null)
         {
             var plan = new Plan(model.Name, model.UserId)
             {
                 IsTemplate = model.IsTemplate
             };
+
+            if (!string.IsNullOrEmpty(newPlanId))
+            {
+                plan.Id = newPlanId;
+            }
 
             await _planObjectService.CreateAsync(plan);
 
@@ -189,17 +194,18 @@ namespace LearningPlan.Services.Implementation
 
         public async Task CopyTemplatePlanAsync(string userId, string planId)
         {
-           Plan plan = await _planObjectService.GetByIdAsync<Plan>(planId);
+            string newPlanId = Guid.NewGuid().ToString();
+            Plan plan = await _planObjectService.GetByIdAsync<Plan>(planId);
            var areas = _planAreaObjectService.GetPlanAreas(planId);
 
-           await CreatePlanAsync(new PlanServiceModel
+           await CreatePlanCoreAsync(new PlanServiceModel
            {
                Name = plan.Name,
                IsTemplate = false,
                UserId = userId,
                PlanAreas = areas.Select(area => new PlanAreaServiceModel
                {
-                   PlanId = area.PlanId,
+                   PlanId = newPlanId,
                    Name = area.Name,
                    AreaTopics = _topicObjectService.GetTopicsByAreaId(area.Id)
                        .Select(topic => new AreaTopicServiceModel
@@ -211,10 +217,10 @@ namespace LearningPlan.Services.Implementation
                            Description = topic.Description,
                            Source = topic.Source,
                            UserId = userId,
-                           PlanId = planId
+                           PlanId = newPlanId
                        }).ToArray()
                }).ToArray()
-           });
+           }, newPlanId);
         }
     }
 }

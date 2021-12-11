@@ -9,7 +9,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
+using LearningPlan.ObjectServices;
 using Telegram.Bot;
+using LearningPlan.ObjectServices.Implementation.Mongo;
+using MongoDB.Driver;
 
 namespace LearningPlan.TelegramBot.BackgroundService
 {
@@ -63,11 +66,20 @@ namespace LearningPlan.TelegramBot.BackgroundService
         private static void RegisterServices(IConfiguration configuration)
         {
             var services = new ServiceCollection();
-            services.AddDbContext<EfContext>(options =>
-                options.UseCosmos(
-                    configuration["Database:AccountEndpoint"],
-                    configuration["Database:AccountKey"],
-                    databaseName: configuration["Database:DatabaseName"]));
+
+            services.AddScoped(provider =>
+            {
+                string connectionString = configuration["Database:ConnectionString"];
+                MongoClient client = new MongoClient(connectionString);
+                return client.GetDatabase(configuration["Database:DatabaseName"]);
+            });
+            //services.AddScoped(typeof(IWriteRepository<>), typeof(WriteRepository<>));
+            //services.AddScoped(typeof(IReadRepository<>), typeof(ReadRepository<>));
+            services.AddScoped<IUserObjectService, UserObjectService>();
+            services.AddScoped<ITopicObjectService, TopicObjectService>();
+            services.AddScoped<IPlanObjectService, PlanObjectService>();
+            services.AddScoped<IPlanAreaObjectService, PlanAreaObjectService>();
+            services.AddScoped<IBotSubscriptionObjectService, BotSubscriptionObjectService>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped(typeof(IWriteRepository<>), typeof(WriteRepository<>));
