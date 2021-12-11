@@ -112,6 +112,12 @@ namespace LearningPlan.Services.Implementation
         public async Task<PlanServiceModel> GetByIdAsync(string id)
         {
             Plan plan = await _planObjectService.GetByIdAsync<Plan>(id);
+          
+            if (plan == null)
+            {
+                return null;
+            }
+            
             var planAreas = _planAreaObjectService.GetPlanAreas(plan.Id);
            
             return await Task.FromResult(new PlanServiceModel
