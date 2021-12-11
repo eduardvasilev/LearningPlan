@@ -1,74 +1,69 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using LearningPlan.DataAccess;
 using LearningPlan.DomainModel;
 using LearningPlan.DomainModel.Exceptions;
 using System.Threading.Tasks;
+using LearningPlan.ObjectServices;
 using LearningPlan.Services.Model;
 
 namespace LearningPlan.Services.Implementation
 {
     public class TopicService : ITopicService
     {
-        private readonly IReadRepository<AreaTopic> _areaTopicReadRepository;
-        private readonly IWriteRepository<AreaTopic> _areaTopicWriteRepository;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly ITopicObjectService _topicObjectService;
 
         public TopicService(
-            IReadRepository<AreaTopic> areaTopicReadRepository,
-            IWriteRepository<AreaTopic> areaTopicWriteRepository,
-            IUnitOfWork unitOfWork)
+            ITopicObjectService topicObjectService)
         {
-            _areaTopicReadRepository = areaTopicReadRepository;
-            _areaTopicWriteRepository = areaTopicWriteRepository;
-            _unitOfWork = unitOfWork;
+            _topicObjectService = topicObjectService;
         }
 
         public async Task<AreaTopic> GetByIdAsync(string id)
         {
-            return await _areaTopicReadRepository.GetByIdAsync(id);
+            return await _topicObjectService.GetByIdAsync<AreaTopic>(id);
         }
 
         public async Task DeleteAsync(string topicId)
         {
-            AreaTopic topic = await _areaTopicReadRepository.GetByIdAsync(topicId);
+            AreaTopic topic = await _topicObjectService.GetByIdAsync<AreaTopic>(topicId);
 
             if (topic == null)
             {
                 throw new DomainServicesException("Topic not found.");
             }
             
-            await _areaTopicWriteRepository.DeleteAsync(topic);
-            await _areaTopicWriteRepository.SaveChangesAsync();
+            await _topicObjectService.DeleteAsync(topic);
         }
 
-        public IQueryable<AreaTopic> GetBy(PlanArea planArea)
+        public List<AreaTopic> GetBy(PlanArea planArea)
         {
-            return _areaTopicReadRepository.GetAll().Where(topic => topic.PlanAreaId == planArea.Id);
+            return _topicObjectService.GetTopicsByAreaId(planArea.Id);
         }
 
         public async Task UpdateAsync(AreaTopicServiceModel model)
         {
-            using (_unitOfWork)
+            var topic = await _topicObjectService.GetByIdAsync<AreaTopic>(model.Id);
+
+            if (topic == null)
             {
-                var topic = await _areaTopicReadRepository.GetByIdAsync(model.Id);
+                throw new DomainServicesException("Topic not found.");
+            }
 
-                if (topic == null)
-                {
-                    throw new DomainServicesException("Topic not found.");
-                }
-
-                topic.Name = model.Name;
+            topic.Name = model.Name;
+            if (!model.IsTemplate)
+            {
                 topic.StartDate = DateTime.ParseExact(model.StartDate, "yyyy-MM-dd",
                     CultureInfo.CurrentCulture);
                 topic.EndDate = DateTime.ParseExact(model.EndDate, "yyyy-MM-dd",
                     CultureInfo.CurrentCulture);
-                topic.Source = model.Source;
-                topic.Description = model.Description;
-
-                await _unitOfWork.CommitAsync();
             }
+
+            topic.Source = model.Source;
+            topic.Description = model.Description;
+
+            await _topicObjectService.UpdateAsync(topic);
+
         }
     }
 }

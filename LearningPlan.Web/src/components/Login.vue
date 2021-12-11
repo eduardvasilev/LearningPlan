@@ -57,7 +57,7 @@
             e.preventDefault();
             AuthenticationService.login(this.user)
                 .catch((error) => {
-                    this.error = error.message;
+                    this.error = error.response.data.message;
                 });
         }
     }

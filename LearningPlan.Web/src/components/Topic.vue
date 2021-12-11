@@ -8,8 +8,8 @@
             </h5>
         </div>
         <div :id="'p' + topic.id" class="collapse topic-body" :aria-labelledby="'headingOne' + topic.id" data-parent="#accordion">
-            <div v-if="isEdit">
-                <TopicEditor :topic="topic" :planAreaId="planAreaId" v-on:topic-updated="onEdit" />
+            <div v-if="isEdit && isCurrentUserOwner">
+                <TopicEditor :topic="topic" :planAreaId="planAreaId" :isTemplate="isTemplate" v-on:topic-updated="onEdit" />
                 <div class=" d-flex flex-row">
                     <div class="p-2">
                         <div class="btn-toolbar" role="toolbar">
@@ -53,7 +53,7 @@
                         </div>
                     </div>
                     <hr />
-                    <div class="row">
+                    <div class="row"  v-if="!isTemplate">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="from">From: </label>
@@ -69,7 +69,7 @@
                         </div>
                     </div>
                 </div>
-                <div class=" d-flex flex-row">
+                <div v-if="isCurrentUserOwner" class=" d-flex flex-row">
                     <div class="p-2">
                         <div class="btn-toolbar" role="toolbar">
                             <div class="btn-group mr-2" role="group">
@@ -110,6 +110,8 @@
         private topic: Topic | any = this.$attrs.topic as Topic | any;
         public planAreaId: string = this.$attrs.planAreaId;
         private isEdit: boolean = false;
+        private isTemplate: boolean = this.$attrs.isTemplate as boolean | any;
+        private isCurrentUserOwner: boolean = this.$store.state.plan.hasEditPermission;
 
         private deleteTopic(deletedTopic: Topic) {
             TopicDataService.deleteTopic(deletedTopic.id)

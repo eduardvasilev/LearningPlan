@@ -58,6 +58,29 @@ namespace LearningPlan.WebApi.Controllers
         }
 
         /// <summary>
+        /// Get all template plans
+        /// </summary>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet("templates")]
+        public List<PlanResponseModel> GetAllTemplates()
+        {
+            return _planService.GetAllTemplates().ToList();
+        }
+
+        /// <summary>
+        /// Get all template plans
+        /// </summary>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost("copy/{id}")]
+        public JsonResult CopyTemplatePlan(string id)
+        {
+             _planService.CopyTemplatePlanAsync(GetCurrentUser().Id, id);
+             return Json(true);
+        }
+
+        /// <summary>
         /// Delete plan by id
         /// </summary>
         /// <param name="id"></param>

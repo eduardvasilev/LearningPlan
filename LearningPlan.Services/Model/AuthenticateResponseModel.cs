@@ -2,14 +2,14 @@
 {
     public class AuthenticateResponseModel
     {
-        public string Id { get; set; }
+        public string UserId { get; set; }
         public string Username { get; set; }
         public string Token { get; set; }
 
 
         public AuthenticateResponseModel(string userId, string username, string token)
         {
-            Id = userId;
+            UserId = userId;
             Username = username;
             Token = token;
         }

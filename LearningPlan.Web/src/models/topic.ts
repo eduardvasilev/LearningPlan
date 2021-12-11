@@ -5,4 +5,5 @@ export class Topic {
     startDate: string = "";
     endDate: string = "";
     source: string = "";
+    isTemplate: boolean = false;
 }

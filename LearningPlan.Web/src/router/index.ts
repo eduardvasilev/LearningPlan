@@ -3,6 +3,7 @@ import VueRouter, { RouteConfig } from "vue-router";
 
 import PlanComponent from "../components/Plan.vue"
 import PlanList from "../components/PlanList.vue"
+import TemplatePlansList from "../components/TemplatePlansList.vue"
 
 Vue.use(VueRouter);
 
@@ -16,6 +17,11 @@ const routes: Array<RouteConfig>  = [
     path: "/",
     name: "plans",
     component: PlanList
+    },
+    {
+    path: "/templates",
+    name: "templatePlans",
+    component: TemplatePlansList
     }
 ];
 

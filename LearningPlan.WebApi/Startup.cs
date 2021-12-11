@@ -1,20 +1,22 @@
-using System;
-using System.IO;
-using System.Reflection;
-using LearningPlan.DataAccess;
-using LearningPlan.DataAccess.Implementation;
 using LearningPlan.DomainModel.Exceptions;
+using LearningPlan.ObjectServices;
+using LearningPlan.ObjectServices.Implementation.Mongo;
 using LearningPlan.Services;
 using LearningPlan.Services.Implementation;
 using LearningPlan.WebApi.Middleware;
+using LearningPlan.WebApi.Options;
+using LearningPlan.WebApi.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MongoDB.Driver;
+using System;
+using System.IO;
+using System.Reflection;
 
 namespace LearningPlan.WebApi
 {
@@ -30,7 +32,8 @@ namespace LearningPlan.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers()
+                .AddNewtonsoftJson();
 
             services.AddSwaggerGen(c =>
             {
@@ -39,21 +42,37 @@ namespace LearningPlan.WebApi
                 c.IncludeXmlComments(xmlPath);
             });
 
-            services.AddDbContext<EfContext>(options =>
-                options.UseLazyLoadingProxies().
-                    UseCosmos(
-                        Configuration["Database:AccountEndpoint"],
-                        Configuration["Database:AccountKey"],
-                        databaseName: Configuration["Database:DatabaseName"]));
+            //services.AddDbContext<EfContext>(options =>
+            //    options.UseLazyLoadingProxies().
+            //        UseCosmos(
+            //            Configuration["Database:AccountEndpoint"],
+            //            Configuration["Database:AccountKey"],
+            //            databaseName: Configuration["Database:DatabaseName"]));
 
             services.AddHttpContextAccessor();
-            services.AddScoped(typeof(IWriteRepository<>), typeof(WriteRepository<>));
-            services.AddScoped(typeof(IReadRepository<>), typeof(ReadRepository<>));
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            services.AddScoped(provider =>
+            {
+                string connectionString = Configuration["Database:ConnectionString"];
+                MongoClient client = new MongoClient(connectionString);
+                return client.GetDatabase(Configuration["Database:DatabaseName"]);
+            });
+            //services.AddScoped(typeof(IWriteRepository<>), typeof(WriteRepository<>));
+            //services.AddScoped(typeof(IReadRepository<>), typeof(ReadRepository<>));
+            services.AddScoped<IUserObjectService, UserObjectService>();
+            services.AddScoped<ITopicObjectService, TopicObjectService>();
+            services.AddScoped<IPlanObjectService, PlanObjectService>();
+            services.AddScoped<IPlanAreaObjectService, PlanAreaObjectService>();
+            services.AddScoped<IBotSubscriptionObjectService, BotSubscriptionObjectService>();
+            //services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IPlanService, PlanService>();
             services.AddScoped<IPlanAreaService, PlanAreaService>();
             services.AddScoped<ITopicService, TopicService>();
             services.AddScoped<IUserService, UserService>();
+
+            services.AddSingleton<IBotService, BotService>();
+            services.AddScoped<IBotSubscriptionService, BotSubscriptionService>();
+            services.Configure<BotConfiguration>(Configuration.GetSection("BotConfiguration"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

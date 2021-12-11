@@ -1,8 +1,9 @@
-﻿using LearningPlan.DataAccess;
-using LearningPlan.DomainModel;
+﻿using LearningPlan.DomainModel;
 using LearningPlan.DomainModel.Exceptions;
+using LearningPlan.ObjectServices;
 using LearningPlan.Services.Model;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,129 +13,130 @@ namespace LearningPlan.Services.Implementation
     public class PlanService : IPlanService
     {
         private readonly IPlanAreaService _planAreaService;
-        private readonly IReadRepository<BotSubscription> _botSubscriptionReadRepository;
-        private readonly IReadRepository<Plan> _planReadRepository;
-        private readonly IReadRepository<PlanArea> _planAreaReadRepository;
-        private readonly IWriteRepository<AreaTopic> _areaTopicRepository;
-        private readonly IWriteRepository<BotSubscription> _botSubscriptionWriteRepository;
-        private readonly IWriteRepository<Plan> _planWriteRepository;
-        private readonly IWriteRepository<PlanArea> _planAreaRepository;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IPlanObjectService _planObjectService;
+        private readonly IPlanAreaObjectService _planAreaObjectService;
+        private readonly ITopicObjectService _topicObjectService;
+        private readonly IBotSubscriptionObjectService _botSubscriptionObjectService;
 
         public PlanService(IPlanAreaService planAreaService,
-            IReadRepository<BotSubscription> botSubscriptionReadRepository,
-            IReadRepository<Plan> planReadRepository,
-            IReadRepository<PlanArea> planAreaReadRepository,
-            IWriteRepository<AreaTopic> areaTopicRepository,
-            IWriteRepository<BotSubscription> botSubscriptionWriteRepository,
-            IWriteRepository<Plan> planWriteRepository,
-            IWriteRepository<PlanArea> planAreaRepository,
-            IUnitOfWork unitOfWork)
+            IPlanObjectService planObjectService,
+            IPlanAreaObjectService planAreaObjectService,
+            ITopicObjectService topicObjectService,
+            IBotSubscriptionObjectService botSubscriptionObjectService)
         {
             _planAreaService = planAreaService;
-            _botSubscriptionReadRepository = botSubscriptionReadRepository;
-            _planReadRepository = planReadRepository;
-            _planAreaReadRepository = planAreaReadRepository;
-            _areaTopicRepository = areaTopicRepository;
-            _botSubscriptionWriteRepository = botSubscriptionWriteRepository;
-            _planWriteRepository = planWriteRepository;
-            _planAreaRepository = planAreaRepository;
-            _unitOfWork = unitOfWork;
+            _planObjectService = planObjectService;
+            _planAreaObjectService = planAreaObjectService;
+            _topicObjectService = topicObjectService;
+            _botSubscriptionObjectService = botSubscriptionObjectService;
         }
 
         public async Task<PlanResponseModel> CreatePlanAsync(PlanServiceModel model)
         {
-            using (_unitOfWork)
+            var plan = await CreatePlanCoreAsync(model);
+
+            return new PlanResponseModel
             {
-                var plan = new Plan(model.Name, model.UserId);
+                Name = plan.Name,
+                Id = plan.Id
+            };
+        }
 
-                await _planWriteRepository.CreateAsync(plan);
+        private async Task<Plan> CreatePlanCoreAsync(PlanServiceModel model)
+        {
+            var plan = new Plan(model.Name, model.UserId)
+            {
+                IsTemplate = model.IsTemplate
+            };
 
-                foreach (PlanAreaServiceModel planArea in model.PlanAreas)
+            await _planObjectService.CreateAsync(plan);
+
+            foreach (PlanAreaServiceModel planArea in model.PlanAreas)
+            {
+                PlanArea area = new PlanArea
                 {
-                    PlanArea area = new PlanArea
-                    {
-                        Name = planArea.Name,
-                        Plan = plan,
-                        PlanId = plan.Id
-                    };
-
-                    await _planAreaRepository.CreateAsync(area);
-                    foreach (AreaTopicServiceModel areaTopic in planArea.AreaTopics)
-                    {
-                        await _areaTopicRepository.CreateAsync(new AreaTopic
-                        {
-                            Name = areaTopic.Name,
-                            StartDate = DateTime.ParseExact(areaTopic.StartDate, "yyyy-MM-dd",
-                                CultureInfo.CurrentCulture),
-                            EndDate = DateTime.ParseExact(areaTopic.EndDate, "yyyy-MM-dd", CultureInfo.CurrentCulture),
-                            Source = areaTopic.Source,
-                            Description = areaTopic.Description,
-                            PlanArea = area,
-                            PlanAreaId = area.Id
-                        });
-                    }
-                }
-
-                await _unitOfWork.CommitAsync();
-
-                return new PlanResponseModel
-                {
-                    Name = plan.Name,
-                    Id = plan.Id
+                    Name = planArea.Name,
+                    Plan = plan,
+                    PlanId = plan.Id,
+                    UserId = plan.UserId
                 };
+
+                await _planAreaObjectService.CreateAsync(area);
+                foreach (AreaTopicServiceModel areaTopic in planArea.AreaTopics)
+                {
+                    await _topicObjectService.CreateAsync(new AreaTopic
+                    {
+                        Name = areaTopic.Name,
+                        StartDate = areaTopic.StartDate != null ? DateTime.ParseExact(areaTopic.StartDate, "yyyy-MM-dd",
+                            CultureInfo.CurrentCulture) : (DateTime?) null,
+                        EndDate = areaTopic.EndDate != null 
+                            ? DateTime.ParseExact(areaTopic.EndDate, "yyyy-MM-dd", CultureInfo.CurrentCulture)
+                            : (DateTime?) null,
+                        Source = areaTopic.Source,
+                        Description = areaTopic.Description,
+                        PlanArea = area,
+                        PlanAreaId = area.Id,
+                        UserId = areaTopic.UserId,
+                        PlanId = areaTopic.PlanId
+                    });
+                }
             }
+
+            return plan;
         }
 
         public async Task DeleteAsync(string planId)
         {
-            using (_unitOfWork)
+
+            Plan plan = await _planObjectService.GetByIdAsync<Plan>(planId);
+
+            if (plan == null)
             {
-
-                Plan plan = await _planReadRepository.GetByIdAsync(planId);
-
-                if (plan == null)
-                {
-                    throw new DomainServicesException("Plan not found.");
-                }
-
-                foreach (PlanArea planArea in _planAreaService.GetBy(plan))
-                {
-                    await _planAreaService.DeleteAsync(planArea.Id);
-                }
-
-                foreach (BotSubscription botSubscription in _botSubscriptionReadRepository.GetAll().Where(s => s.PlanId == planId))
-                {
-                    await _botSubscriptionWriteRepository.DeleteAsync(botSubscription);
-                }
-
-                await _planWriteRepository.DeleteAsync(plan);
-
-                await _unitOfWork.CommitAsync();
+                throw new DomainServicesException("Plan not found.");
             }
+
+            foreach (PlanArea planArea in _planAreaService.GetBy(plan))
+            {
+                await _planAreaService.DeleteAsync(planArea.Id);
+            }
+
+            foreach (BotSubscription botSubscription in _botSubscriptionObjectService.GetBotSubscriptionsByPlan(planId))
+            {
+                await _botSubscriptionObjectService.DeleteAsync(botSubscription);
+            }
+
+            await _planObjectService.DeleteAsync(plan);
+
         }
 
         public async Task<PlanServiceModel> GetByIdAsync(string id)
         {
-            Plan plan = await _planReadRepository.GetByIdAsync(id);
-            var planAreas = _planAreaReadRepository.GetAll().Where(x => x.PlanId == id).ToList();
+            Plan plan = await _planObjectService.GetByIdAsync<Plan>(id);
+          
+            if (plan == null)
+            {
+                return null;
+            }
+            
+            var planAreas = _planAreaObjectService.GetPlanAreas(plan.Id);
            
             return await Task.FromResult(new PlanServiceModel
             {
                 Id = plan.Id,
                 Name = plan.Name,
                 UserId = plan.UserId,
+                IsTemplate = plan.IsTemplate,
                 PlanAreas = planAreas.Select(x => new PlanAreaServiceModel
                 {
                     Id = x.Id,
                     Name = x.Name,
                     PlanId = x.PlanId,
-                    AreaTopics = x.AreaTopics.Select(areaTopic => new AreaTopicServiceModel
+                    AreaTopics = _topicObjectService.GetTopicsByAreaId(x.Id).Select(areaTopic => new AreaTopicServiceModel
                     {
                         Id = areaTopic.Id,
                         Name = areaTopic.Name,
-                        StartDate = areaTopic.StartDate.ToString("yyyy-MM-dd"),
-                        EndDate = areaTopic.EndDate.ToString("yyyy-MM-dd"),
+                        StartDate = areaTopic.StartDate?.ToString("yyyy-MM-dd"),
+                        EndDate = areaTopic.EndDate?.ToString("yyyy-MM-dd"),
                         Source = areaTopic.Source,
                         Description = areaTopic.Description
                     }).OrderBy(topic => topic.StartDate).ToArray()
@@ -142,27 +144,37 @@ namespace LearningPlan.Services.Implementation
             });
         }
 
-        public IQueryable<PlanResponseModel> GetAll(User user)
+        public IEnumerable<PlanResponseModel> GetAll(User user)
         {
             if (user == null)
             {
                 throw new UnauthorizedAccessException();
             }
 
-            return _planReadRepository.GetAll().Where(x => x.UserId == user.Id)
+            return _planObjectService.GetUserPlans(user.Id)
                 .Select(plan => new PlanResponseModel
                 {
                     Id = plan.Id,
-                    Name = plan.Name
+                    Name = plan.Name,
+                    IsTemplate = plan.IsTemplate
+                });
+        }
+
+        public IEnumerable<PlanResponseModel> GetAllTemplates()
+        {
+            return _planObjectService.GetTemplatePlans()
+                .Select(plan => new PlanResponseModel
+                {
+                    Id = plan.Id,
+                    Name = plan.Name,
+                    IsTemplate = plan.IsTemplate
                 });
         }
 
         public async Task UpdateAsync(PlanServiceModel model)
         {
-            using (_unitOfWork)
-            {
 
-                Plan plan = await _planReadRepository.GetByIdAsync(model.Id);
+                Plan plan = await _planObjectService.GetByIdAsync<Plan>(model.Id);
 
                 if (plan == null)
                 {
@@ -171,8 +183,38 @@ namespace LearningPlan.Services.Implementation
 
                 plan.Name = model.Name;
 
-                await _unitOfWork.CommitAsync();
-            }
+                await _planObjectService.UpdateAsync(plan);
+
+        }
+
+        public async Task CopyTemplatePlanAsync(string userId, string planId)
+        {
+           Plan plan = await _planObjectService.GetByIdAsync<Plan>(planId);
+           var areas = _planAreaObjectService.GetPlanAreas(planId);
+
+           await CreatePlanAsync(new PlanServiceModel
+           {
+               Name = plan.Name,
+               IsTemplate = false,
+               UserId = userId,
+               PlanAreas = areas.Select(area => new PlanAreaServiceModel
+               {
+                   PlanId = area.PlanId,
+                   Name = area.Name,
+                   AreaTopics = _topicObjectService.GetTopicsByAreaId(area.Id)
+                       .Select(topic => new AreaTopicServiceModel
+                       {
+                           IsTemplate = false,
+                           Name = topic.Name,
+                           StartDate = null,
+                           EndDate = null,
+                           Description = topic.Description,
+                           Source = topic.Source,
+                           UserId = userId,
+                           PlanId = planId
+                       }).ToArray()
+               }).ToArray()
+           });
         }
     }
 }
