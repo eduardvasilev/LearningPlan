@@ -32,7 +32,7 @@ namespace LearningPlan.WebApi.Controllers
         public async Task<IActionResult> AddTopic(CreateAreaTopicServiceModel model)
         {
             var planArea = await _planAreaService.GetByIdAsync(model.PlanAreaId);
-            ValidateUser(planArea.Plan.UserId);
+            ValidateUser(planArea.UserId);
 
             AreaTopicResponseModel response = await _planAreaService.CreateAreaTopicAsync(model);
             return Json(response);
@@ -48,7 +48,7 @@ namespace LearningPlan.WebApi.Controllers
         public async Task<IActionResult> DeleteTopic([Required]string id)
         {
             var topic = await _topicService.GetByIdAsync(id);
-            ValidateUser(topic.PlanArea.Plan.UserId);
+            ValidateUser(topic.UserId);
 
             await _topicService.DeleteAsync(id);
             return Ok();
@@ -64,7 +64,7 @@ namespace LearningPlan.WebApi.Controllers
         public async Task Update(AreaTopicServiceModel model)
         {
             var topic = await _topicService.GetByIdAsync(model.Id);
-            ValidateUser(topic.PlanArea.Plan.UserId);
+            ValidateUser(topic.UserId);
 
             await _topicService.UpdateAsync(model);
         }

@@ -13,5 +13,6 @@ namespace LearningPlan.Services.Model
         public PlanAreaServiceModel[] PlanAreas { get; set; }
 
         public string UserId { get; set; }
+        public bool IsTemplate { get; set; }
     }
 }

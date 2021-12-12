@@ -45,7 +45,6 @@ namespace LearningPlan.DataAccess.Implementation
             botSubscriptionBuilder.HasPartitionKey(x => x.Id);
             botSubscriptionBuilder.Property(x => x.ChatId).IsRequired();
             botSubscriptionBuilder.Property(x => x.PlanId).IsRequired();
-            botSubscriptionBuilder.HasOne(x => x.Plan);
             botSubscriptionBuilder.HasPartitionKey(x => x.ChatId);
 
             base.OnModelCreating(modelBuilder);

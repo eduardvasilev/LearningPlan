@@ -28,11 +28,11 @@ namespace LearningPlan.WebApi.Controllers
         [HttpPost("authenticate")]
         public async Task<IActionResult> Authenticate(AuthenticateModel model)
         {
-            var response = await _userService.AuthenticateAsync(new AuthenticateRequestModel
+            AuthenticateResponseModel response = await _userService.AuthenticateAsync(new AuthenticateRequestModel
             {
                 Secret = _configuration["Security:Secret"],
                 Username = model.UserName,
-                Password = model.Password
+                Password = model.Password,
             });
 
             if (response == null)

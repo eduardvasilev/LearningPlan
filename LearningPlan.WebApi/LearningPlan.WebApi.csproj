@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>41fa7d7e-e0e0-4064-9cd3-c58513b9bd0e</UserSecretsId>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -12,14 +13,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.21" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="3.1.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="3.1.6" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+    <PackageReference Include="Telegram.Bot" Version="16.0.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\LearningPlan.DataAccess.Implementation\LearningPlan.DataAccess.Implementation.csproj" />
+    <ProjectReference Include="..\LearningPlan.ObjectServices.Implementation.Mongo\LearningPlan.ObjectServices.Implementation.Mongo.csproj" />
     <ProjectReference Include="..\LearningPlan.Services.Implementation\LearningPlan.Services.Implementation.csproj" />
     <ProjectReference Include="..\LearningPlan.Services\LearningPlan.Services.csproj" />
   </ItemGroup>

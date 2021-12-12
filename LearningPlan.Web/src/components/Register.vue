@@ -65,12 +65,13 @@
 
         public formSubmit(e: Event) {
             e.preventDefault();
+            let self = this;
             AuthenticationService.register(this.user)
                 .then(function (response) {
-                   //;
+                   AuthenticationService.login(self.user);
                 })
                 .catch((error) => {
-                    this.error = error.message;
+                    this.error = error.response.data;
                 });
         }
     }

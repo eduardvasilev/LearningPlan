@@ -19,16 +19,25 @@
                 <div class="card plan-card">
                     <div v-if="isAddingNew">
                         <div class="input-group mb-3">
-
-                            <input id="plan-name"
-                                   type="text"
-                                   name="plan-name"
-                                   class="form-control"
-                                   v-model="newPlanName"
-                                   placeholder="Plan name">
-                                <button class="input-group-append btn btn-primary btn-outline-secondary" v-on:click="addPlan" type="button">OK</button>
-                        </div>
-                    </div>
+                            <div class="row">
+                                    <input id="plan-name"
+                                        type="text"
+                                        name="plan-name"
+                                        class="form-control"
+                                        v-model="newPlanName"
+                                        placeholder="Plan name">
+                                        <button class="input-group-append btn btn-primary btn-outline-secondary" v-on:click="addPlan" type="button">OK</button>
+                            </div>
+                            <div class="row">
+                                    <input id="is-template-plan"
+                                        type="checkbox"
+                                        name="is-template-plan"
+                                        class="form-control"
+                                        v-model="isTemplate">
+                                        <label for="is-template-plan">Template</label>
+                                </div>
+                                </div>
+                            </div>
                     <div v-else class="card-body">
                         <a v-on:click="showPlanCreation" role="button" aria-expanded="false" aria-controls="add-plan">
                             Add new plan
@@ -51,6 +60,7 @@
 
         private isAddingNew: boolean = false;
         private newPlanName: string = "";
+        private isTemplate: boolean = false;
         public plans: Plan[] = [];
 
         constructor() {
@@ -62,7 +72,7 @@
             if (!this.newPlanName) {
                 return;
             }
-            PlanDataService.addPlan(this.newPlanName)
+            PlanDataService.addPlan(this.newPlanName, this.isTemplate)
                 .then((response) => {
                     this.plans.push(new Plan(response.data.id, response.data.name));
                     this.showPlanCreation();

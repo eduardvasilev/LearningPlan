@@ -2,54 +2,47 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using LearningPlan.DataAccess;
 using LearningPlan.DomainModel;
 using LearningPlan.DomainModel.Exceptions;
+using LearningPlan.ObjectServices;
 using LearningPlan.Services.Model;
 
 namespace LearningPlan.Services.Implementation
 {
     public class BotSubscriptionService : IBotSubscriptionService
     {
-        private readonly IReadRepository<AreaTopic> _areaTopicReadRepository;
-        private readonly IReadRepository<Plan> _planReadRepository;
-        private readonly IReadRepository<BotSubscription> _botSubscriptionReadRepository;
-        private readonly IWriteRepository<BotSubscription> _botSubscriptionWriteRepository;
+        private readonly IPlanObjectService _planObjectService;
+        private readonly IBotSubscriptionObjectService _botSubscriptionObjectService;
+        private readonly ITopicObjectService _topicObjectService;
 
-        public BotSubscriptionService(
-            IReadRepository<AreaTopic> areaTopicReadRepository,
-            IReadRepository<Plan> planReadRepository,
-            IReadRepository<BotSubscription> botSubscriptionReadRepository,
-            IWriteRepository<BotSubscription> botSubscriptionWriteRepository)
+        public BotSubscriptionService(IPlanObjectService planObjectService,
+            IBotSubscriptionObjectService botSubscriptionObjectService,
+            ITopicObjectService topicObjectService)
         {
-            _areaTopicReadRepository = areaTopicReadRepository;
-            _planReadRepository = planReadRepository;
-            _botSubscriptionReadRepository = botSubscriptionReadRepository;
-            _botSubscriptionWriteRepository = botSubscriptionWriteRepository;
+            _planObjectService = planObjectService;
+            _botSubscriptionObjectService = botSubscriptionObjectService;
+            _topicObjectService = topicObjectService;
         }
 
         public async Task<PlanServiceModel> CreateBotSubscriptionAsync(BotSubscriptionServiceModel model)
         {
-            Plan plan = await _planReadRepository.GetByIdAsync(model.PlanId);
+            Plan plan = await _planObjectService.GetByIdAsync<Plan>(model.PlanId);
 
             if (plan == null)
             {
                 throw new DomainServicesException("Plan not found.");
             }
 
-            if (_botSubscriptionReadRepository
-                .GetAll().Count(x => x.PlanId == model.PlanId && x.ChatId == model.ChatId) > 0)
+            if (_botSubscriptionObjectService.GetBotSubscriptionsByPlanAndChat(model.PlanId, model.ChatId).Any())
             {
                 throw new DomainServicesException("You've already subscribed for this plan.");
             }
 
-            await _botSubscriptionWriteRepository.CreateAsync(new BotSubscription
+            await _botSubscriptionObjectService.CreateAsync(new BotSubscription
             {
                 ChatId = model.ChatId,
                 PlanId = model.PlanId
             });
-
-            await _botSubscriptionWriteRepository.SaveChangesAsync();
 
             return new PlanServiceModel
             {
@@ -58,9 +51,9 @@ namespace LearningPlan.Services.Implementation
             };
         }
 
-        public IQueryable<BotSubscriptionServiceModel> GetAll()
+        public IEnumerable<BotSubscriptionServiceModel> GetAll()
         {
-            return _botSubscriptionReadRepository.GetAll().Select(x => new BotSubscriptionServiceModel
+            return _botSubscriptionObjectService.GetAll().Select(x => new BotSubscriptionServiceModel
             {
                 PlanId = x.PlanId,
                 ChatId = x.ChatId
@@ -71,15 +64,12 @@ namespace LearningPlan.Services.Implementation
         {
             DateTime today = DateTime.Today;
 
-            return _areaTopicReadRepository.GetAll()
-                .Where(x => x.PlanId == planId)
-                .Where(x =>
-                    x.StartDate <= today && x.EndDate >= today)
+            return _topicObjectService.GetTopicsByPlanForToday(planId, today)
                 .Select(x => new AreaTopicServiceModel
                 {
                     Name = x.Name,
-                    StartDate = x.StartDate.ToString("d"),
-                    EndDate = x.EndDate.ToString("d"),
+                    StartDate = x.StartDate?.ToString("d"),
+                    EndDate = x.EndDate?.ToString("d"),
                     Source = x.Source,
                 })
                 .ToList();
