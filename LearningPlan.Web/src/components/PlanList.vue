@@ -16,26 +16,27 @@
             <div>
                 <div class="card plan-card">
                     <div v-if="isAddingNew">
-                        <div class="input-group mb-3">
-                            <div class="row">
+                        <div class="form-group mb-3">
                                     <input id="plan-name"
                                         type="text"
                                         name="plan-name"
                                         class="form-control"
                                         v-model="newPlanName"
                                         placeholder="Plan name">
-                                        <button class="input-group-append btn btn-primary btn-outline-secondary" v-on:click="addPlan" type="button">OK</button>
-                            </div>
-                            <div class="row">
+                        </div>
+                        <div class="form-check mb-3">
                                     <input id="is-template-plan"
                                         type="checkbox"
                                         name="is-template-plan"
-                                        class="form-control"
+                                        class="form-check-input"
                                         v-model="isTemplate">
-                                        <label for="is-template-plan">Template</label>
-                                </div>
-                                </div>
-                            </div>
+                                        <label class="form-check-label" for="is-template-plan">Template</label>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-primary" v-on:click="addPlan" type="button">OK</button>
+                        </div>
+                    </div>
+
                     <div v-else class="card-body">
                         <a v-on:click="showPlanCreation" role="button" aria-expanded="false" aria-controls="add-plan">
                             Add new plan
