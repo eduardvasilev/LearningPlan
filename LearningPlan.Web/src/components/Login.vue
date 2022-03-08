@@ -21,7 +21,7 @@
 
             <div class="form-group">
                 <input class="btn btn-primary" type="submit"
-                       value="Log in">
+                       value="Sign In">
             </div>
         </form>
     </div>

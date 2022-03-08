@@ -12,10 +12,10 @@
                     <div class="center-block">
                         <ul class="nav nav-pills" id="login-tabs" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" id="login-tab" data-toggle="pill" href="#login" role="tab" aria-controls="login" aria-selected="false">Login</a>
+                                <a class="nav-link active" id="login-tab" data-toggle="pill" href="#login" role="tab" aria-controls="login" aria-selected="false">Sign In</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="register-tab" data-toggle="pill" href="#register" role="tab" aria-controls="register" aria-selected="true">Register</a>
+                                <a class="nav-link" id="register-tab" data-toggle="pill" href="#register" role="tab" aria-controls="register" aria-selected="true">Sign Up</a>
                             </li>
                         </ul>
                         <div class="tab-content" id="myTabContent">

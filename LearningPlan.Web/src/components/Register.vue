@@ -29,7 +29,7 @@
 
             <div class="form-group">
                 <input class="btn btn-primary" type="submit"
-                       value="Register">
+                       value="Sign Up">
             </div>
         </form>
     </div>
