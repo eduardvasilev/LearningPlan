@@ -54,12 +54,12 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label for="description">Description</label>
+                            <label for="description">Notes</label>
                             <textarea :id="planAreaId + 'topic-description'"
                                       v-model="topic.description"
                                       name="from"
                                       class="form-control"
-                                      placeholder="Enter Description" />
+                                      placeholder="Notes" />
                         </div>
                     </div>
                 </div>
