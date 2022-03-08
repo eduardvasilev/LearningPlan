@@ -17,6 +17,8 @@ using MongoDB.Driver;
 using System;
 using System.IO;
 using System.Reflection;
+using LearningPlan.WebApi.Jobs;
+using Quartz;
 
 namespace LearningPlan.WebApi
 {
@@ -73,6 +75,24 @@ namespace LearningPlan.WebApi
             services.AddSingleton<IBotService, BotService>();
             services.AddScoped<IBotSubscriptionService, BotSubscriptionService>();
             services.Configure<BotConfiguration>(Configuration.GetSection("BotConfiguration"));
+
+            services.AddQuartz(q =>
+            {
+                q.UseMicrosoftDependencyInjectionJobFactory();
+
+                var jobKey = new JobKey(nameof(TelegramNotificationJob));
+
+                q.AddJob<TelegramNotificationJob>(opts => opts.WithIdentity(jobKey));
+
+                // Create a trigger for the job
+                q.AddTrigger(opts => opts
+                    .ForJob(jobKey)
+                    .WithIdentity($"{jobKey.Name}-trigger")
+                    .WithSimpleSchedule(s => s.WithIntervalInHours(24).RepeatForever()));
+            });
+
+            services.AddQuartzHostedService(
+                q => q.WaitForJobsToComplete = true);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
