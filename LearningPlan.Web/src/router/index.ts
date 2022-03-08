@@ -19,6 +19,11 @@ const routes: Array<RouteConfig>  = [
     component: PlanList
     },
     {
+      path: "/plans",
+      name: "plans",
+      component: PlanList
+    },
+    {
     path: "/templates",
     name: "templatePlans",
     component: TemplatePlansList

@@ -1,7 +1,6 @@
 <template>
     <div>
         <div>
-            <div class="jumbotron">
                     <div v-if="isNameEdit" class="card-body d-flex flex-row">
                         <div class="input-group mb-3 p-2">
                             <input id="plan-name"
@@ -14,7 +13,7 @@
                         </div>
                     </div>
                     <div v-else class="card-body d-flex flex-row">
-                        <div class="p-2">
+                         <div class="page-header">
                             <h3 class="display-4">{{plan.name}}</h3>
                         </div>
                         <div class="p-2">
@@ -45,7 +44,6 @@
                             </div>
                         </div>
                     </div>
-            </div>
             
         </div>
         
@@ -166,8 +164,12 @@ import { store } from '@/store';
     .new-area {
         margin-top: 20px;
         margin-bottom: 20px;
-        border: 2px dashed;
-        border-color: #fefefe;
-        box-shadow: 0px 0px 20px -3px #000000;
+      border: 2px solid;
+        border-color: #1C4670;
+        box-shadow: 0px 0px 3px -3px #1C4670;
+    }
+
+    .new-area:hover{
+        cursor: pointer;
     }
 </style>

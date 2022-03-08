@@ -3,22 +3,20 @@
         <div class="mt-1" v-bind:class="{'alert': hasError , 'alert-danger': hasError }" role="alert">{{errorMessage}}</div>
         <form id="login-form" @submit="formSubmit">
             <div class="form-group">
-                <label for="username">Username</label>
                 <input id="login-username"
                        v-model="user.username"
                        type="text"
                        name="username"
                        class="form-control"
-                       placeholder="Enter username">
+                       placeholder="Username">
             </div>
 
             <div class="form-group">
-                <label for="password">Password</label>
                 <input id="login-password"
                        v-model="user.password"
                        type="password"
                        name="password" class="form-control"
-                       placeholder="Enter password">
+                       placeholder="Password">
             </div>
 
             <div class="form-group">

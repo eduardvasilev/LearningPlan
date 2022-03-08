@@ -27,4 +27,15 @@ export class CookieManager {
 
         document.cookie = updatedCookie;
     }
+
+    static deleteCookie(name: string, options: any = null) {
+
+        options = {
+            path: '/'
+            //expires: null
+        };
+
+        document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+      }
 }
+

@@ -159,12 +159,12 @@
     }
     .in-progress {
         /*        background-color: #ab777c;*/
-        background-color: #429842;
+        background-color: #1DC690;
         border: 2px solid;
-        border-color: #fefefe;
-        box-shadow: 0px 0px 20px -3px #000000;
+        border-color: #1C4670;
+        box-shadow: 0px 0px 10px -3px #1C4670;
     }
     .passed {
-        background-color: #429842;
+        background-color: #1DC690;
     }
 </style>

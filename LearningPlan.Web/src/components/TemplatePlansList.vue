@@ -1,11 +1,9 @@
 <template>
     <div>
-         <div class="jumbotron">
-            <div class="d-flex flex-row">
+         <div class="page-header">
                 <div class="p-2">
-                    <h3 class="display-4">Template plans</h3>
+                    <h3 class="display-4">Shared plans</h3>
                 </div>
-            </div>
         </div>
         <div class="plan-box">
             <div v-for="plan in plans">

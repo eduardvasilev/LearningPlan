@@ -14,6 +14,11 @@ class AuthenticationService {
     public register(user: User) {
         return http.post('/user/register', user);
     }
+
+    public logout() {
+        delete http.defaults.headers.common["Authorization"];
+        store.commit("UserLogout");
+    }
 }
 
 export default new AuthenticationService();

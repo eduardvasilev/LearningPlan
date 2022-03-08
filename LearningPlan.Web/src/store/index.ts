@@ -30,6 +30,12 @@ export const store = new Vuex.Store({
             CookieManager.setCookie("userId", authResponse.userId);
 
             state.user.isAuthenticated = true;
+        },
+        UserLogout(state: any, authResponse: any) {
+            state.user.token = null;
+            CookieManager.deleteCookie("token");
+
+            state.user.isAuthenticated = false;
         }
     }
 });

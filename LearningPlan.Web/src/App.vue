@@ -12,18 +12,18 @@
                     <div class="center-block">
                         <ul class="nav nav-pills" id="login-tabs" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" id="register-tab" data-toggle="pill" href="#register" role="tab" aria-controls="register" aria-selected="true">Register</a>
+                                <a class="nav-link active" id="login-tab" data-toggle="pill" href="#login" role="tab" aria-controls="login" aria-selected="false">Login</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="login-tab" data-toggle="pill" href="#login" role="tab" aria-controls="login" aria-selected="false">Login</a>
+                                <a class="nav-link" id="register-tab" data-toggle="pill" href="#register" role="tab" aria-controls="register" aria-selected="true">Register</a>
                             </li>
                         </ul>
                         <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade show active" id="register" role="tabpanel" aria-labelledby="register-tab">
-                                <Register />
-                            </div>
-                            <div class="tab-pane fade" id="login" role="tabpanel" aria-labelledby="login-tab">
+                           <div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
                                 <Login />
+                            </div>
+                            <div class="tab-pane fade" id="register" role="tabpanel" aria-labelledby="register-tab">
+                                <Register />
                             </div>
                         </div>
                     </div>
@@ -57,17 +57,31 @@
 </script>
 
 <style>
-
+/* https://www.canva.com/colors/color-palettes/northern-lights-3/ */
     body, .modal-content {
-        background-color: #1d1d1d !important;
-        color: #fefefe !important;
+        background-color: #EAEAE0 !important;
+        /* color: #EAEAE0 !important; */
     }
     hr {
-        background-color: #fefefe !important;
+        background-color: #EAEAE0 !important;
     }
+
+    svg{
+        color: #1C4670;
+    }
+
     .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-        background-color: #e48900 !important;
+        background-color: #278AB0 !important;
     }
+
+.nav-link:hover{
+    /* background-color: #1C4670 !important; */
+    color: black !important;
+}
+.logout{
+    cursor: pointer;
+}
+
     .login-form {
         margin: 0;
         position: absolute;
@@ -76,28 +90,35 @@
         margin-right: -50%;
     }
     a {
-        color: #fefefe !important;
+        color: #000000 !important;
+        text-decoration: none !important;
     }
     a:hover {
-        color: whitesmoke !important;
+        color: #EAEAE0 !important;
     }
    
+   .btn{
+         border: none !important;
+        border-radius: 0% !important;
+   }
+
     .btn-primary {
-        background-color: #e48900 !important;
-        color: #fefefe !important;
+        background-color: #278AB0 !important;
+        color: #EAEAE0 !important;
+      
     }
     .card {
-        background-color: #1d1d1d !important;
-        color: #fefefe !important;
+        background-color: #1DC690 !important;
+        /* color: black !important; */
        /* border: 2px solid;
-        border-color: #fefefe !important;*/
+        border-color: #EAEAE0 !important;*/
     }
     .navbar {
-        background-color: #e48900 !important;
+        background-color: #1DC690 !important;
     }
 
     .close > span {
-        color: #fefefe !important;
+        color: #1DC690 !important;
     }
 
     .app-body{
@@ -106,16 +127,18 @@
     }
 
     .btn {
-        color: #fefefe !important;
+        color: #EAEAE0 !important;
     }
-
+   .btn:hover {
+     text-decoration: none !important;
+    }
     .jumbotron {
         background-color: #373738 !important;
     }
 
     .plan-card {
         border: 2px solid;
-        border-color: #fefefe;
-        box-shadow: 0px 0px 20px -3px #000000;
+        border-color: #EAEAE0;
+        /* box-shadow: 0px 0px 20px -3px #000000; */
     }
 </style>
