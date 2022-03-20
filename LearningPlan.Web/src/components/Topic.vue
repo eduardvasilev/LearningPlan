@@ -47,7 +47,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label for="description">Description: </label>
+                                <label for="description">Notes: </label>
                                 <p>{{topic.description}}</p>
                             </div>
                         </div>

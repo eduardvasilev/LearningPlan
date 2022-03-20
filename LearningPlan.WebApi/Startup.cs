@@ -17,6 +17,10 @@ using MongoDB.Driver;
 using System;
 using System.IO;
 using System.Reflection;
+using Google.Apis.Services;
+using Google.Apis.Sheets.v4;
+using LearningPlan.Services.ExternalAdapters;
+using LearningPlan.Services.ExternalAdapters.Abstraction;
 using LearningPlan.WebApi.Jobs;
 using Quartz;
 
@@ -71,9 +75,16 @@ namespace LearningPlan.WebApi
             services.AddScoped<IPlanAreaService, PlanAreaService>();
             services.AddScoped<ITopicService, TopicService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IGoogleSheetsAdapter, GoogleSheetsAdapter>();
 
             services.AddSingleton<IBotService, BotService>();
             services.AddScoped<IBotSubscriptionService, BotSubscriptionService>();
+
+            services.AddScoped(provider => new SheetsService(new BaseClientService.Initializer()
+            {
+                ApiKey = Configuration.GetSection("Google")["ApiKey"],
+                ApplicationName = Configuration.GetSection("Google")["AppKey"],
+            }));
             services.Configure<BotConfiguration>(Configuration.GetSection("BotConfiguration"));
 
             services.AddQuartz(q =>
