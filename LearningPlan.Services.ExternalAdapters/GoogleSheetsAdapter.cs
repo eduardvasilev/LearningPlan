@@ -1,11 +1,14 @@
-﻿using Google.Apis.Sheets.v4;
+﻿using System;
+using Google.Apis.Sheets.v4;
 using LearningPlan.Services.ExternalAdapters.Abstraction;
 using LearningPlan.Services.ExternalAdapters.Models;
 using LearningPlan.Services.Model;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LearningPlan.DomainModel;
 using LearningPlan.DomainModel.Exceptions;
+using Microsoft.AspNetCore.Http;
 
 namespace LearningPlan.Services.ExternalAdapters
 {
@@ -13,19 +16,26 @@ namespace LearningPlan.Services.ExternalAdapters
     {
         private readonly SheetsService _sheetsService;
         private readonly IPlanService _planService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public GoogleSheetsAdapter(SheetsService sheetsService, IPlanService planService)
+        public GoogleSheetsAdapter(SheetsService sheetsService, IPlanService planService, IHttpContextAccessor httpContextAccessor)
         {
             _sheetsService = sheetsService;
             _planService = planService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<PlanResponseModel> ImportDataFromSheetAsync(ImportGoogleSheetModel model)
         {
+            string userId = ((User) _httpContextAccessor.HttpContext.Items["User"])?.Id;
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new UnauthorizedAccessException("User not found");
+            }
             PlanServiceModel planServiceModel = new PlanServiceModel
             {
                 IsTemplate = model.IsTemplate,
-                UserId = model.UserId,
+                UserId = userId,
                 Name = model.PlanName,
             };
             

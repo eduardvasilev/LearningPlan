@@ -61,7 +61,7 @@ namespace LearningPlan.Services.Implementation
                 Description = model.Description
             };
 
-            if (!model.IsTemplate)
+            if (!model.IsTemplate && !string.IsNullOrEmpty(model.StartDate) && !string.IsNullOrEmpty(model.EndDate))
             {
                 areaTopic.StartDate = DateTime.ParseExact(model.StartDate, "yyyy-MM-dd",
                     CultureInfo.CurrentCulture);
