@@ -32,7 +32,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LearningPlan.ObjectServices
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LearningPlan.ObjectServices.Implementation.Mongo", "LearningPlan.ObjectServices.Implementation.Mongo\LearningPlan.ObjectServices.Implementation.Mongo.csproj", "{2B74C2F2-972C-418D-A6EF-B59FD068CF80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearningPlan.Services.ExternalAdapters", "LearningPlan.Services.ExternalAdapters\LearningPlan.Services.ExternalAdapters.csproj", "{54EC1B7B-1879-41DF-A246-3FFA9961F314}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LearningPlan.Services.ExternalAdapters", "LearningPlan.Services.ExternalAdapters\LearningPlan.Services.ExternalAdapters.csproj", "{54EC1B7B-1879-41DF-A246-3FFA9961F314}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,7 +65,6 @@ Global
 		{317B30F5-1EAF-4ED5-844C-471DEA7AF1D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{317B30F5-1EAF-4ED5-844C-471DEA7AF1D8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1BDE43A9-46D5-4ECA-9EBE-146FA0AA2609}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1BDE43A9-46D5-4ECA-9EBE-146FA0AA2609}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1BDE43A9-46D5-4ECA-9EBE-146FA0AA2609}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1BDE43A9-46D5-4ECA-9EBE-146FA0AA2609}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EAC989E3-D240-4241-A9AA-CB04768A3908}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
