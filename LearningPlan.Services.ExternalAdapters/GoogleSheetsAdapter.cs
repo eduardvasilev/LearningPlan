@@ -65,7 +65,8 @@ namespace LearningPlan.Services.ExternalAdapters
                         Description = model.DescriptionColumn.HasValue && model.DescriptionColumn < sheetValueCount ? sheetValue[model.DescriptionColumn.Value].ToString() : null,
                         StartDate = model.StartDateColumn.HasValue && model.StartDateColumn < sheetValueCount ? sheetValue[model.StartDateColumn.Value].ToString() : null,
                         EndDate = model.EndDateColumn.HasValue && model.EndDateColumn < sheetValueCount ? sheetValue[model.EndDateColumn.Value].ToString() : null,
-                        Source = model.SourceColumn.HasValue && model.SourceColumn < sheetValueCount ? sheetValue[model.SourceColumn.Value].ToString() : null
+                        Source = model.SourceColumn.HasValue && model.SourceColumn < sheetValueCount ? sheetValue[model.SourceColumn.Value].ToString() : null,
+                        UserId = userId
 
                     });
                 }
@@ -79,7 +80,8 @@ namespace LearningPlan.Services.ExternalAdapters
                             Description = model.DescriptionColumn.HasValue && model.DescriptionColumn < sheetValueCount ? sheetValue[model.DescriptionColumn.Value].ToString() : null,
                             StartDate = model.StartDateColumn.HasValue && model.StartDateColumn < sheetValueCount ? sheetValue[model.StartDateColumn.Value].ToString() : null,
                             EndDate = model.EndDateColumn.HasValue && model.EndDateColumn < sheetValueCount ? sheetValue[model.EndDateColumn.Value].ToString() : null,
-                            Source = model.SourceColumn.HasValue && model.SourceColumn < sheetValueCount ? sheetValue[model.SourceColumn.Value].ToString() : null
+                            Source = model.SourceColumn.HasValue && model.SourceColumn < sheetValueCount ? sheetValue[model.SourceColumn.Value].ToString() : null,
+                            UserId = userId
 
                         }
                     });
