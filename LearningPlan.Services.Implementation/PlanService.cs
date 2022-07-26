@@ -194,33 +194,43 @@ namespace LearningPlan.Services.Implementation
 
         public async Task CopyTemplatePlanAsync(string userId, string planId)
         {
+            await CopyPlanAsync(userId, planId, false);
+        }
+
+        private async Task CopyPlanAsync(string userId, string planId, bool isTemplate)
+        {
             string newPlanId = Guid.NewGuid().ToString();
             Plan plan = await _planObjectService.GetByIdAsync<Plan>(planId);
-           var areas = _planAreaObjectService.GetPlanAreas(planId);
+            var areas = _planAreaObjectService.GetPlanAreas(planId);
 
-           await CreatePlanCoreAsync(new PlanServiceModel
-           {
-               Name = plan.Name,
-               IsTemplate = false,
-               UserId = userId,
-               PlanAreas = areas.Select(area => new PlanAreaServiceModel
-               {
-                   PlanId = newPlanId,
-                   Name = area.Name,
-                   AreaTopics = _topicObjectService.GetTopicsByAreaId(area.Id)
-                       .Select(topic => new AreaTopicServiceModel
-                       {
-                           IsTemplate = false,
-                           Name = topic.Name,
-                           StartDate = null,
-                           EndDate = null,
-                           Description = topic.Description,
-                           Source = topic.Source,
-                           UserId = userId,
-                           PlanId = newPlanId
-                       }).ToArray()
-               }).ToArray()
-           }, newPlanId);
+            await CreatePlanCoreAsync(new PlanServiceModel
+            {
+                Name = plan.Name,
+                IsTemplate = isTemplate,
+                UserId = userId,
+                PlanAreas = areas.Select(area => new PlanAreaServiceModel
+                {
+                    PlanId = newPlanId,
+                    Name = area.Name,
+                    AreaTopics = _topicObjectService.GetTopicsByAreaId(area.Id)
+                        .Select(topic => new AreaTopicServiceModel
+                        {
+                            IsTemplate = false,
+                            Name = topic.Name,
+                            StartDate = null,
+                            EndDate = null,
+                            Description = topic.Description,
+                            Source = topic.Source,
+                            UserId = userId,
+                            PlanId = newPlanId
+                        }).ToArray()
+                }).ToArray()
+            }, newPlanId);
+        }
+
+        public async Task SaveAsTemplateAsync(string userId, string planId)
+        {
+            await CopyPlanAsync(userId, planId, true);
         }
     }
 }

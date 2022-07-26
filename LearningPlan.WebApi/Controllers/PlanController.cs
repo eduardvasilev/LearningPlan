@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace LearningPlan.WebApi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class PlanController : ControllerBase
@@ -69,15 +70,28 @@ namespace LearningPlan.WebApi.Controllers
         }
 
         /// <summary>
-        /// Get all template plans
+        /// Copies template plan to user's account
         /// </summary>
+        /// <param name="planId">Id of plan</param>
         /// <returns></returns>
         [Authorize]
-        [HttpPost("copy/{id}")]
-        public JsonResult CopyTemplatePlan(string id)
+        [HttpPost("copy/{planId}")]
+        public async Task<IActionResult> CopyTemplatePlan(string planId)
         {
-             _planService.CopyTemplatePlanAsync(GetCurrentUser().Id, id);
-             return Json(true);
+             await _planService.CopyTemplatePlanAsync(GetCurrentUser().Id, planId);
+             return Ok();
+        }
+
+        /// <summary>
+        /// Copies user's plan as template plan
+        /// </summary>
+        /// <param name="planId">Id of plan</param>
+        /// <returns></returns>
+        [HttpPost("{planId}/template")]
+        public async Task<IActionResult> SaveAsTemplate(string planId)
+        {
+            await _planService.SaveAsTemplateAsync(GetCurrentUser().Id, planId);
+            return Ok();
         }
 
         /// <summary>
