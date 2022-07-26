@@ -19,5 +19,6 @@ namespace LearningPlan.Services
 
         Task UpdateAsync(PlanServiceModel model);
         Task CopyTemplatePlanAsync(string userId, string planId);
+        Task SaveAsTemplateAsync(string userId, string planId);
     }
 }
