@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { AuthMethods } from "@/models/authenticate"
-import { Login } from "@/models/login"
+import { AuthMethods } from '@/models/authenticate';
+import { Signup } from "@/models/signup"
 
-const user = new Login();
-const method = AuthMethods.Login
+const user = new Signup();
+const method = AuthMethods.Signup;
 </script>
 
 <template>
@@ -17,11 +17,9 @@ const method = AuthMethods.Login
         <label for="password">Password</label>
         <input type="password" name="password" id="password" placeholder="Enter password" class="input"
           v-model="user.password">
-        <button type="submit"
-          class="rounded-md p-4 bg-yellow-400 border border-amber-900 text-amber-900 font-semibold mt-5">Sign
-          in</button>
+        <button type="submit" class="bg-black rounded-md p-2 text-white mt-5">Sign in</button>
       </form>
-      <div class="text-center">Dont have an account? <button class="text-indigo-700">Sign up</button></div>
+      <div class="text-center">Have an account already?<button class="text-blue-400">Log in</button></div>
     </div>
   </section>
 </template>

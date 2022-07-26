@@ -1,21 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import PlanList from "@/components/PlanList.vue"
-import WelcomeItem from '@/components/WelcomeItem.vue'
+import LoginViewVue from "@/views/LoginView.vue"
+
+const routes = [
+  {
+    path: "/login",
+    name: 'login',
+    component: LoginViewVue
+  },
+]
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: "/plans",
-      name: 'plans',
-      component: PlanList
-    },
-    {
-      path: "/welcome",
-      name: 'welcome',
-      component: WelcomeItem
-    },
-  ]
+  routes,
 })
 
 export default router

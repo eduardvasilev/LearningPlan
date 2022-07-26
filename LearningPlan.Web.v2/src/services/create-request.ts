@@ -3,7 +3,7 @@ import httpCommon from "@/http-common";
 import { useUserStore } from "@/stores/UserStore"
 
 
-export default function http() {
+export default function createRequest() {
   const userStore = useUserStore();
   return axios.create({
     baseURL: httpCommon.baseURL,

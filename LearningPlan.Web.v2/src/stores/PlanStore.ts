@@ -4,7 +4,7 @@ export const usePlanStore = defineStore("PlanStore", {
   state: () => ({ hasEditPermission: false }),
 
   actions: {
-    PlanOpened(hasEditPermission: boolean) {
+    PlanOpened(hasEditPermission: boolean): void {
       this.hasEditPermission = hasEditPermission;
     },
   }

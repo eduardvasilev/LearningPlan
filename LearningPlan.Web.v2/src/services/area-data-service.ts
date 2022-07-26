@@ -1,18 +1,18 @@
-import http from "./create-request";
+import createRequest from "./create-request";
 import type { PlanArea } from "../models/plan-area";
 
 export class AreaDataService {
 
     public addArea(area: PlanArea) {
-        return http().post("/area/", area);
+        return createRequest().post("/area/", area);
     }
 
     public deleteArea(area: PlanArea) {
-        return http().delete(`/area/${area.id}`);
+        return createRequest().delete(`/area/${area.id}`);
     }
 
     public updateArea(area: PlanArea) {
-        return http().put("/area/", area);
+        return createRequest().put("/area/", area);
     }
 
 }

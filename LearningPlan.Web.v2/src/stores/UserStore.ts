@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 
-import { CookieManager } from "../tools/cookie-manager"
+import { CookieManager } from "@/tools/cookie-manager"
 
 export const useUserStore = defineStore("UserStore", {
   state: () => {
@@ -13,7 +13,7 @@ export const useUserStore = defineStore("UserStore", {
   },
 
   actions: {
-    UserAuthenticated(authResponse: any) {
+    UserAuthenticated(authResponse: any): void {
       this.username = authResponse.username;
       CookieManager.setCookie("username", authResponse.username);
 
@@ -25,7 +25,7 @@ export const useUserStore = defineStore("UserStore", {
 
       this.isAuthenticated = true;
     },
-    UserLogout() {
+    UserLogout(): void {
       this.token = '';
       CookieManager.deleteCookie("token");
       this.isAuthenticated = false;
