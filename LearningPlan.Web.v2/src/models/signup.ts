@@ -1,7 +1,7 @@
-import { Authenticate, type AuthMethods } from "@/models/authenticate";
+import { Authentication, type AuthMethods } from "@/models/authentication";
 import AuthenticationService from "@/services/auth-service"
 
-export class Signup extends Authenticate {
+export class Signup extends Authentication {
 
   formSubmit(method: AuthMethods): void {
     AuthenticationService.register(this.user)

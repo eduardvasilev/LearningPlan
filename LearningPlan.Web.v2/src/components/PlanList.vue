@@ -16,26 +16,26 @@ class PlanList {
     this.retrievePlans()
   }
 
-  private addPlan(){
+  private addPlan() {
     if (!this.newPlanName) {
       return;
     }
     PlanDataService.addPlan(this.newPlanName, this.isTemplate)
-        .then((response) => {
-          this.plans.push(new Plan(response.data.id, response.data.name));
-          this.showPlanCreation();
-          this.newPlanName = '';
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+      .then((response) => {
+        this.plans.push(new Plan(response.data.id, response.data.name));
+        this.showPlanCreation();
+        this.newPlanName = '';
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   private showPlanCreation() {
     this.isAddingNew = !this.isAddingNew;
   }
 
-  private retrievePlans(){
+  private retrievePlans() {
     PlanDataService.getPlans()
       .then((response) => {
         this.plans = response.data;
@@ -45,6 +45,8 @@ class PlanList {
       })
   }
 }
+
+const planList = new PlanList();
 </script>
 
 <template>

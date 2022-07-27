@@ -7,6 +7,11 @@ const routes = [
     name: 'login',
     component: LoginViewVue
   },
+  {
+    path: '/signup',
+    name: 'signup',
+    component: LoginViewVue
+  }
 ]
 
 const router = createRouter({

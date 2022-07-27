@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AuthMethods } from "@/models/authenticate"
+import { AuthMethods } from "@/models/authentication"
 import { Login } from "@/models/login"
 
 const user = new Login();
@@ -21,7 +21,9 @@ const method = AuthMethods.Login
           class="rounded-md p-4 bg-yellow-400 border border-amber-900 text-amber-900 font-semibold mt-5">Sign
           in</button>
       </form>
-      <div class="text-center">Dont have an account? <button class="text-indigo-700">Sign up</button></div>
+      <div class="text-center">Dont have an account? <router-link to="signup" class="text-indigo-700">Sign up
+        </router-link>
+      </div>
     </div>
   </section>
 </template>

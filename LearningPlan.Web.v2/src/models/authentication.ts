@@ -9,7 +9,7 @@ interface FormSubmit {
   formSubmit(method: AuthMethods): void;
 };
 
-export abstract class Authenticate implements FormSubmit {
+export abstract class Authentication implements FormSubmit {
   protected error: string;
   protected user: User;
   constructor() {
