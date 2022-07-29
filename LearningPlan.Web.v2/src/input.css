@@ -3,7 +3,16 @@
 @tailwind utilities;
 
 @layer components {
-  .input {
+  .auth-form {
+    @apply flex flex-col gap-4;
+  }
+  .auth-form__input {
     @apply w-full border border-slate-500 rounded-md p-2;
+  }
+  .auth-form__button {
+    @apply bg-yellow-400 font-semibold border border-amber-900 text-amber-900 rounded-md p-4;
+  }
+  .error-popup {
+    @apply bg-red-200 border border-red-500 rounded-md p-4 text-center;
   }
 }

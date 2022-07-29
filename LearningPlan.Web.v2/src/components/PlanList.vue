@@ -52,5 +52,6 @@ const planList = new PlanList();
 <template>
   <div>
     <h1>Your learning plans</h1>
+    {{ planList }}
   </div>
 </template>

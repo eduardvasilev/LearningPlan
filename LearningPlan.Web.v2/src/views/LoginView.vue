@@ -6,35 +6,34 @@ import { onUpdated, type Ref, ref } from 'vue';
 
 const route = useRoute();
 
-let currentRoute: Ref<string> = ref('login');
+let currentRoute: Ref<string> = ref(String(route.name));
 
-function changeComponent(componentName: any) {
+function toggleComponentByRouteName(componentName: any) {
   currentRoute.value = componentName;
-}
+};
 
 onUpdated(() => {
-  changeComponent(route.name)
-})
+  toggleComponentByRouteName(route.name);
+});
 
 </script>
 <template>
   <section class="flex justify-center mt-20">
     <object data="./logo.svg" type="image/svg+xml" class="w-1/5 drop-shadow-xl" title="Learning Plan"></object>
   </section>
-  <transition name="fade" mode="out-in">
-
+  <Transition mode="out-in">
     <component class="mt-10" :is="currentRoute == 'login' ? LoginVue : SignupVue" />
-  </transition>
+  </Transition>
 </template>
 
 <style>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease-out;
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.2s ease;
 }
 
-.fade-enter-from,
-.fade-leave-to {
+.v-enter-from,
+.v-leave-to {
   opacity: 0;
 }
 </style>

@@ -1,10 +1,10 @@
-import { Authentication, type AuthMethods } from "@/models/authentication";
+import { Authentication } from "@/models/authentication";
 import AuthenticationService from "@/services/auth-service"
 
 export class Signup extends Authentication {
 
-  formSubmit(method: AuthMethods): void {
-    AuthenticationService.register(this.user)
+  formSubmit(): void {
+    AuthenticationService.signup(this.user)
       .catch((error) => {
         this.error = error.response.data.message;
       });

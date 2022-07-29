@@ -1,17 +1,12 @@
-import type { User } from "@/models/user"
-
-export enum AuthMethods {
-  Login,
-  Signup
-};
+import type { AuthModel } from "@/models/auth-model"
 
 interface FormSubmit {
-  formSubmit(method: AuthMethods): void;
+  formSubmit(): void;
 };
 
 export abstract class Authentication implements FormSubmit {
   protected error: string;
-  protected user: User;
+  protected user: AuthModel;
   constructor() {
     this.user = {
       username: '',
@@ -28,6 +23,10 @@ export abstract class Authentication implements FormSubmit {
     this.user.password = thePassword;
   };
 
+  set errorMessage(errorMessage: string) {
+    this.error = errorMessage;
+  };
+
   get errorMessage() {
     return this.error;
   };
@@ -36,5 +35,5 @@ export abstract class Authentication implements FormSubmit {
     return this.error.length > 0;
   };
 
-  abstract formSubmit(method: AuthMethods): void;
+  abstract formSubmit(): void;
 }
