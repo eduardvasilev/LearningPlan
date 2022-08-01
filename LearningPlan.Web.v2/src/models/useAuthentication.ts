@@ -31,23 +31,24 @@ export function useAuthentication(authMethod: AuthenticationMethods) {
     }
   });
 
-  function formSubmit(): void {
+  function handleSubmit(callback: Function) {
     status.value = AuthenticationStatus.Pending;
-    if (authMethod === AuthenticationMethods.Login) {
-      AuthenticationService.login(user)
-        .catch((error) => {
-          errorMessage.value = error.response.data.message;
-        }).finally(() => {
-          status.value = AuthenticationStatus.Settled;
-        });
-    } else if (authMethod === AuthenticationMethods.Signup) {
-      AuthenticationService.signup(user)
-        .catch((error) => {
-          errorMessage.value = error.response.data.message;
-        }).finally(() => {
-          status.value = AuthenticationStatus.Settled;
-        });
-    };
+    callback()
+      .catch((error: any) => errorMessage.value = error.response.data.message)
+      .finally(() => status.value = AuthenticationStatus.Settled);
+  };
+
+  function formSubmit(): void {
+    switch (authMethod) {
+      case AuthenticationMethods.Login: {
+        handleSubmit(() => AuthenticationService.login(user));
+        break;
+      }
+      case AuthenticationMethods.Signup: {
+        handleSubmit(() => AuthenticationService.signup(user));
+        break
+      }
+    }
   };
 
   return { user, status, errorMessage, formSubmit };
