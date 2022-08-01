@@ -16,10 +16,12 @@ namespace LearningPlan.Services.Implementation
     public class UserService : IUserService
     {
         private readonly IUserObjectService _userObjectService;
+        private readonly IPasswordService _passwordService;
 
-        public UserService(IUserObjectService userObjectService)
+        public UserService(IUserObjectService userObjectService, IPasswordService passwordService)
         {
             _userObjectService = userObjectService;
+            _passwordService = passwordService;
         }
 
         public async Task<AuthenticateResponseModel> AuthenticateAsync(AuthenticateRequestModel model)
@@ -35,9 +37,10 @@ namespace LearningPlan.Services.Implementation
 
         public async Task SignInAsync(SignInServiceModel model)
         {
+            _passwordService.ValidatePassword(model.Password);
             if ((await _userObjectService.GetUserByUserNameAsync(model.Username) != null))
             {
-                throw new DomainServicesException($"User with login '{model.Username}' is already exists.");
+                throw new DomainServicesException($"User with login '{model.Username}' already exists.");
             }
 
             byte[] salt = new byte[128 / 8];
