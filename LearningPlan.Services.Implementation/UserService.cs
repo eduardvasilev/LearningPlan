@@ -35,8 +35,7 @@ namespace LearningPlan.Services.Implementation
 
         public async Task SignInAsync(SignInServiceModel model)
         {
-            //consider to rid of AsEnumerable()
-            if (_userObjectService.GetUserByUserNameAsync(model.Username) == null)
+            if ((await _userObjectService.GetUserByUserNameAsync(model.Username) != null))
             {
                 throw new DomainServicesException($"User with login '{model.Username}' is already exists.");
             }
