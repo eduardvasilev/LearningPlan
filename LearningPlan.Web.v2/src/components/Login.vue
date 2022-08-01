@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { useAuthentication, AuthenticationMethods } from "@/models/useAuthentication"
-import ErrorPopupVue from "./ErrorPopup.vue";
 import { type Ref, ref, watch } from "vue";
+import { useAuthentication, AuthenticationMethods, AuthenticationStatus } from "@/models/useAuthentication"
+import LoadingWheelVue from "@/components/icons/LoadingWheel.vue"
+import ErrorPopupVue from "./ErrorPopup.vue";
 
-const login = useAuthentication();
+const login = useAuthentication(AuthenticationMethods.Login);
 
 const ErrorPopupAlert: Ref<string> = ref('');
+
+const isLoading: Ref<boolean> = ref(false);
 
 function eraseErrorMessageAfter3Sec() {
   if (login.errorMessage.value !== '') {
@@ -18,21 +21,31 @@ watch(login.errorMessage, () => {
   eraseErrorMessageAfter3Sec();
 })
 
+watch(login.status, (status) => {
+  status === AuthenticationStatus.Pending ? isLoading.value = true : isLoading.value = false;
+});
+
 </script>
 
 <template>
   <section class="flex justify-center">
     <div class="flex flex-col gap-10 w-1/5">
       <h1 class="text-3xl font-bold">Welcome back</h1>
-      <form class="auth-form" id="login-form" @submit.prevent="login.formSubmit(AuthenticationMethods.Login)">
+      <form class="auth-form" id="login-form" @submit.prevent="login.formSubmit()">
         <label for="username">Username</label>
         <input type="text" name="username" id="username" placeholder="Enter your username" class="auth-form__input"
           v-model.lazy="login.user.username" required />
         <label for="password">Password</label>
         <input type="password" name="password" id="password" placeholder="Enter password" class="auth-form__input"
           v-model.lazy="login.user.password" required>
-        <button type="submit" class="auth-form__button mt-5">Sign
-          in</button>
+        <button type="submit" class="auth-form__button mt-5">
+          <div class="auth-form__button-content">
+            <Transition mode="out-in">
+              <LoadingWheelVue v-if="isLoading" class="-ml-10 mr-5 " />
+            </Transition>
+            Sign in
+          </div>
+        </button>
       </form>
       <div class="text-center">Dont have an account?<router-link to="signup" class="text-indigo-700"> Sign up
         </router-link>

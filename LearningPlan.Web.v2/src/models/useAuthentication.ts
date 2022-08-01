@@ -4,14 +4,23 @@ import { reactive, ref, computed, type Ref, type WritableComputedRef } from "vue
 export enum AuthenticationMethods {
   Login,
   Signup
-}
+};
 
-export function useAuthentication() {
+export enum AuthenticationStatus {
+  Initialized,
+  Pending,
+  Settled
+};
+
+export function useAuthentication(authMethod: AuthenticationMethods) {
   const user = reactive({
     username: '',
     password: '',
     confirmPassword: ''
   });
+
+  const status: Ref<AuthenticationStatus> = ref(AuthenticationStatus.Initialized);
+
   const error: Ref<string> = ref('');
   const errorMessage: WritableComputedRef<string> = computed({
     get() {
@@ -20,21 +29,26 @@ export function useAuthentication() {
     set(errorMessage: string) {
       error.value = errorMessage;
     }
-  })
+  });
 
-  function formSubmit(authMethod: AuthenticationMethods): void {
+  function formSubmit(): void {
+    status.value = AuthenticationStatus.Pending;
     if (authMethod === AuthenticationMethods.Login) {
       AuthenticationService.login(user)
         .catch((error) => {
           errorMessage.value = error.response.data.message;
+        }).finally(() => {
+          status.value = AuthenticationStatus.Settled;
         });
     } else if (authMethod === AuthenticationMethods.Signup) {
       AuthenticationService.signup(user)
         .catch((error) => {
           errorMessage.value = error.response.data.message;
+        }).finally(() => {
+          status.value = AuthenticationStatus.Settled;
         });
-    }
-  }
+    };
+  };
 
-  return { user, errorMessage, formSubmit }
-}
+  return { user, status, errorMessage, formSubmit };
+};
