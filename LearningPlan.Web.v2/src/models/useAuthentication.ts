@@ -1,5 +1,6 @@
 import AuthenticationService from "@/services/auth-service"
 import { reactive, ref, computed, type Ref, type WritableComputedRef } from "vue";
+import type { AuthModel } from "./auth-model";
 
 export enum AuthenticationMethods {
   Login,
@@ -13,7 +14,7 @@ export enum AuthenticationStatus {
 };
 
 export function useAuthentication(authMethod: AuthenticationMethods) {
-  const user = reactive({
+  const user: AuthModel = reactive({
     username: '',
     password: '',
     confirmPassword: ''
@@ -23,12 +24,8 @@ export function useAuthentication(authMethod: AuthenticationMethods) {
 
   const error: Ref<string> = ref('');
   const errorMessage: WritableComputedRef<string> = computed({
-    get() {
-      return error.value;
-    },
-    set(errorMessage: string) {
-      error.value = errorMessage;
-    }
+    get: () => error.value,
+    set: (errorMessage: string) => error.value = errorMessage
   });
 
   function handleSubmit(callback: Function) {
