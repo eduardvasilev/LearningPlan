@@ -16,6 +16,6 @@
     @apply flex flex-row justify-center;
   }
   .error-popup {
-    @apply bg-red-200 border border-red-500 rounded-md p-4 text-center;
+    @apply bg-red-200 border flex flex-row items-center gap-5 justify-center border-red-500 rounded-md p-4 text-center;
   }
 }
