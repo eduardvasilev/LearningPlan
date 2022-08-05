@@ -10,8 +10,8 @@ const props = defineProps<{
 
 function logout() {
   AuthenticationService.logout();
-  router.push("/login");
-}
+  router.push('/login');
+};
 </script>
 <template>
   <header class="mx-10 grid grid-flow-col grid-col-3 h-10 items-center text-center">

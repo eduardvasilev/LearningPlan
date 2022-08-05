@@ -8,7 +8,7 @@ export const useUserStore = defineStore("UserStore", {
       username: CookieManager.getCookie("username"),
       token: CookieManager.getCookie("token"),
       userId: CookieManager.getCookie("userId"),
-      isAuthenticated: CookieManager.getCookie("token") != null //TODO}
+      isAuthenticated: CookieManager.getCookie("token") != false
     };
   },
 
