@@ -7,15 +7,23 @@
     @apply flex flex-col gap-4;
   }
   .auth-form__input {
-    @apply w-full border border-slate-500 rounded-md p-2;
+    @apply w-full rounded-md border border-slate-500 p-2;
   }
   .auth-form__button {
-    @apply bg-yellow-400 font-semibold border border-amber-900 text-amber-900 rounded-md p-4;
+    @apply rounded-md border border-amber-900 bg-yellow-400 p-4 font-semibold text-amber-900;
   }
   .auth-form__button-content {
     @apply flex flex-row justify-center;
   }
   .error-popup {
-    @apply bg-red-200 border flex flex-row items-center gap-5 justify-center border-red-500 rounded-md p-4 text-center;
+    @apply flex flex-row items-center justify-center gap-5 rounded-md border border-red-500 bg-red-200 p-4 text-center;
+  }
+
+  .cols-6 {
+    @apply grid grid-flow-col grid-cols-6;
+  }
+
+  .cols-3 {
+    @apply grid grid-flow-col grid-cols-3;
   }
 }

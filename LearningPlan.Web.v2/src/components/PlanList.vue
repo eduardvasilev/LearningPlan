@@ -1,57 +1,30 @@
 <script setup lang="ts">
-import { Plan } from "@/models/plan";
-import PlanDataService from "@/services/plan-data-service";
+import { ref } from "vue";
+import { usePlanList } from "@/models/usePlanList";
 
-class PlanList {
-  public plans: Plan[];
-  private newPlanName: string;
-  private isAddingNew: boolean;
-  private isTemplate: boolean;
-
-  constructor() {
-    this.isAddingNew = false;
-    this.newPlanName = '';
-    this.isTemplate = false;
-    this.plans = [];
-    this.retrievePlans()
-  }
-
-  private addPlan() {
-    if (!this.newPlanName) {
-      return;
-    }
-    PlanDataService.addPlan(this.newPlanName, this.isTemplate)
-      .then((response) => {
-        this.plans.push(new Plan(response.data.id, response.data.name));
-        this.showPlanCreation();
-        this.newPlanName = '';
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
-
-  private showPlanCreation() {
-    this.isAddingNew = !this.isAddingNew;
-  }
-
-  private retrievePlans() {
-    PlanDataService.getPlans()
-      .then((response) => {
-        this.plans = response.data;
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-  }
-}
-
-const planList = new PlanList();
+const list = usePlanList();
+const isLoading = ref(list.planList.isAddingNew);
 </script>
 
 <template>
-  <div>
-    <h1>Your learning plans</h1>
-    {{ planList }}
-  </div>
+  <section class="px-5 container cols-6 mx-auto my-28">
+    <div class="grid grid-flow-row grid-cols-2 col-start-2 col-end-5 gap-5">
+      <h1 class="text-3xl mb-5 col-span-2">Your learning plans</h1>
+      <div v-for="(plan, index) in list.planList.plans"
+        class="flex items-start flex-col gap-5 border border-gray-300 rounded-xl px-6 py-6">
+        <object :data="'./icon-' + (index + 1) + '.svg'" type="image/svg+xml" class="h-12"></object>
+        <div class="flex flex-col gap-2">
+          <router-link :to="'/plan/' + plan.id"
+            class="font-medium hover:underline hover:decoration-1 decoration-blue-500">{{
+                plan.name
+            }}</router-link>
+        </div>
+      </div>
+      <button class="flex flex-row items-center gap-2">
+        <object data="./plus.svg" type="image/svg+xml"></object>
+        <p class="font-semibold">Add new plan</p>
+      </button>
+    </div>
+  </section>
+  <pre>{{ list }}</pre>
 </template>

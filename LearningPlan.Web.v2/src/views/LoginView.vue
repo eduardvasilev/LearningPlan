@@ -17,7 +17,7 @@ function toggleComponentByRouteName(componentName: any) {
 
 function goHomeIfAuthenticated() {
   if (userStore.isAuthenticated != false) {
-    router.push('/');
+    router.push('/plans');
   };
 };
 
