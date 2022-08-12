@@ -21,8 +21,13 @@ jobs:
         with:
           node-version: '14.x'
 
+      - name: "Update env"
+        env:
+          VUE_APP_WEB_API_BASE_URL: ${{ secrets.backendpath }}
+          
       - name: npm install, build, and test
         run: |
+          cd ./LearningPlan.Web
           npm install
           npm run build --if-present
           npm run test --if-present
