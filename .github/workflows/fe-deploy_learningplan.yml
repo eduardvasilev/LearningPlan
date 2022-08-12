@@ -9,6 +9,9 @@ on:
       - fe-deploy
   workflow_dispatch:
 
+env:
+  VUE_APP_WEB_API_BASE_URL: ${{ secrets.backendpath }}
+  
 jobs:
   build:
     runs-on: windows-latest
@@ -20,10 +23,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '14.x'
-
-      - name: "Update env"
-        env:
-          VUE_APP_WEB_API_BASE_URL: ${{ secrets.backendpath }}
           
       - name: npm install, build, and test
         run: |
