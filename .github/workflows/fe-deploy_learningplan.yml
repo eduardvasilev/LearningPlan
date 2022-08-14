@@ -26,7 +26,7 @@ jobs:
           
       - name: npm install, build, and test
         run: |
-          cd ./LearningPlan.Web
+          cd ./LearningPlan.Web.v2
           npm install
           npm run build --if-present
       
