@@ -32,7 +32,7 @@ jobs:
           cd ./dist
           
       - name: Zip artifacts
-        run: zip dist.zip ./* -r
+        run: Compress-Archive . dist.zip
       
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
@@ -54,7 +54,7 @@ jobs:
           name: node-app
 
       - name: Unzip artifacts
-        run: unzip dist.zip
+        run: Expand-Archive dist.zip
     
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
