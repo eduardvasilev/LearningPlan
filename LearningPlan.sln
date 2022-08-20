@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30320.27
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LearningPlan.DomainModel", "LearningPlan.DomainModel\LearningPlan.DomainModel.csproj", "{985EEA83-29A1-428B-9DAF-91A3227314EF}"
 EndProject
@@ -31,6 +31,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LearningPlan.ObjectServices.Implementation.Mongo", "LearningPlan.ObjectServices.Implementation.Mongo\LearningPlan.ObjectServices.Implementation.Mongo.csproj", "{2B74C2F2-972C-418D-A6EF-B59FD068CF80}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LearningPlan.Services.ExternalAdapters", "LearningPlan.Services.ExternalAdapters\LearningPlan.Services.ExternalAdapters.csproj", "{54EC1B7B-1879-41DF-A246-3FFA9961F314}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearningPlan.Infrastructure", "LearningPlan.Infrastructure\LearningPlan.Infrastructure.csproj", "{F6CAFEC1-7F56-4370-B641-A348E0829379}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearningPlan.Infrastructure.Implementation", "LearningPlan.Infrastructure.Implementation\LearningPlan.Infrastructure.Implementation.csproj", "{92F7A239-923E-4297-9BCD-337E7C6185F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -62,9 +66,6 @@ Global
 		{317B30F5-1EAF-4ED5-844C-471DEA7AF1D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{317B30F5-1EAF-4ED5-844C-471DEA7AF1D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{317B30F5-1EAF-4ED5-844C-471DEA7AF1D8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1BDE43A9-46D5-4ECA-9EBE-146FA0AA2609}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1BDE43A9-46D5-4ECA-9EBE-146FA0AA2609}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1BDE43A9-46D5-4ECA-9EBE-146FA0AA2609}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EAC989E3-D240-4241-A9AA-CB04768A3908}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EAC989E3-D240-4241-A9AA-CB04768A3908}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EAC989E3-D240-4241-A9AA-CB04768A3908}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -89,6 +90,14 @@ Global
 		{54EC1B7B-1879-41DF-A246-3FFA9961F314}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{54EC1B7B-1879-41DF-A246-3FFA9961F314}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{54EC1B7B-1879-41DF-A246-3FFA9961F314}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6CAFEC1-7F56-4370-B641-A348E0829379}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6CAFEC1-7F56-4370-B641-A348E0829379}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6CAFEC1-7F56-4370-B641-A348E0829379}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6CAFEC1-7F56-4370-B641-A348E0829379}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92F7A239-923E-4297-9BCD-337E7C6185F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92F7A239-923E-4297-9BCD-337E7C6185F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92F7A239-923E-4297-9BCD-337E7C6185F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92F7A239-923E-4297-9BCD-337E7C6185F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
