@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LearningPlan.DataAccess\LearningPlan.DataAccess.csproj" />
+    <ProjectReference Include="..\LearningPlan.Infrastructure\LearningPlan.Infrastructure.csproj" />
     <ProjectReference Include="..\LearningPlan.ObjectServices\LearningPlan.ObjectServices.csproj" />
     <ProjectReference Include="..\LearningPlan.Services\LearningPlan.Services.csproj" />
   </ItemGroup>

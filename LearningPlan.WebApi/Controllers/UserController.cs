@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using LearningPlan.Services;
 using LearningPlan.Services.Model;
 using LearningPlan.WebApi.Model;
@@ -50,13 +51,25 @@ namespace LearningPlan.WebApi.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-           await _userService.SignInAsync(new SignInServiceModel
+           await _userService.SignUpAsync(new SignInServiceModel
             {
                 Password = model.Password,
                 Username = model.UserName
             });
 
            return Ok();
+        }
+
+        /// <summary>
+        /// Activate user by activation code
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("activate/{code}")]
+        public async Task<IActionResult> ActivateUser(Guid code)
+        {
+            await _userService.ActivateUserAsync(code);
+          
+            return Ok();
         }
     }
 }

@@ -57,6 +57,15 @@ namespace LearningPlan.WebApi
             services.Configure<EmailOptions>(
                 Configuration.GetSection("EmailConfiguration"));
 
+            services.AddScoped<ISmtpClient>(provider =>
+            {
+                var smtpClient = new SmtpClient();
+                var emailOptions = provider.GetService<IOptions<EmailOptions>>()?.Value ?? throw new InvalidOperationException("Email sending isn't configured");
+                smtpClient.Connect(emailOptions.SmtpServer, emailOptions.Port);
+                smtpClient.Authenticate(emailOptions.UserName, emailOptions.Password);
+                return smtpClient;
+            });
+
             services.AddScoped(_ =>
             {
                 string connectionString = Configuration["Database:ConnectionString"];
@@ -70,6 +79,7 @@ namespace LearningPlan.WebApi
             services.AddScoped<IPlanObjectService, PlanObjectService>();
             services.AddScoped<IPlanAreaObjectService, PlanAreaObjectService>();
             services.AddScoped<IBotSubscriptionObjectService, BotSubscriptionObjectService>();
+            services.AddScoped<IUserActivationCodeObjectService, UserActivationCodeObjectService>();
             services.AddScoped<IPlanService, PlanService>();
             services.AddScoped<IPlanAreaService, PlanAreaService>();
             services.AddScoped<ITopicService, TopicService>();
@@ -86,15 +96,7 @@ namespace LearningPlan.WebApi
                 ApplicationName = Configuration.GetSection("Google")["AppKey"],
             }));
 
-            services.AddScoped<ISmtpClient>(provider =>
-            {
-                var smtpClient = new SmtpClient();
-                var emailOptions = provider.GetService<IOptions<EmailOptions>>()?.Value ?? throw new InvalidOperationException("Email sending isn't configured");
-                smtpClient.Connect(emailOptions.SmtpServer, emailOptions.Port);
-                smtpClient.Authenticate(emailOptions.UserName, emailOptions.Password);
-                return smtpClient;
-            });
-
+   
             services.Configure<BotConfiguration>(Configuration.GetSection("BotConfiguration"));
 
             services.AddQuartz(q =>

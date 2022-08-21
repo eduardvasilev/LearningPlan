@@ -5,11 +5,14 @@ using LearningPlan.Services.Model;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using LearningPlan.Infrastructure;
+using LearningPlan.Infrastructure.Model;
 
 namespace LearningPlan.Services.Implementation
 {
@@ -17,11 +20,18 @@ namespace LearningPlan.Services.Implementation
     {
         private readonly IUserObjectService _userObjectService;
         private readonly IPasswordService _passwordService;
+        private readonly IUserActivationCodeObjectService _userActivationCodeObjectService;
+        private readonly IEmailSender _emailSender;
 
-        public UserService(IUserObjectService userObjectService, IPasswordService passwordService)
+        public UserService(IUserObjectService userObjectService, 
+            IPasswordService passwordService, 
+            IUserActivationCodeObjectService userActivationCodeObjectService,
+            IEmailSender emailSender)
         {
             _userObjectService = userObjectService;
             _passwordService = passwordService;
+            _userActivationCodeObjectService = userActivationCodeObjectService;
+            _emailSender = emailSender;
         }
 
         public async Task<AuthenticateResponseModel> AuthenticateAsync(AuthenticateRequestModel model)
@@ -29,13 +39,18 @@ namespace LearningPlan.Services.Implementation
             var user = await _userObjectService.GetUserByUserNameAsync(model.Username);
 
             if (user == null || user.Password != HashPassword(model.Password, user.Salt)) return null;
-            
+
+            if (!user.IsApproved)
+            {
+                throw new DomainServicesException($"User {user.Username} is not approved.");
+            }
+
             var token = GenerateToken(user, model.Secret);
 
             return await Task.FromResult(new AuthenticateResponseModel(user.Id, user.Username, token));
         }
 
-        public async Task SignInAsync(SignInServiceModel model)
+        public async Task SignUpAsync(SignInServiceModel model)
         {
             _passwordService.ValidatePassword(model.Password);
             if ((await _userObjectService.GetUserByUserNameAsync(model.Username) != null))
@@ -53,14 +68,36 @@ namespace LearningPlan.Services.Implementation
             {
                 Password = HashPassword(model.Password, salt),
                 Username = model.Username,
-                Salt = salt
+                Salt = salt,
+                IsApproved = false
             };
+
             await _userObjectService.CreateUserAsync(user);
+
+            UserActivationCode code = await _userActivationCodeObjectService.CreateCodeAsync(user);
+
+            await _emailSender.SendAsync(
+                new Message(new List<string> { user.Username }, "Activate your account", code.Code.ToString()));
         }
 
         public async Task<User> GetByIdAsync(string id)
         {
             return await _userObjectService.GetByIdAsync<User>(id);
+        }
+
+        public async Task ActivateUserAsync(Guid activationCode)
+        {
+            UserActivationCode code = await _userActivationCodeObjectService.GetCodeAsync(activationCode);
+            User user = await _userObjectService.GetByIdAsync<User>(code.UserId);
+
+            if (user == null)
+            {
+                throw new DomainServicesException("User not found.");
+            }
+
+            user.IsApproved = true;
+            await _userObjectService.UpdateAsync(user);
+            await _userActivationCodeObjectService.DeleteAsync(code);
         }
 
         private string GenerateToken(User user, string secret)
