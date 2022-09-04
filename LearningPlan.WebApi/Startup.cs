@@ -1,6 +1,5 @@
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
-using LearningPlan.DomainModel.Exceptions;
 using LearningPlan.Infrastructure;
 using LearningPlan.Infrastructure.Implementation;
 using LearningPlan.Infrastructure.Model;
@@ -16,12 +15,9 @@ using LearningPlan.WebApi.Options;
 using LearningPlan.WebApi.Services;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Quartz;
@@ -56,6 +52,9 @@ namespace LearningPlan.WebApi
 
             services.Configure<EmailOptions>(
                 Configuration.GetSection("EmailConfiguration"));
+
+            services.Configure<FrontEndOptions>(
+                Configuration.GetSection("FrontEndConfiguration"));
 
             services.AddScoped<ISmtpClient>(provider =>
             {
@@ -121,32 +120,7 @@ namespace LearningPlan.WebApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler(errorApp =>
-                {
-                    errorApp.Run(async context =>
-                    {
-                        context.Response.StatusCode = 500;
-                        context.Response.ContentType = "application/json";
-
-                        var exceptionHandlerPathFeature =
-                            context.Features.Get<IExceptionHandlerPathFeature>();
-
-                        if (exceptionHandlerPathFeature?.Error is DomainServicesException)
-                        {
-                            context.Response.StatusCode = 500;
-                            context.Response.ContentType = "application/json";
-                            var response = new { message = exceptionHandlerPathFeature.Error.Message };
-                            await context.Response.WriteAsJsonAsync(response);
-                        }
-                    });
-                });
-            }
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
 
             app.UseSwagger();
 

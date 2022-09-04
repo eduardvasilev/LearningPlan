@@ -32,12 +32,12 @@ namespace LearningPlan.WebApi.Controllers
             AuthenticateResponseModel response = await _userService.AuthenticateAsync(new AuthenticateRequestModel
             {
                 Secret = _configuration["Security:Secret"],
-                Username = model.UserName,
+                Email = model.Email,
                 Password = model.Password,
             });
 
             if (response == null)
-                return Unauthorized(new { message = "Username or password is incorrect" });
+                return Unauthorized(new { message = "Email or password is incorrect" });
        
             return Ok(response);
         }
@@ -54,7 +54,7 @@ namespace LearningPlan.WebApi.Controllers
            await _userService.SignUpAsync(new SignInServiceModel
             {
                 Password = model.Password,
-                Username = model.UserName
+                Username = model.Email
             });
 
            return Ok();

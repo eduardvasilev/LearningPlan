@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LearningPlan.Infrastructure;
 using LearningPlan.Infrastructure.Model;
+using Microsoft.Extensions.Options;
 
 namespace LearningPlan.Services.Implementation
 {
@@ -22,27 +23,30 @@ namespace LearningPlan.Services.Implementation
         private readonly IPasswordService _passwordService;
         private readonly IUserActivationCodeObjectService _userActivationCodeObjectService;
         private readonly IEmailSender _emailSender;
+        private readonly FrontEndOptions _frontEndOptions;
 
         public UserService(IUserObjectService userObjectService, 
             IPasswordService passwordService, 
             IUserActivationCodeObjectService userActivationCodeObjectService,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IOptions<FrontEndOptions> frontEndOptions)
         {
             _userObjectService = userObjectService;
             _passwordService = passwordService;
             _userActivationCodeObjectService = userActivationCodeObjectService;
             _emailSender = emailSender;
+            _frontEndOptions = frontEndOptions.Value;
         }
 
         public async Task<AuthenticateResponseModel> AuthenticateAsync(AuthenticateRequestModel model)
         {
-            var user = await _userObjectService.GetUserByUserNameAsync(model.Username);
+            var user = await _userObjectService.GetUserByUserNameAsync(model.Email);
 
             if (user == null || user.Password != HashPassword(model.Password, user.Salt)) return null;
 
             if (!user.IsApproved)
             {
-                throw new DomainServicesException($"User {user.Username} is not approved.");
+                throw new UnauthorizedAccessException($"User {user.Username} is not approved.");
             }
 
             var token = GenerateToken(user, model.Secret);
@@ -75,9 +79,11 @@ namespace LearningPlan.Services.Implementation
             await _userObjectService.CreateUserAsync(user);
 
             UserActivationCode code = await _userActivationCodeObjectService.CreateCodeAsync(user);
+            Uri link = new Uri(new Uri(_frontEndOptions.BaseUrl), $"user/activate/{code.Code}" );
+            string email = string.Format(EmailTemplates.EmailTeamplates.ActivateAccount,link);
 
             await _emailSender.SendAsync(
-                new Message(new List<string> { user.Username }, "Activate your account", code.Code.ToString()));
+                new Message(new List<string> { user.Username }, "Activate your account", email, true));
         }
 
         public async Task<User> GetByIdAsync(string id)
