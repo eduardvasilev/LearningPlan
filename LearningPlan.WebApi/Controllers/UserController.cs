@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using LearningPlan.Services;
 using LearningPlan.Services.Model;
 using LearningPlan.WebApi.Model;
@@ -31,12 +32,12 @@ namespace LearningPlan.WebApi.Controllers
             AuthenticateResponseModel response = await _userService.AuthenticateAsync(new AuthenticateRequestModel
             {
                 Secret = _configuration["Security:Secret"],
-                Username = model.UserName,
+                Email = model.Email,
                 Password = model.Password,
             });
 
             if (response == null)
-                return Unauthorized(new { message = "Username or password is incorrect" });
+                return Unauthorized(new { message = "Email or password is incorrect" });
        
             return Ok(response);
         }
@@ -50,13 +51,25 @@ namespace LearningPlan.WebApi.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-           await _userService.SignInAsync(new SignInServiceModel
+           await _userService.SignUpAsync(new SignInServiceModel
             {
                 Password = model.Password,
-                Username = model.UserName
+                Username = model.Email
             });
 
            return Ok();
+        }
+
+        /// <summary>
+        /// Activate user by activation code
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("activate/{code}")]
+        public async Task<IActionResult> ActivateUser(Guid code)
+        {
+            await _userService.ActivateUserAsync(code);
+          
+            return Ok();
         }
     }
 }

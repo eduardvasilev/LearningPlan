@@ -13,8 +13,24 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LearningPlan.DataAccess\LearningPlan.DataAccess.csproj" />
+    <ProjectReference Include="..\LearningPlan.Infrastructure\LearningPlan.Infrastructure.csproj" />
     <ProjectReference Include="..\LearningPlan.ObjectServices\LearningPlan.ObjectServices.csproj" />
     <ProjectReference Include="..\LearningPlan.Services\LearningPlan.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="EmailTemplates\EmailTeamplates.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>EmailTeamplates.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="EmailTemplates\EmailTeamplates.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EmailTeamplates.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
