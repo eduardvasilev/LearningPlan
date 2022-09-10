@@ -1,5 +1,5 @@
-import createRequest from "./create-request";
-import type { PlanArea } from "../models/plan-area";
+import createRequest from "@/modules/httprequest/create-request.service";
+import type { PlanArea } from "@/modules/plan/classes/plan-area.class";
 
 export class AreaDataService {
 

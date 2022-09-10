@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { type Ref, ref, watch } from "vue";
-import { useAuthentication, AuthenticationMethods, AuthenticationStatus } from "@/models/useAuthentication"
+import { useAuthentication, AuthenticationMethods, AuthenticationStatus } from "@/modules/authentication/authentication.controller"
 import LoadingWheelVue from "@/components/icons/LoadingWheel.vue"
 import ErrorPopupVue from "./ErrorPopup.vue";
 

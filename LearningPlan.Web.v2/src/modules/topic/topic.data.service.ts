@@ -1,6 +1,6 @@
-import createRequest from "./create-request";
+import createRequest from "@/modules/httprequest/create-request.service";
 
-import type { Topic } from "@/models/topic";
+import type { Topic } from "@/modules/topic/classes/topic.class";
 
 export class TopicDataService {
     public addTopic(topic: Topic) {

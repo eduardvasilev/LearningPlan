@@ -1,7 +1,6 @@
-import createRequest from "./create-request";
-
+import createRequest from "@/modules/httprequest/create-request.service";
 import { useUserStore } from "@/stores/UserStore"
-import type { AuthModel } from "@/models/auth-model";
+import type { AuthModel } from "@/modules/authentication/interfaces/authentication.interface";
 
 class AuthenticationService {
     public async login(user: AuthModel) {

@@ -1,4 +1,4 @@
-import type { Plan } from "@/models/plan"
+import type { Plan } from "@/modules/plan/classes/plan.class"
 
 export interface PlanListModel {
   plans: Plan[];

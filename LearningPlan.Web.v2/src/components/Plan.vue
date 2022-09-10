@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { usePlan } from "@/models/usePlan"
+import { usePlan } from "@/modules/plan/plan.controller"
 
 const planController = usePlan();
 

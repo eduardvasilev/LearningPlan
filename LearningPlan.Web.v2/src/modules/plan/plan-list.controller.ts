@@ -1,6 +1,6 @@
-import { Plan } from "@/models/plan"
-import type { PlanListModel } from "@/models/planList-model"
-import PlanDataService from "@/services/plan-data-service";
+import { Plan } from "@/modules/plan/classes/plan.class";
+import type { PlanListModel } from "@/modules/plan/interfaces/plan-list.interface";
+import PlanDataService from "@/modules/plan/plan.data.service";
 import { reactive } from "vue";
 
 export function usePlanList() {

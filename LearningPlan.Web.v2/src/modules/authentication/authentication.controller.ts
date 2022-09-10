@@ -1,6 +1,6 @@
-import AuthenticationService from "@/services/auth-service"
+import AuthenticationService from "@/modules/authentication/authentication.service"
 import { reactive, ref, computed, type Ref, type WritableComputedRef } from "vue";
-import type { AuthModel } from "./auth-model";
+import type { AuthModel } from "@/modules/authentication/interfaces/authentication.interface";
 
 export enum AuthenticationMethods {
   Login,

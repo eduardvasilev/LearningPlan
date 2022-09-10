@@ -1,7 +1,7 @@
-import type { Topic } from "./topic";
+import type { Topic } from "@/modules/topic/classes/topic.class";
 
 export class PlanArea {
-  id: string  = '';
+  id: string = '';
   planId: string;
   name: string;
   areaTopics: Topic[] = [];

@@ -1,4 +1,4 @@
-import type { PlanArea } from "./plan-area"
+import type { PlanArea } from "@/modules/plan/classes/plan-area.class"
 
 export class Plan {
   id: string

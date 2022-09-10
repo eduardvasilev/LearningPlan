@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { usePlanList } from "@/models/usePlanList";
+import { usePlanList } from "@/modules/plan/plan-list.controller";
 
 const list = usePlanList();
 const isLoading = ref(list.planList.isAddingNew);
@@ -16,7 +16,7 @@ const isLoading = ref(list.planList.isAddingNew);
         <div class="flex flex-col gap-2">
           <router-link :to="'/plan/' + plan.id"
             class="font-medium hover:underline hover:decoration-1 decoration-blue-500">{{
-                plan.name
+            plan.name
             }}</router-link>
         </div>
       </div>

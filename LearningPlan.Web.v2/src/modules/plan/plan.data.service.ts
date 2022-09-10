@@ -1,6 +1,6 @@
-import createRequest from "./create-request";
+import createRequest from "@/modules/httprequest/create-request.service";
 
-import type { Plan } from "@/models/plan";
+import type { Plan } from "@/modules/plan/classes/plan.class";
 
 export class PlanDataService {
     public addPlan(name: string, isTemplate: boolean) {
