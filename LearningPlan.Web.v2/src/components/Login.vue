@@ -31,9 +31,9 @@ watch(login.status, (status) => {
   <div class="flex flex-col gap-10 w-1/5">
     <h1 class="text-3xl font-bold">Welcome back</h1>
     <form class="auth-form" id="login-form" @submit.prevent="login.formSubmit()">
-      <label for="username">Username</label>
-      <input type="text" name="username" id="username" placeholder="Enter your username" class="auth-form__input"
-        v-model.lazy="login.user.username" required />
+      <label for="username">Email</label>
+      <input type="email" name="email" id="username" placeholder="Enter your email" class="auth-form__input"
+        v-model.lazy="login.user.email" required />
       <label for="password">Password</label>
       <input type="password" name="password" id="password" placeholder="Enter password" class="auth-form__input"
         v-model.lazy="login.user.password" required>

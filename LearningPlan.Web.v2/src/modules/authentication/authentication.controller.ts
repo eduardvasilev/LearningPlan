@@ -15,7 +15,7 @@ export enum AuthenticationStatus {
 
 export function useAuthentication(authMethod: AuthenticationMethods) {
   const user: AuthModel = reactive({
-    username: '',
+    email: '',
     password: '',
     confirmPassword: ''
   });

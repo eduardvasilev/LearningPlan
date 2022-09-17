@@ -39,9 +39,9 @@ watch(signup.status, (status) => {
   <div class="flex flex-col gap-10 w-1/5">
     <h1 class="text-3xl font-bold">Just welcome</h1>
     <form class="auth-form" id="signup-form" @submit.prevent="handleSubmit()">
-      <label for="username">Username</label>
-      <input type="text" name="username" id="username" placeholder="Enter your username" class="auth-form__input"
-        v-model="signup.user.username" required />
+      <label for="email">Email</label>
+      <input type="text" name="email" id="email" placeholder="Enter your email" class="auth-form__input"
+        v-model="signup.user.email" required />
       <label for="password">Password</label>
       <input type="password" name="password" id="password" placeholder="Enter password" class="auth-form__input"
         v-model="signup.user.password" required>
