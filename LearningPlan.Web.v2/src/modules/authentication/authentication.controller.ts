@@ -31,7 +31,8 @@ export function useAuthentication(authMethod: AuthenticationMethods) {
   function handleSubmit(callback: Function) {
     status.value = AuthenticationStatus.Pending;
     callback()
-      .catch((error: any) => errorMessage.value = error.response.data.message)
+      // TODO: Parse several error types if there are.
+      .catch((error: any) => errorMessage.value = error.response.data.title)
       .finally(() => status.value = AuthenticationStatus.Settled);
   };
 
