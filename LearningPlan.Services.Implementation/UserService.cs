@@ -33,7 +33,7 @@ namespace LearningPlan.Services.Implementation
 
         public async Task<AuthenticateResponseModel> AuthenticateAsync(AuthenticateRequestModel model)
         {
-            var user = await _userObjectService.GetUserByUserNameAsync(model.Email);
+            var user = await _userObjectService.GetUserByUserNameAsync(model.Email.ToLower());
 
             if (user == null || user.Password != HashPassword(model.Password, user.Salt)) return null;
 
@@ -61,7 +61,7 @@ namespace LearningPlan.Services.Implementation
             User user = new User
             {
                 Password = HashPassword(model.Password, salt),
-                Username = model.Username,
+                Username = model.Username.ToLower(),
                 Salt = salt,
                 IsApproved = false
             };

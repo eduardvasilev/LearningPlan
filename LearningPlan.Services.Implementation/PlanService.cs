@@ -60,34 +60,39 @@ namespace LearningPlan.Services.Implementation
 
             await _planObjectService.CreateAsync(plan);
 
-            foreach (PlanAreaServiceModel planArea in model.PlanAreas)
+            if (model.PlanAreas != null && model.PlanAreas.Any())
             {
-                PlanArea area = new PlanArea
+                foreach (PlanAreaServiceModel planArea in model.PlanAreas)
                 {
-                    Name = planArea.Name,
-                    Plan = plan,
-                    PlanId = plan.Id,
-                    UserId = plan.UserId
-                };
-
-                await _planAreaObjectService.CreateAsync(area);
-                foreach (AreaTopicServiceModel areaTopic in planArea.AreaTopics)
-                {
-                    await _topicObjectService.CreateAsync(new AreaTopic
+                    PlanArea area = new PlanArea
                     {
-                        Name = areaTopic.Name,
-                        StartDate = areaTopic.StartDate != null ? DateTime.ParseExact(areaTopic.StartDate, "yyyy-MM-dd",
-                            CultureInfo.CurrentCulture) : (DateTime?) null,
-                        EndDate = areaTopic.EndDate != null 
-                            ? DateTime.ParseExact(areaTopic.EndDate, "yyyy-MM-dd", CultureInfo.CurrentCulture)
-                            : (DateTime?) null,
-                        Source = areaTopic.Source,
-                        Description = areaTopic.Description,
-                        PlanArea = area,
-                        PlanAreaId = area.Id,
-                        UserId = areaTopic.UserId,
-                        PlanId = areaTopic.PlanId
-                    });
+                        Name = planArea.Name,
+                        Plan = plan,
+                        PlanId = plan.Id,
+                        UserId = plan.UserId
+                    };
+
+                    await _planAreaObjectService.CreateAsync(area);
+                    foreach (AreaTopicServiceModel areaTopic in planArea.AreaTopics)
+                    {
+                        await _topicObjectService.CreateAsync(new AreaTopic
+                        {
+                            Name = areaTopic.Name,
+                            StartDate = areaTopic.StartDate != null
+                                ? DateTime.ParseExact(areaTopic.StartDate, "yyyy-MM-dd",
+                                    CultureInfo.CurrentCulture)
+                                : (DateTime?)null,
+                            EndDate = areaTopic.EndDate != null
+                                ? DateTime.ParseExact(areaTopic.EndDate, "yyyy-MM-dd", CultureInfo.CurrentCulture)
+                                : (DateTime?)null,
+                            Source = areaTopic.Source,
+                            Description = areaTopic.Description,
+                            PlanArea = area,
+                            PlanAreaId = area.Id,
+                            UserId = areaTopic.UserId,
+                            PlanId = areaTopic.PlanId
+                        });
+                    }
                 }
             }
 
