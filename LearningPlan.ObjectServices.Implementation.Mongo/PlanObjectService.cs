@@ -14,10 +14,13 @@ namespace LearningPlan.ObjectServices.Implementation.Mongo
             _database = database;
         }
 
-        public IEnumerable<Plan> GetUserPlans(string userId)
+        public IEnumerable<Plan> GetUserPlans(string userId, bool templates)
         {
-           return _database.GetCollection<Plan>(CollectionName)
-               .Find(Builders<Plan>.Filter.Eq(plan => plan.UserId, userId) & Builders<Plan>.Filter.Eq(plan => plan.IsTemplate, false)).ToEnumerable();
+            IFindFluent<Plan, Plan> findFluent = _database.GetCollection<Plan>(CollectionName)
+                .Find(Builders<Plan>.Filter.Eq(plan => plan.UserId, userId) 
+                      & Builders<Plan>.Filter.Eq(plan => plan.IsTemplate, templates));
+
+            return findFluent.ToEnumerable();
         }
 
         public IEnumerable<Plan> GetTemplatePlans()
