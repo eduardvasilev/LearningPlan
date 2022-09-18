@@ -14,9 +14,21 @@ export class PlanListGetterController {
     try {
       const planList = await PlanDataService.getPlans();
       return planList.data
-    } catch {
-      console.log(this.error)
+    } catch (error: any) {
+      this.error = error;
       return []
+    }
+  }
+}
+
+export class PlanListAdderController {
+  async addPlan(newPlanName: string, isTemplate: boolean): Promise<string> {
+    try {
+      const id: string = (await PlanDataService.addPlan(newPlanName, isTemplate)).data.id
+      return id
+    } catch (error: any) {
+      console.log(error)
+      return error
     }
   }
 }
