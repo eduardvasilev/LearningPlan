@@ -55,6 +55,9 @@ namespace LearningPlan.WebApi
 
             services.Configure<FrontEndOptions>(
                 Configuration.GetSection("FrontEndConfiguration"));
+            
+            services.Configure<FeatureOptions>(
+                Configuration.GetSection("FeatureConfiguration"));
 
             services.AddScoped<ISmtpClient>(provider =>
             {
@@ -84,6 +87,7 @@ namespace LearningPlan.WebApi
             services.AddScoped<ITopicService, TopicService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IGoogleSheetsAdapter, GoogleSheetsAdapter>();
+            services.AddScoped<IUserVerificationService, UserVerificationService>();
             services.AddScoped<IEmailSender, MailKitEmailSender>();
 
             services.AddSingleton<IBotService, BotService>();

@@ -5,15 +5,11 @@ using LearningPlan.Services.Model;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using LearningPlan.Infrastructure;
-using LearningPlan.Infrastructure.Model;
-using Microsoft.Extensions.Options;
 
 namespace LearningPlan.Services.Implementation
 {
@@ -22,20 +18,17 @@ namespace LearningPlan.Services.Implementation
         private readonly IUserObjectService _userObjectService;
         private readonly IPasswordService _passwordService;
         private readonly IUserActivationCodeObjectService _userActivationCodeObjectService;
-        private readonly IEmailSender _emailSender;
-        private readonly FrontEndOptions _frontEndOptions;
+        private readonly IUserVerificationService _userVerificationService;
 
         public UserService(IUserObjectService userObjectService, 
             IPasswordService passwordService, 
             IUserActivationCodeObjectService userActivationCodeObjectService,
-            IEmailSender emailSender,
-            IOptions<FrontEndOptions> frontEndOptions)
+            IUserVerificationService userVerificationService)
         {
             _userObjectService = userObjectService;
             _passwordService = passwordService;
             _userActivationCodeObjectService = userActivationCodeObjectService;
-            _emailSender = emailSender;
-            _frontEndOptions = frontEndOptions.Value;
+            _userVerificationService = userVerificationService;
         }
 
         public async Task<AuthenticateResponseModel> AuthenticateAsync(AuthenticateRequestModel model)
@@ -44,10 +37,7 @@ namespace LearningPlan.Services.Implementation
 
             if (user == null || user.Password != HashPassword(model.Password, user.Salt)) return null;
 
-            if (!user.IsApproved)
-            {
-                throw new UnauthorizedAccessException($"User {user.Username} is not approved.");
-            }
+            _userVerificationService.CheckIfUserVerified(user);
 
             var token = GenerateToken(user, model.Secret);
 
@@ -78,12 +68,7 @@ namespace LearningPlan.Services.Implementation
 
             await _userObjectService.CreateUserAsync(user);
 
-            UserActivationCode code = await _userActivationCodeObjectService.CreateCodeAsync(user);
-            Uri link = new Uri(new Uri(_frontEndOptions.BaseUrl), $"user/activate/{code.Code}" );
-            string email = string.Format(EmailTemplates.EmailTeamplates.ActivateAccount,link);
-
-            await _emailSender.SendAsync(
-                new Message(new List<string> { user.Username }, "Activate your account", email, true));
+            await _userVerificationService.SendUserVerificationEmail(user);
         }
 
         public async Task<User> GetByIdAsync(string id)
