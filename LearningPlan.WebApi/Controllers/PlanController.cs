@@ -3,6 +3,7 @@ using LearningPlan.Services.Model;
 using LearningPlan.WebApi.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -53,9 +54,28 @@ namespace LearningPlan.WebApi.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpGet]
-        public List<PlanResponseModel> GetAll()
+        public async Task<List<PlanResponseModel>> GetAll()
         {
-            return _planService.GetAll(GetCurrentUser()).ToList();
+            var user = GetCurrentUser();
+
+            if (user == null)
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            return (await _planService.GetAll(user.Id)).ToList();
+        }
+
+        /// <summary>
+        /// Get all plans of user
+        /// </summary>
+        /// <param name="userId">User's id</param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet("user/{userId}")]
+        public async Task<List<PlanResponseModel>> GetAllTemplatesByUser(string userId)
+        {
+            return (await _planService.GetAll(userId, true)).ToList();
         }
 
         /// <summary>

@@ -13,7 +13,7 @@ namespace LearningPlan.Services
 
         Task<PlanServiceModel> GetByIdAsync(string id);
 
-        IEnumerable<PlanResponseModel> GetAll(User user);
+        Task<IEnumerable<PlanResponseModel>> GetAll(string userId, bool templates = false);
 
         IEnumerable<PlanResponseModel> GetAllTemplates();
 

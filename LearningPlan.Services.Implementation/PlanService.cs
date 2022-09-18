@@ -17,18 +17,21 @@ namespace LearningPlan.Services.Implementation
         private readonly IPlanAreaObjectService _planAreaObjectService;
         private readonly ITopicObjectService _topicObjectService;
         private readonly IBotSubscriptionObjectService _botSubscriptionObjectService;
+        private readonly IUserObjectService _userObjectService;
 
         public PlanService(IPlanAreaService planAreaService,
             IPlanObjectService planObjectService,
             IPlanAreaObjectService planAreaObjectService,
             ITopicObjectService topicObjectService,
-            IBotSubscriptionObjectService botSubscriptionObjectService)
+            IBotSubscriptionObjectService botSubscriptionObjectService,
+            IUserObjectService userObjectService)
         {
             _planAreaService = planAreaService;
             _planObjectService = planObjectService;
             _planAreaObjectService = planAreaObjectService;
             _topicObjectService = topicObjectService;
             _botSubscriptionObjectService = botSubscriptionObjectService;
+            _userObjectService = userObjectService;
         }
 
         public async Task<PlanResponseModel> CreatePlanAsync(PlanServiceModel model)
@@ -38,7 +41,8 @@ namespace LearningPlan.Services.Implementation
             return new PlanResponseModel
             {
                 Name = plan.Name,
-                Id = plan.Id
+                Id = plan.Id,
+                IsTemplate = model.IsTemplate
             };
         }
 
@@ -149,14 +153,16 @@ namespace LearningPlan.Services.Implementation
             });
         }
 
-        public IEnumerable<PlanResponseModel> GetAll(User user)
+        public async Task<IEnumerable<PlanResponseModel>> GetAll(string userId, bool templates)
         {
+            User user = await _userObjectService.GetByIdAsync<User>(userId);
+
             if (user == null)
             {
-                throw new UnauthorizedAccessException();
+                throw new NotFoundException("User not found");
             }
 
-            return _planObjectService.GetUserPlans(user.Id)
+            return _planObjectService.GetUserPlans(userId, templates)
                 .Select(plan => new PlanResponseModel
                 {
                     Id = plan.Id,
