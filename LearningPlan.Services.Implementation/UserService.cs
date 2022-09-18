@@ -78,17 +78,17 @@ namespace LearningPlan.Services.Implementation
 
         public async Task ActivateUserAsync(Guid activationCode)
         {
-            UserActivationCode code = await _userActivationCodeObjectService.GetCodeAsync(activationCode);
-            User user = await _userObjectService.GetByIdAsync<User>(code.UserId);
+            await _userVerificationService.ActivateUserAsync(activationCode);
+        }
 
-            if (user == null)
+        public async Task<UserInfoResponse> GetUserInfoAsync(string userId)
+        {
+            User user = await _userObjectService.GetByIdAsync<User>(userId);
+
+            return new UserInfoResponse
             {
-                throw new DomainServicesException("User not found.");
-            }
-
-            user.IsApproved = true;
-            await _userObjectService.UpdateAsync(user);
-            await _userActivationCodeObjectService.DeleteAsync(code);
+                Email = user.Username
+            };
         }
 
         private string GenerateToken(User user, string secret)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using LearningPlan.DomainModel;
+using LearningPlan.DomainModel.Exceptions;
 using LearningPlan.Infrastructure;
 using LearningPlan.Infrastructure.Model;
 using LearningPlan.ObjectServices;
@@ -11,16 +12,20 @@ namespace LearningPlan.Services.Implementation;
 
 public class UserVerificationService : IUserVerificationService
 {
+    private readonly IUserObjectService _userObjectService;
     private readonly IUserActivationCodeObjectService _userActivationCodeObjectService;
     private readonly IEmailSender _emailSender;
     private readonly FeatureOptions _featureOptions;
     private readonly FrontEndOptions _frontEndOptions;
 
-    public UserVerificationService(IUserActivationCodeObjectService userActivationCodeObjectService,
+    public UserVerificationService(
+        IUserObjectService userObjectService,
+        IUserActivationCodeObjectService userActivationCodeObjectService,
         IEmailSender emailSender,
         IOptions<FrontEndOptions> frontEndOptions,
         IOptions<FeatureOptions> featureOptions)
     {
+        _userObjectService = userObjectService;
         _userActivationCodeObjectService = userActivationCodeObjectService;
         _emailSender = emailSender;
         _featureOptions = featureOptions.Value;
@@ -45,5 +50,25 @@ public class UserVerificationService : IUserVerificationService
         {
             throw new UnauthorizedAccessException($"User {user.Username} is not approved.");
         }
+    }
+
+    public async Task ActivateUserAsync(Guid activationCode)
+    {
+        if (!_featureOptions.EmailVerificationEnabled) //TODO consider about moving this to some kind of PreProcess action
+        {
+            return;
+        }
+
+        UserActivationCode code = await _userActivationCodeObjectService.GetCodeAsync(activationCode);
+        User user = await _userObjectService.GetByIdAsync<User>(code.UserId);
+
+        if (user == null)
+        {
+            throw new DomainServicesException("User not found.");
+        }
+
+        user.IsApproved = true;
+        await _userObjectService.UpdateAsync(user);
+        await _userActivationCodeObjectService.DeleteAsync(code);
     }
 }

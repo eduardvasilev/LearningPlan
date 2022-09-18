@@ -11,5 +11,6 @@ namespace LearningPlan.Services
         Task SignUpAsync(SignInServiceModel model);
         Task<User> GetByIdAsync(string id);
         Task ActivateUserAsync(Guid activationCode);
+        Task<UserInfoResponse> GetUserInfoAsync(string userId);
     }
 }

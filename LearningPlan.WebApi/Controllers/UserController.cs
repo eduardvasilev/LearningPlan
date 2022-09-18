@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using LearningPlan.Services;
 using LearningPlan.Services.Model;
+using LearningPlan.WebApi.DataAnnotations;
 using LearningPlan.WebApi.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -70,6 +71,18 @@ namespace LearningPlan.WebApi.Controllers
             await _userService.ActivateUserAsync(code);
           
             return Ok();
+        }
+
+        /// <summary>
+        /// Returns user info by user id
+        /// </summary>
+        /// <param name="userId">User Id</param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet("info/{userId}")]
+        public async Task<IActionResult> GetUserInfo(string userId)
+        {
+            return Ok(await _userService.GetUserInfoAsync(userId));
         }
     }
 }
