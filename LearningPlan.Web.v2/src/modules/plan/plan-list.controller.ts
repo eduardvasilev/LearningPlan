@@ -1,47 +1,22 @@
-import { Plan } from "@/modules/plan/classes/plan.class";
-import type { PlanListModel } from "@/modules/plan/interfaces/plan-list.interface";
+import type { Plan } from "@/modules/plan/classes/plan.class";
 import PlanDataService from "@/modules/plan/plan.data.service";
-import { reactive } from "vue";
 
-export function usePlanList() {
+export class PlanListGetterController {
+  plans: Promise<Plan[]>
+  error: string
 
-  retrievePlans()
+  constructor() {
+    this.error = '';
+    this.plans = this.retrievePlans();
+  }
 
-  const planList: PlanListModel = reactive({
-    plans: [],
-    newPlanName: '',
-    isAddingNew: false,
-    isTemplate: false
-  });
-
-  function addPlan() {
-    if (planList.newPlanName) {
-      return;
+  private async retrievePlans(): Promise<Plan[]> {
+    try {
+      const planList = await PlanDataService.getPlans();
+      return planList.data
+    } catch {
+      console.log(this.error)
+      return []
     }
-    PlanDataService.addPlan(planList.newPlanName, planList.isTemplate)
-      .then((response) => {
-        planList.plans.push(new Plan(response.data.id, response.data.name));
-        showPlanCreation();
-        planList.newPlanName = '';
-      })
-      .catch((error) => {
-        console.error(error);
-      });
   }
-
-  function showPlanCreation() {
-    planList.isAddingNew = !planList.isAddingNew;
-  }
-
-  function retrievePlans(): void {
-    PlanDataService.getPlans()
-      .then((response) => {
-        planList.plans = response.data;
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-  }
-
-  return { planList, addPlan, showPlanCreation }
 }

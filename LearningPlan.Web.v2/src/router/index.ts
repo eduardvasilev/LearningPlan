@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import LoginViewVue from "@/views/LoginView.vue";
-import PlanListVue from "@/components/PlanList.vue";
+import PlanListView from "@/views/PlanListView.vue";
 import HomeViewVue from "@/views/HomeView.vue";
 import PlanVue from "@/components/Plan.vue";
 
@@ -21,7 +21,7 @@ const routes = [
     children: [
       {
         path: "/plans",
-        component: PlanListVue,
+        component: PlanListView,
       },
       {
         path: "/plan/:id",
