@@ -4,6 +4,7 @@ using LearningPlan.Services;
 using LearningPlan.Services.Model;
 using LearningPlan.WebApi.Services;
 using Quartz;
+using Telegram.Bot;
 
 namespace LearningPlan.WebApi.Jobs
 {
