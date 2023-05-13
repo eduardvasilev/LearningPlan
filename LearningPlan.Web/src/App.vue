@@ -124,6 +124,7 @@
     .app-body{
         margin-left: 100px;
         margin-right: 100px;
+        padding-top: 100px;
     }
 
     .btn {
@@ -140,5 +141,12 @@
         border: 2px solid;
         border-color: #EAEAE0;
         /* box-shadow: 0px 0px 20px -3px #000000; */
+    }
+
+    .home{
+        position: fixed;
+        width: 100%;
+        z-index: 1;
+        border-bottom: solid 1px;
     }
 </style>

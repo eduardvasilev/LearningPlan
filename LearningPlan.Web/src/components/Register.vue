@@ -4,11 +4,11 @@
         <form id="register-form" @submit="formSubmit">
             <div class="form-group">
                 <input id="reg-username"
-                       v-model="user.username"
+                       v-model="user.email"
                        type="text"
-                       name="username"
+                       name="email"
                        class="form-control"
-                       placeholder="Username">
+                       placeholder="Email">
             </div>
 
             <div class="form-group">
@@ -47,7 +47,7 @@
         private error = "";
 
         private user: User = {
-            username: "",
+            email: "",
             password: "",
             confirmPassword: ""
         };

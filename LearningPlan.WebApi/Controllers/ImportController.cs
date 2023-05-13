@@ -17,6 +17,7 @@ namespace LearningPlan.WebApi.Controllers
         {
             _googleSheetsAdapter = googleSheetsAdapter;
         }
+
         [HttpPost]
         [DataAnnotations.Authorize]
         [Route("googlesheets")]
